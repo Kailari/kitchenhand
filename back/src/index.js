@@ -32,7 +32,7 @@ const typeDefs = gql`
   type Query {
     userCount: Int!
     allUsers: [User!]!
-    user(id: Int!): User
+    findUser(id: ID!): User
     me: User
   }
 
@@ -53,7 +53,7 @@ const resolvers = {
   Query: {
     userCount: () => User.collection.countDocuments(),
     allUsers: () => User.find({}),
-    user: (root, args) => User.findById(args.id),
+    findUser: (root, args) => User.findById(args.id),
     me: (root, args, context) => context.currentUser
   },
   Mutation: {
