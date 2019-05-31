@@ -29,6 +29,17 @@ const typeDefs = gql`
     value: String!
   }
 
+  type Error {
+    path: String!
+    message: String
+  }
+
+  type RegisterResponse {
+    ok: Boolean!
+    user: User
+    errors: [Error!]
+  }
+
   type Query {
     userCount: Int!
     allUsers: [User!]!
@@ -58,6 +69,9 @@ const resolvers = {
   },
   Mutation: {
     registerUser: async (root, args) => {
+      console.log('registering user...')
+      // TODO: validate password
+
       const saltRounds = 10
       const hashedPassword = await bcrypt.hash(args.password, saltRounds)
 
@@ -70,11 +84,14 @@ const resolvers = {
       try {
         await user.save()
       } catch (error) {
+        console.log('errors: ', error)
+        console.log('path ', Object.keys(error.errors))
         throw new UserInputError(error.message, {
-          invalidArgs: args
+          invalidArgs: Object.keys(error.errors)
         })
       }
 
+      console.log('user registered: ', user)
       return user
     },
     login: async (root, args) => {

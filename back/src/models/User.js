@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const uniqueValidator = require('mongoose-unique-validator')
 
 const schema = new mongoose.Schema({
   name: {
@@ -12,15 +13,14 @@ const schema = new mongoose.Schema({
     required: true,
     unique: true,
     minlength: 5,
-    maxlength: 64
+    maxlength: 32
   },
   password: {
     type: String,
     required: true,
-    minlength: 8,
-    maxlength: 128
   }
 })
+schema.plugin(uniqueValidator)
 
 schema.set('toJSON', {
   transform: (document, returnedObject) => {

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { gql } from 'apollo-boost'
+import { useApolloClient } from 'react-apollo-hooks'
 
 const FIND_USER = gql`
 query findUserById($id: ID!) {
@@ -10,7 +11,8 @@ query findUserById($id: ID!) {
 }
 `
 
-const Users = ({ result, client }) => {
+const Users = ({ result }) => {
+  const client = useApolloClient()
   const [user, setUser] = useState(null)
 
   if (result.loading) {
@@ -41,7 +43,7 @@ const Users = ({ result, client }) => {
       <h2>Users</h2>
       {result.data.allUsers.map(u =>
         <div key={u.id}>
-          {u.name} 
+          {u.name}
           <button onClick={() => {
             showUserProfile(u.id)
           }}>show profile</button>
