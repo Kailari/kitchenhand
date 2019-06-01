@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
 
+import handleError from '../util/error/authFormErrorHandler'
+
 const RegisterForm = ({ registerUser }) => {
   const [name, setName] = useState('')
   const [loginname, setLoginname] = useState('')
@@ -8,44 +10,28 @@ const RegisterForm = ({ registerUser }) => {
 
   const [loginnameError, setLoginnameError] = useState(null)
   const [nameError, setNameError] = useState(null)
-
-  const handleError = (error) => {
-    console.log("eyyy lamo")
-  }
+  const [passwordError, setPasswordError] = useState(null)
 
   const submit = async (e) => {
     e.preventDefault()
 
     setNameError(null)
     setLoginnameError(null)
+    setPasswordError(null)
 
     try {
       await registerUser({
-        onError: { handleError },
         variables: { loginname, name, password }
       })
 
       setName('')
       setLoginname('')
     } catch (error) {
-      const invalidArgs = error.graphQLErrors[0].extensions.exception.invalidArgs
-      if (invalidArgs.includes('loginname')) {
-        if (error.message.includes('expected `loginname` to be unique')) {
-          setLoginnameError('Name already taken')
-        } else if (error.message.includes('Path `loginname` is required')) {
-          setLoginnameError('Please enter a login name')
-        } else {
-          setLoginnameError('Name must be 5-32 characters long')
-        }
-      }
-
-      if (invalidArgs.includes('name')) {
-        if (error.message.includes('Path `name` is required')) {
-          setNameError('A display name is required')
-        } else {
-          setNameError('Name must be 3-64 characters long')
-        }
-      }
+      handleError({
+        setLoginnameError, 
+        setNameError,
+        setPasswordError
+      })(error)
     }
 
     setPassword('')
@@ -94,6 +80,11 @@ const RegisterForm = ({ registerUser }) => {
               value={password}
               onChange={(e, { value }) => setPassword(value)}
             />
+            {passwordError && (
+              <Message>
+                {passwordError}
+              </Message>
+            )}
 
             <Button color='teal' fluid size='large' type='submit'>
               Register

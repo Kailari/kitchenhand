@@ -95,9 +95,19 @@ const resolvers = {
       return user
     },
     login: async (root, args) => {
+      // TODO: Return all errors at once
+
+      if (!args.loginname || args.loginname === '') {
+        throw new UserInputError('`loginname` is required', { invalidArgs: 'loginname' })
+      }
+
+      if (!args.password || args.password === '') {
+        throw new UserInputError('`password` is required', { invalidArgs: 'password' })
+      }
+
       const user = await User.findOne({ loginname: args.loginname })
       if (!user) {
-        throw new UserInputError('Invalid login name', { invalidArgs: args.loginname })
+        throw new UserInputError('Invalid `loginname`', { invalidArgs: args.loginname })
       }
 
       const correctPassword = user === null
@@ -105,7 +115,7 @@ const resolvers = {
         : bcrypt.compare(args.password, user.password)
 
       if (!correctPassword) {
-        throw new UserInputError('Invalid password', { invalidArgs: args.password })
+        throw new UserInputError('Invalid `password`', { invalidArgs: args.password })
       }
 
       const tokenUser = {

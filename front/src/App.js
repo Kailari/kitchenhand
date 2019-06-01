@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
 import { gql } from 'apollo-boost';
-import { Mutation } from 'react-apollo'
 import { Container } from 'semantic-ui-react';
 import { useQuery, useMutation, useApolloClient } from 'react-apollo-hooks'
 
-import { Route, Redirect, BrowserRouter as Router } from 'react-router-dom'
+import { Route, Redirect, Switch, BrowserRouter as Router } from 'react-router-dom'
 
 import Users from './components/Users'
 import RegisterForm from './components/RegisterForm'
@@ -52,7 +51,7 @@ const App = () => {
     refetchQueries: [{ query: ALL_USERS }]
   })
 
-  const [token, setToken] = useState(null)
+  const [token, setToken] = useState(localStorage.getItem('menu-app-user-token'))
   const [currentUser, setCurrentUser] = useState(null)
 
   const logout = () => {
@@ -65,23 +64,28 @@ const App = () => {
     <Container>
       <Router>
         <div>
-          <Route exact path='/login' render={() =>
-            <LoginForm
-              login={login}
-              setToken={token => setToken(token)}
-            />
-          } />
-          <Route exact path='/register' render={() =>
-            <RegisterForm registerUser={register}/>
-          } />
+          <Switch>
+            <Route exact path='/login' render={() =>
+              !token
+                ? <LoginForm login={login} setToken={(token) => setToken(token)} />
+                : <Redirect to='/' />
+            } />
+            <Route exact path='/register' render={() =>
+              !token
+                ? <RegisterForm registerUser={register} />
+                : <Redirect to='/' />
+            } />
+            <Route exact path='/' render={() =>
+              !token && <Redirect to='/login' />
+            } />
+          </Switch>
 
           <Route exact path='/' render={() =>
             <div>
-              Hello world!
+              Hello world!<br />
+              <button onClick={logout}>Log out</button>
             </div>
           } />
-
-          <button onClick={logout}>Log out</button>
         </div>
       </Router>
     </Container>
