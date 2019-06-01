@@ -69,7 +69,6 @@ const resolvers = {
   },
   Mutation: {
     registerUser: async (root, args) => {
-      console.log('registering user...')
       // TODO: validate password
 
       const saltRounds = 10
@@ -84,14 +83,11 @@ const resolvers = {
       try {
         await user.save()
       } catch (error) {
-        console.log('errors: ', error)
-        console.log('path ', Object.keys(error.errors))
         throw new UserInputError(error.message, {
           invalidArgs: Object.keys(error.errors)
         })
       }
 
-      console.log('user registered: ', user)
       return user
     },
     login: async (root, args) => {
@@ -106,16 +102,12 @@ const resolvers = {
       }
 
       const user = await User.findOne({ loginname: args.loginname })
-      if (!user) {
-        throw new UserInputError('Invalid `loginname`', { invalidArgs: args.loginname })
-      }
-
       const correctPassword = user === null
         ? false
-        : bcrypt.compare(args.password, user.password)
+        : await bcrypt.compare(args.password, user.password)
 
       if (!correctPassword) {
-        throw new UserInputError('Invalid `password`', { invalidArgs: args.password })
+        throw new UserInputError('Bad loginname or password', { invalidArgs: ['loginname', 'password'] })
       }
 
       const tokenUser = {
@@ -133,10 +125,10 @@ const server = new ApolloServer({
   resolvers,
   context: async ({ req }) => {
     const auth = req ? req.headers.authorization : null
-  
+
     if (auth && auth.toLowerCase().startsWith('bearer ')) {
       const decodedToken = jwt.verify(auth.substring(7), JWT_SECRET)
-      
+
       const currentUser = await User.findById(decodedToken.id)
       return { currentUser }
     }

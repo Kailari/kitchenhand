@@ -55,9 +55,9 @@ const App = () => {
   const [currentUser, setCurrentUser] = useState(null)
 
   const logout = () => {
-    setToken(null)
     localStorage.clear()
     client.resetStore()
+    setToken(null)
   }
 
   return (

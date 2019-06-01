@@ -6,7 +6,7 @@ const handleError = ({ setLoginnameError, setNameError, setPasswordError }) =>
         setLoginnameError('Name already taken')
       } else if (error.message.includes('`loginname` is required')) {
         setLoginnameError('Please enter a login name')
-      } else {
+      } else if (!error.message.includes('Bad loginname or password')) {
         setLoginnameError('Login name must be 5-32 characters long')
       }
     }

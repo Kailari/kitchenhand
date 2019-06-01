@@ -1,40 +1,46 @@
-import React, { useState } from 'react'
-import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
+import React from 'react'
+import { withRouter } from 'react-router-dom'
 
+import { useField } from '../hooks/form'
 import handleError from '../util/error/authFormErrorHandler'
 
-const RegisterForm = ({ registerUser }) => {
-  const [name, setName] = useState('')
-  const [loginname, setLoginname] = useState('')
-  const [password, setPassword] = useState('')
+import FieldWithError from '../components/FieldWithError'
+import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
 
-  const [loginnameError, setLoginnameError] = useState(null)
-  const [nameError, setNameError] = useState(null)
-  const [passwordError, setPasswordError] = useState(null)
+const RegisterForm = ({ history, registerUser }) => {
+  const loginField = useField({ placeholder: 'Login Name', icon: 'user' })
+  const nameField = useField({ placeholder: 'Display name', icon: 'user' })
+  const passwordField = useField({ placeholder: 'Password', icon: 'lock', type: 'password' })
 
   const submit = async (e) => {
     e.preventDefault()
 
-    setNameError(null)
-    setLoginnameError(null)
-    setPasswordError(null)
+    loginField.setError(null)
+    nameField.setError(null)
+    passwordField.setError(null)
 
     try {
       await registerUser({
-        variables: { loginname, name, password }
+        variables: {
+          loginname: loginField.value,
+          name: nameField.value,
+          password: passwordField.value
+        }
       })
 
-      setName('')
-      setLoginname('')
+      loginField.reset()
+      nameField.reset()
+
+      history.push('/login')
     } catch (error) {
       handleError({
-        setLoginnameError, 
-        setNameError,
-        setPasswordError
+        setLoginnameError: loginField.setError,
+        setNameError: nameField.setError,
+        setPasswordError: passwordField.setError
       })(error)
     }
 
-    setPassword('')
+    passwordField.reset()
   }
 
   return (
@@ -45,46 +51,9 @@ const RegisterForm = ({ registerUser }) => {
         </Header>
         <Form size='large' onSubmit={submit}>
           <Segment stacked>
-            <Form.Input
-              fluid
-              icon='user'
-              iconPosition='left'
-              placeholder='Login name'
-              value={loginname}
-              onChange={(e, { value }) => setLoginname(value)}
-            />
-            {loginnameError && (
-              <Message>
-                {loginnameError}
-              </Message>
-            )}
-            <Form.Input
-              fluid
-              icon='user'
-              iconPosition='left'
-              placeholder='Display name'
-              value={name}
-              onChange={(e, { value }) => setName(value)}
-            />
-            {nameError && (
-              <Message>
-                {nameError}
-              </Message>
-            )}
-            <Form.Input
-              fluid
-              icon='lock'
-              iconPosition='left'
-              type='password'
-              placeholder='Password'
-              value={password}
-              onChange={(e, { value }) => setPassword(value)}
-            />
-            {passwordError && (
-              <Message>
-                {passwordError}
-              </Message>
-            )}
+            <FieldWithError field={loginField} />
+            <FieldWithError field={nameField} />
+            <FieldWithError field={passwordField} />
 
             <Button color='teal' fluid size='large' type='submit'>
               Register
@@ -99,4 +68,4 @@ const RegisterForm = ({ registerUser }) => {
   )
 }
 
-export default RegisterForm
+export default withRouter(RegisterForm)
