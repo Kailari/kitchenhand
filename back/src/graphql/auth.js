@@ -47,13 +47,16 @@ const queries = {
 
 const mutations = {
   registerUser: async (root, args) => {
+    let newUser = null
     try {
-      await authService.register(args.name, args.loginname, args.password)
+      newUser = await authService.register(args.name, args.loginname, args.password)
     } catch (error) {
       throw new UserInputError(error.message, {
         invalidArgs: Object.keys(error.errors)
       })
     }
+
+    return newUser
   },
   login: async (root, args) => {
     let errors = []

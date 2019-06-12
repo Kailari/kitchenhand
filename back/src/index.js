@@ -3,7 +3,7 @@ const { ApolloServer } = require('apollo-server')
 const mongoose = require('mongoose')
 
 const authService = require('./services/authService')
-const {typeDefs, resolvers} = require('./graphql/schema')
+const { typeDefs, resolvers } = require('./graphql/schema')
 
 console.log('connecting to', config.MONGODB_URI)
 

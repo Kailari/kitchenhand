@@ -1,4 +1,5 @@
-const { gql, UserInputError } = require('apollo-server')
+const { gql, UserInputError, AuthenticationError, ApolloError } = require('apollo-server')
+const recipeService = require('../services/recipeService')
 
 const types = gql`
   type Ingredient {
@@ -26,6 +27,7 @@ const types = gql`
   }
 
   extend type Query {
+    recipeCount: Int!
     allRecipes: [Recipe!]!
     recipe(id: ID!): Recipe
     myRecipes: [Recipe!]!
@@ -43,19 +45,61 @@ const types = gql`
 `
 
 const queries = {
-
-}
-
-const mutations = {
-  addRecipe: async (root, args) => {
-    if (!args.name || args.name === '') {
-      throw new UserInputError('`name` is required', { invalidArgs: 'name' })
-    }
-  },
-  removeRecipe: async (root, args) => {
+  recipeCount: () => recipeService.count(),
+  allRecipes: () => recipeService.getAll(),
+  recipe: async (root, args) => {
     if (!args.id) {
       throw new UserInputError('`id` is required', { invalidArgs: 'id' })
     }
+
+    return await recipeService.find(args.id)
+  },
+  userRecipes: async (root, args) => {
+    if (!args.id) {
+      throw new UserInputError('`id` is required', { invalidArgs: 'id' })
+    }
+
+    return await recipeService.findAllByUser(args.id)
+  },
+  myRecipes: async (root, args, context) => {
+    const user = context.currentUser
+    return await recipeService.findAllByUser(user.id)
+  }
+}
+
+const mutations = {
+  addRecipe: async (root, args, { currentUser }) => {
+    if (!currentUser) {
+      throw new AuthenticationError('Not authenticated')
+    }
+
+    let newRecipe = null
+    try {
+      newRecipe = await recipeService.add(args.name)
+      newRecipe.ingredients = []
+    } catch (error) {
+      throw new UserInputError(error.message, {
+        invalidArgs: Object.keys(error.errors)
+      })
+    }
+
+    return newRecipe
+  },
+  removeRecipe: async (root, args, { currentUser }) => {
+    if (!currentUser) {
+      throw new AuthenticationError('Not authenticated')
+    }
+
+    if (!args.id) {
+      throw new UserInputError('`id` is required', { invalidArgs: 'id' })
+    }
+
+    const recipe = await recipeService.remove(args.id)
+    if (!recipe) {
+      throw new ApolloError('unknown `id`', 'BAD_ID')
+    }
+
+    return recipe
   }
 }
 
