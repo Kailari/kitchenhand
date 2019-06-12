@@ -1,17 +1,12 @@
-require('dotenv').config()
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
+const config = require('./config')
 const { ApolloServer, UserInputError, gql } = require('apollo-server')
 const mongoose = require('mongoose')
-const User = require('./models/User')
 
-mongoose.set('useFindAndModify', false)
-const MONGODB_URI = process.env.DATABASE_URL
-const JWT_SECRET = process.env.JWT_SECRET
+const authService = require('./services/authService')
 
-console.log('connecting to', MONGODB_URI)
+console.log('connecting to', config.MONGODB_URI)
 
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true })
+mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true })
   .then(() => {
     console.log('Connected to MongoDB')
   })
@@ -29,11 +24,40 @@ const typeDefs = gql`
     value: String!
   }
 
+  type Ingredient {
+    id: ID!
+    name: String!
+  }
+
+  type Unit {
+    id: ID!
+    name: String!
+    abbreviation: String!
+  }
+
+  type RecipeIngredient {
+    id: ID!
+    ingredient: Ingredient!
+    amount: Float!
+    unit: Unit!
+  }
+
+  type Recipe {
+    id: ID!
+    name: String!
+    ingredients: [RecipeIngredient!]!
+  }
+
   type Query {
     userCount: Int!
     allUsers: [User!]!
     findUser(id: ID!): User
     me: User
+
+    allRecipes: [Recipe!]!
+    recipe(id: ID!): Recipe
+    myRecipes: [Recipe!]!
+    userRecipes(id: ID!): [Recipe!]!
   }
 
   type Mutation {
@@ -46,65 +70,74 @@ const typeDefs = gql`
       loginname: String!
       password: String!
     ): Token
+
+    addRecipe(
+      name: String!
+    ): Recipe
+    removeRecipe(
+      id: ID!
+    ): Recipe
   }
 `
 
 const resolvers = {
   Query: {
-    userCount: () => User.collection.countDocuments(),
-    allUsers: () => User.find({}),
-    findUser: (root, args) => User.findById(args.id),
+    userCount: () => authService.userCount(),
+    allUsers: () => authService.getAll(),
+    findUser: (root, args) => {
+      if (!args.id) {
+        throw new UserInputError('`id` is required', { invalidArgs: 'id' })
+      }
+
+      authService.find(args.id)
+    },
     me: (root, args, context) => context.currentUser
   },
   Mutation: {
     registerUser: async (root, args) => {
-      // TODO: validate password
-
-      const saltRounds = 10
-      const hashedPassword = await bcrypt.hash(args.password, saltRounds)
-
-      const user = new User({
-        name: args.name,
-        loginname: args.loginname,
-        password: hashedPassword
-      })
-
       try {
-        await user.save()
+        await authService.register(args.name, args.loginname, args.password)
       } catch (error) {
         throw new UserInputError(error.message, {
           invalidArgs: Object.keys(error.errors)
         })
       }
-
-      return user
     },
     login: async (root, args) => {
-      // TODO: Return all errors at once
+      let errors = []
 
       if (!args.loginname || args.loginname === '') {
-        throw new UserInputError('`loginname` is required', { invalidArgs: 'loginname' })
+        errors.push({ message: '`loginname` is required', arg: 'loginname' })
       }
 
       if (!args.password || args.password === '') {
-        throw new UserInputError('`password` is required', { invalidArgs: 'password' })
+        errors.push({ message: '`password` is required', arg: 'password' })
       }
 
-      const user = await User.findOne({ loginname: args.loginname })
-      const correctPassword = user === null
-        ? false
-        : await bcrypt.compare(args.password, user.password)
+      if (errors.length > 0) {
+        throw new UserInputError(
+          errors.map(e => e.message).join(),
+          { invalidArgs: errors.map(e => e.arg) })
+      }
 
-      if (!correctPassword) {
+      const token = await authService.login(args.loginname, args.password)
+
+      if (token === null) {
         throw new UserInputError('Bad loginname or password', { invalidArgs: ['loginname', 'password'] })
       }
 
-      const tokenUser = {
-        loginname: user.loginname,
-        id: user._id
-      }
+      return token
+    },
 
-      return { value: jwt.sign(tokenUser, JWT_SECRET) }
+    addRecipe: async (root, args) => {
+      if (!args.name || args.name === '') {
+        throw new UserInputError('`name` is required', { invalidArgs: 'name' })
+      }
+    },
+    removeRecipe: async (root, args) => {
+      if (!args.id) {
+        throw new UserInputError('`id` is required', { invalidArgs: 'id' })
+      }
     }
   }
 }
@@ -116,9 +149,8 @@ const server = new ApolloServer({
     const auth = req ? req.headers.authorization : null
 
     if (auth && auth.toLowerCase().startsWith('bearer ')) {
-      const decodedToken = jwt.verify(auth.substring(7), JWT_SECRET)
-
-      const currentUser = await User.findById(decodedToken.id)
+      const tokenString = auth.substring(7)
+      const currentUser = await authService.getUserFromToken(tokenString)
       return { currentUser }
     }
   }
