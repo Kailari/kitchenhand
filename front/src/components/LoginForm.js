@@ -11,29 +11,31 @@ const LoginForm = ({ history, login, setToken }) => {
   const loginField = useField({ placeholder: 'Login Name', icon: 'user' })
   const passwordField = useField({ placeholder: 'Password', icon: 'lock', type: 'password' })
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault()
 
-    login({
-      variables: {
-        loginname: loginField.value,
-        password: passwordField.value
-      }
-    }).then((result) => {
+    try {
+      const result = await login({
+        variables: {
+          loginname: loginField.value,
+          password: passwordField.value
+        }
+      })
+
       const token = result.data.login.value
       localStorage.setItem('menu-app-user-token', token)
 
       setToken(token)
       history.push('/')
-    }).catch((error) => {
+    } catch (error) {
       loginField.setError(null)
       passwordField.setError(null)
       handleError({
         setLoginnameError: loginField.setError,
-        setNameError: null,
         setPasswordError: passwordField.setError,
+        setNameError: null,
       })(error)
-    })
+    }
   }
 
   return (
