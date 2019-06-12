@@ -29,17 +29,6 @@ const typeDefs = gql`
     value: String!
   }
 
-  type Error {
-    path: String!
-    message: String
-  }
-
-  type RegisterResponse {
-    ok: Boolean!
-    user: User
-    errors: [Error!]
-  }
-
   type Query {
     userCount: Int!
     allUsers: [User!]!
