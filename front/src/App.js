@@ -75,7 +75,7 @@ const App = () => {
                 ? <RegisterForm registerUser={register} />
                 : <Redirect to='/' />
             } />
-            <Route exact path='/' render={() =>
+            <Route path='/' render={() =>
               !token && <Redirect to='/login' />
             } />
           </Switch>
