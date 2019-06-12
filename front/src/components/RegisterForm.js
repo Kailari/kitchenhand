@@ -15,10 +15,6 @@ const RegisterForm = ({ history, registerUser }) => {
   const submit = async (e) => {
     e.preventDefault()
 
-    loginField.setError(null)
-    nameField.setError(null)
-    passwordField.setError(null)
-
     try {
       await registerUser({
         variables: {
@@ -28,19 +24,18 @@ const RegisterForm = ({ history, registerUser }) => {
         }
       })
 
-      loginField.reset()
-      nameField.reset()
-
       history.push('/login')
     } catch (error) {
+      passwordField.reset()
+      loginField.setError(null)
+      nameField.setError(null)
+      passwordField.setError(null)
       handleError({
         setLoginnameError: loginField.setError,
         setNameError: nameField.setError,
         setPasswordError: passwordField.setError
       })(error)
     }
-
-    passwordField.reset()
   }
 
   return (

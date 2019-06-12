@@ -1,5 +1,10 @@
 const handleError = ({ setLoginnameError, setNameError, setPasswordError }) =>
   (error) => {
+    if (!error || !error.graphQLErrors) {
+      console.log('Unknown error: ', error)
+      return
+    }
+
     const invalidArgs = error.graphQLErrors[0].extensions.exception.invalidArgs
     if (setLoginnameError && invalidArgs.includes('loginname')) {
       if (error.message.includes('expected `loginname` to be unique')) {
@@ -20,7 +25,12 @@ const handleError = ({ setLoginnameError, setNameError, setPasswordError }) =>
     }
 
     if (setPasswordError && invalidArgs.includes('password')) {
-      setPasswordError('Invalid password')
+      if (error.message.includes('Bad loginname or password')) {
+        setPasswordError('Bad loginname or password')
+      }
+      else {
+        setPasswordError('Invalid password')
+      }
     }
   }
 
