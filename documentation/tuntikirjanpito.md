@@ -1,7 +1,9 @@
-| Päivämäärä | Tunnit | Kuvaus                                                         |
-|------------|--------|----------------------------------------------------------------|
-| 29.05.2019 |      3 | Projektin setuppaamista, GraphQL tutustumista.                 |
-| 30.05.2019 |      1 | Frontin setuppaamista.                                         |
-| 31.05.2019 |      4 | GraphQL harjoittelua, rekisteröitymistoiminnallisuuden työstöä |
-| 01.06.2019 |      3 | Rekisteröitymis-/kirjautumistoiminnallisuuden työstöä          |
-|   yhteensä |     11 |                                                                |
+| Päivämäärä | Tunnit | Kuvaus                                                          |
+|------------|--------|-----------------------------------------------------------------|
+| 29.05.2019 |      3 | Projektin setuppaamista, GraphQL tutustumista.                  |
+| 30.05.2019 |      1 | Frontin setuppaamista.                                          |
+| 31.05.2019 |      4 | GraphQL harjoittelua, rekisteröitymistoiminnallisuuden työstöä  |
+| 01.06.2019 |      3 | Rekisteröitymis-/kirjautumistoiminnallisuuden työstöä           |
+| 12.06.2019 |      4 | Refaktorointia. Reseptien lisääminen, haku ja poistaminen       |
+| 13.06.2019 |      3 | Atorisoinnin työstöä, käyttöliittymän kanssa kikkailua          |
+|   yhteensä |     18 |                                                                 |
