@@ -7,66 +7,6 @@ const Dashboard = () => {
       Hello world!<br />
       Hello world!<br />
       Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
     </div>
   )
 }

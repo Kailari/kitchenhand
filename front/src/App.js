@@ -78,16 +78,16 @@ const App = () => {
         const user = result.data.me
         if (!user) {
           console.log('Login failed')
-          setToken(null)
-          window.localStorage.clear()
+          //setToken(null)
+          //window.localStorage.clear()
         } else {
           setCurrentUser(result.data.me)
         }
       })
       .catch(error => {
         console.log('Error fetching user: ', error)
-        setToken(null)
-        window.localStorage.clear()
+        //setToken(null)
+        //window.localStorage.clear()
       })
 
     return (<div>
@@ -97,7 +97,6 @@ const App = () => {
 
   return (
     <Router>
-      <div>
         <Switch>
           <Route exact path='/login' render={() =>
             !token
@@ -114,12 +113,13 @@ const App = () => {
           } />
         </Switch>
 
-        <ResponsiveContainer logout={logout} currentUser={currentUser}>
-          <Route exact path='/' render={() =>
-            <Dashboard />
-          } />
-        </ResponsiveContainer>
-      </div>
+        {token && (
+          <ResponsiveContainer logout={logout} currentUser={currentUser}>
+            <Route exact path='/' render={() =>
+              <Dashboard />
+            } />
+          </ResponsiveContainer>
+        )}
     </Router>
   )
 }

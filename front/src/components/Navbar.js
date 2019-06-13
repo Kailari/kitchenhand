@@ -60,7 +60,10 @@ export const MobileNavbar = withRouter(({ children, history, logout, currentUser
         <Menu.Item onClick={navigate('/storeroom')}>Storeroom</Menu.Item>
       </Sidebar>
 
-      <Menu fixed='top'>
+      <Menu
+        fixed='top'
+        style={{ minHeight: 50 }}
+      >
         <Menu.Item onClick={toggleSidebarVisible(sidebarVisible)}>
           <Icon name='sidebar' />
         </Menu.Item>
@@ -72,6 +75,7 @@ export const MobileNavbar = withRouter(({ children, history, logout, currentUser
       </Menu>
 
       <Sidebar.Pusher dimmed={sidebarVisible}>
+        <Segment style={{ minHeight: 50 }} />
         {children}
       </Sidebar.Pusher>
     </>

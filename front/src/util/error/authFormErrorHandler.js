@@ -1,7 +1,6 @@
 const handleError = ({ setLoginnameError, setNameError, setPasswordError }) =>
   (error) => {
-    if (!error || !error.graphQLErrors) {
-      console.log('Unknown error: ', error)
+    if (!error || !error.graphQLErrors || error.graphQLErrors.length === 0) {
       return
     }
 
