@@ -33,7 +33,9 @@ const server = new ApolloServer({
     }
   }
 })
-
 server.applyMiddleware({ app })
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'))
+})
 
 app.listen(config.PORT, () => console.log(`listening on port: ${config.PORT}`))
