@@ -1,11 +1,16 @@
 const config = require('./src/config')
-const { ApolloServer } = require('apollo-server')
+const { ApolloServer } = require('apollo-server-express')
 const mongoose = require('mongoose')
+const express = require('express')
 
 const authService = require('./src/services/authService')
 const { typeDefs, resolvers } = require('./src/graphql/schema')
+const path = require('path')
 
 console.log('connecting to', config.MONGODB_URI)
+
+const app = express()
+app.use(express.static(path.join(__dirname, 'build')))
 
 mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true })
   .then(() => {
@@ -29,6 +34,6 @@ const server = new ApolloServer({
   }
 })
 
-server.listen().then(({ url }) => {
-  console.log(`Server ready at ${url}`)
-})
+server.applyMiddleware({ app })
+
+app.listen(config.PORT, () => console.log(`listening on port: ${config.PORT}`))
