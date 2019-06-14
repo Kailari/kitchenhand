@@ -20,10 +20,10 @@ const DesktopContainer = ({ children, ...otherProps }) => {
         once={false}
         onBottomPassed={showMenu}
         onBottomPassedReverse={hideMenu}
+        style={{ marginBottom: '1em' }}
       >
         <DesktopNavbar menuVisible={menuVisible} {...otherProps} />
       </Visibility>
-
       {children}
 
     </Responsive>

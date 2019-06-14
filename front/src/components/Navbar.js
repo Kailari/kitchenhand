@@ -1,12 +1,8 @@
 import React from 'react'
 import { Menu, Container, Image, Icon, Dropdown, Button, Sidebar, Segment } from 'semantic-ui-react'
-import { withRouter } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
-export const DesktopNavbar = withRouter(({ history, logout, currentUser }) => {
-  const navigate = (target) => () => {
-    history.push(target)
-  }
-
+export const DesktopNavbar = ({ logout, currentUser }) => {
   return (
     <Menu size='large'>
       <Container>
@@ -15,15 +11,16 @@ export const DesktopNavbar = withRouter(({ history, logout, currentUser }) => {
           MenuHelper
         </Menu.Item>
 
-        <Menu.Item onClick={navigate('/')}>Dashboard</Menu.Item>
+        <Menu.Item as={Link} to='/'>Dashboard</Menu.Item>
         <Dropdown item simple text='Recipes'>
           <Dropdown.Menu>
-            <Dropdown.Item onClick={navigate('/recipes/create')}>Create</Dropdown.Item>
-            <Dropdown.Item onClick={navigate('/recipes/my')}>Cookbook</Dropdown.Item>
-            <Dropdown.Item onClick={navigate('/recipes/discover')}>Discover</Dropdown.Item>
+            <Dropdown.Item as={Link} to='/recipes'>Home</Dropdown.Item>
+            <Dropdown.Item as={Link} to='/recipes/create'>Create</Dropdown.Item>
+            <Dropdown.Item as={Link} to='/recipes/my'>Cookbook</Dropdown.Item>
+            <Dropdown.Item as={Link} to='/recipes/discover'>Discover</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
-        <Menu.Item onClick={navigate('/storeroom')}>Storeroom</Menu.Item>
+        <Menu.Item as={Link} to='/storeroom'>Storeroom</Menu.Item>
 
         {currentUser && (
           <Menu.Item position='right'>
@@ -38,13 +35,9 @@ export const DesktopNavbar = withRouter(({ history, logout, currentUser }) => {
       </Container>
     </Menu>
   )
-})
+}
 
-export const MobileNavbar = withRouter(({ children, history, logout, currentUser, sidebarVisible, setSidebarVisible }) => {
-  const navigate = (target) => () => {
-    history.push(target)
-  }
-
+export const MobileNavbar = ({ children, logout, currentUser, sidebarVisible, setSidebarVisible }) => {
   const toggleSidebarVisible = (oldValue) => () => setSidebarVisible(!oldValue)
 
   return (
@@ -55,9 +48,9 @@ export const MobileNavbar = withRouter(({ children, history, logout, currentUser
         vertical
         visible={sidebarVisible}
       >
-        <Menu.Item onClick={navigate('/dashboard')}>Dashboard</Menu.Item>
-        <Menu.Item onClick={navigate('/recipes')}>Recipes</Menu.Item>
-        <Menu.Item onClick={navigate('/storeroom')}>Storeroom</Menu.Item>
+        <Menu.Item as={Link} to='/'>Dashboard</Menu.Item>
+        <Menu.Item as={Link} to='/recipes'>Recipes</Menu.Item>
+        <Menu.Item as={Link} to='/storeroom'>Storeroom</Menu.Item>
       </Sidebar>
 
       <Menu
@@ -80,4 +73,4 @@ export const MobileNavbar = withRouter(({ children, history, logout, currentUser
       </Sidebar.Pusher>
     </>
   )
-})
+}

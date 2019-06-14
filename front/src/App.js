@@ -1,19 +1,18 @@
 import React, { useState } from 'react'
 import { gql } from 'apollo-boost';
-import { Container } from 'semantic-ui-react';
 import { useQuery, useMutation, useApolloClient } from 'react-apollo-hooks'
 
 import { Route, Redirect, Switch, BrowserRouter as Router } from 'react-router-dom'
 
-import Users from './components/Users'
 import RegisterForm from './components/RegisterForm'
 import LoginForm from './components/LoginForm'
 import Dashboard from './components/Dashboard'
 import ResponsiveContainer from './components/ResponsiveContainer'
+import RecipeList from './components/recipes/RecipeList'
 
-const ALL_USERS = gql`
+const ALL_RECIPES = gql`
 {
-  allUsers {
+  allRecipes {
     id
     name
   }
@@ -56,12 +55,12 @@ mutation register($loginname: String!, $name: String!, $password: String!) {
 const App = () => {
   const client = useApolloClient()
 
-  const allUsers = useQuery(ALL_USERS)
+  const allRecipes = useQuery(ALL_RECIPES)
   const me = useMutation(ME)
   const login = useMutation(LOGIN)
-  const register = useMutation(REGISTER, {
+  const register = useMutation(REGISTER/*, {
     refetchQueries: [{ query: ALL_USERS }]
-  })
+  }*/)
 
   const [token, setToken] = useState(localStorage.getItem('menu-app-user-token'))
   const [currentUser, setCurrentUser] = useState(null)
@@ -73,21 +72,22 @@ const App = () => {
   }
 
   if (token && !currentUser) {
+    // TODO: Redirect to error-page
     me()
       .then(result => {
         const user = result.data.me
         if (!user) {
           console.log('Login failed')
-          //setToken(null)
-          //window.localStorage.clear()
+          setToken(null)
+          window.localStorage.clear()
         } else {
           setCurrentUser(result.data.me)
         }
       })
       .catch(error => {
         console.log('Error fetching user: ', error)
-        //setToken(null)
-        //window.localStorage.clear()
+        setToken(null)
+        window.localStorage.clear()
       })
 
     return (<div>
@@ -97,29 +97,39 @@ const App = () => {
 
   return (
     <Router>
-        <Switch>
-          <Route exact path='/login' render={() =>
-            !token
-              ? <LoginForm login={login} setToken={(token) => setToken(token)} />
-              : <Redirect to='/' />
-          } />
-          <Route exact path='/register' render={() =>
-            !token
-              ? <RegisterForm registerUser={register} />
-              : <Redirect to='/' />
-          } />
-          <Route path='/' render={() =>
-            !token && <Redirect to='/login' />
-          } />
-        </Switch>
+      <Switch>
+        <Route exact path='/login' render={() =>
+          !token
+            ? <LoginForm login={login} setToken={(token) => setToken(token)} />
+            : <Redirect to='/' />
+        } />
+        <Route exact path='/register' render={() =>
+          !token
+            ? <RegisterForm registerUser={register} />
+            : <Redirect to='/' />
+        } />
+        <Route path='/' render={() =>
+          !token && <Redirect to='/login' />
+        } />
+      </Switch>
 
-        {token && (
-          <ResponsiveContainer logout={logout} currentUser={currentUser}>
+      {token && (
+        <ResponsiveContainer logout={logout} currentUser={currentUser}>
+          <Switch>
             <Route exact path='/' render={() =>
               <Dashboard />
             } />
-          </ResponsiveContainer>
-        )}
+
+            <Route exact path='/recipes/create' render={() =>
+              <Dashboard />
+            } />
+
+            <Route exact path='/recipes/discover' render={() =>
+              <RecipeList recipes={allRecipes.data.allRecipes}/>
+            } />
+          </Switch>
+        </ResponsiveContainer>
+      )}
     </Router>
   )
 }

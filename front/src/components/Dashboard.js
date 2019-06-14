@@ -1,13 +1,11 @@
 import React from 'react'
+import { Container } from 'semantic-ui-react';
 
 const Dashboard = () => {
   return (
-    <div>
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-      Hello world!<br />
-    </div>
+    <Container>
+      Hello world!
+    </Container>
   )
 }
 
