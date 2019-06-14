@@ -3,12 +3,13 @@ import { Container, Item, Header, Icon, Grid, Reveal } from 'semantic-ui-react';
 import { Link } from 'react-router-dom'
 
 const RevealColumn = ({ text, defaultText, hiddenText, icon }) => {
+  // TODO: Styles to .css
   return (
     <Reveal as={Grid.Column} animated='fade' style={{ padding: '0.5em' }}>
-      <Reveal.Content visible style={{ backgroundColor: 'white', width: '90%' }}>
+      <Reveal.Content visible style={{ userSelect: 'none', backgroundColor: 'white', width: '90%' }}>
         <Icon name={icon} /> {text || <span>{defaultText}</span>}
       </Reveal.Content>
-      <Reveal.Content hidden>
+      <Reveal.Content hidden style={{ userSelect: 'none' }}>
         {hiddenText}
       </Reveal.Content>
     </Reveal>

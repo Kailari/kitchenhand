@@ -8,7 +8,7 @@ export const DesktopNavbar = ({ logout, currentUser }) => {
       <Container>
         <Menu.Item header>
           <Image size='mini' src='/logo.png' style={{ marginRight: '1.5em' }} />
-          MenuHelper
+          Kitchenhand
         </Menu.Item>
 
         <Menu.Item as={Link} to='/'>Dashboard</Menu.Item>
