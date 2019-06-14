@@ -1,9 +1,9 @@
-const config = require('./config')
+const config = require('./src/config')
 const { ApolloServer } = require('apollo-server')
 const mongoose = require('mongoose')
 
-const authService = require('./services/authService')
-const { typeDefs, resolvers } = require('./graphql/schema')
+const authService = require('./src/services/authService')
+const { typeDefs, resolvers } = require('./src/graphql/schema')
 
 console.log('connecting to', config.MONGODB_URI)
 
