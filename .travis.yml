@@ -13,7 +13,7 @@ before_install:
 
 script:
 - yarn workspace front build
-- "./copy_front.sh"
+- "sh ./copy_front.sh"
 
 deploy:
   provider: heroku

@@ -1,3 +1,4 @@
 #!/bin/bash
-mkdir static
-cp ./packages/front/build/* ./static/
+rm -Rf build
+mkdir build
+cp -r ./packages/front/build ./
