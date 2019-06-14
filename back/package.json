@@ -1,6 +1,7 @@
 {
-  "name": "ruokalista-back",
+  "name": "back",
   "version": "1.0.0",
+  "private": true,
   "description": "Simple application for managing weekly menu and shopping list",
   "main": "index.js",
   "scripts": {
