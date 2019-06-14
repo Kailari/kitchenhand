@@ -15,6 +15,11 @@ const ALL_RECIPES = gql`
   allRecipes {
     id
     name
+    description
+    owner {
+      id
+      name
+    }
   }
 }
 `
@@ -125,7 +130,7 @@ const App = () => {
             } />
 
             <Route exact path='/recipes/discover' render={() =>
-              <RecipeList recipes={allRecipes.data.allRecipes}/>
+              <RecipeList result={allRecipes}/>
             } />
           </Switch>
         </ResponsiveContainer>

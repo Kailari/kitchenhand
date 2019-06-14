@@ -18,7 +18,13 @@ const schema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-  }
+  },
+  recipes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Recipe'
+    }
+  ]
 })
 schema.plugin(uniqueValidator)
 

@@ -5,19 +5,27 @@ const count = async () => {
 }
 
 const getAll = async () => {
-  return Recipe.find({})
+  return Recipe.find({}).populate('owner')
 }
 
 const find = async (id) => {
   return Recipe.findById(id)
 }
 
-const add = async (name) => {
+const add = async (name, user) => {
   const recipe = new Recipe({
-    name: name
+    name: name,
+    owner: user.id,
   })
+  recipe.ingredients = []
+  recipe.description = null
 
-  return recipe.save()
+  const addedRecipe = await recipe.save()
+  user.recipes.concat(addedRecipe.id)
+  await user.save()
+
+  addedRecipe.owner = user
+  return addedRecipe
 }
 
 const remove = async (id) => {

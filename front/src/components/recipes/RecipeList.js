@@ -16,15 +16,12 @@ const RevealColumn = ({ text, defaultText, hiddenText, icon }) => {
   )
 }
 
-const RecipeList = ({ recipes }) => {
-  if (!recipes) {
-    return (
-      <div>
-        Loading...
-      </div>
-    )
+const RecipeList = ({ result }) => {
+  if (result.loading) {
+    return (<div>Loading...</div>)
   }
 
+  const recipes = result.data.allRecipes
   return (
     <Container>
       <Header as='h1'>List of all recipes:</Header>
@@ -59,7 +56,7 @@ const RecipeList = ({ recipes }) => {
                 {r.description || <span>No description available</span>}
               </Item.Description>
               <Item.Extra>
-                Added by {r.owner || <span>Unknown</span>}
+                Added by {r.owner ? r.owner.name : <span>Unknown</span>}
               </Item.Extra>
             </Item.Content>
           </Item>

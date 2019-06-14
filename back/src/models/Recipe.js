@@ -6,6 +6,14 @@ const schema = new mongoose.Schema({
     required: true,
     minlength: 3,
     maxlength: 64
+  },
+  description: {
+    type: String,
+    maxlength: 2048
+  },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   }
 })
 
