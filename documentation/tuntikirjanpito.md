@@ -6,5 +6,6 @@
 | 01.06.2019 |      3 | Rekisteröitymis-/kirjautumistoiminnallisuuden työstöä           |
 | 12.06.2019 |      4 | Refaktorointia. Reseptien lisääminen, haku ja poistaminen       |
 | 13.06.2019 |      3 | Atorisoinnin työstöä, käyttöliittymän kanssa kikkailua          |
-| 13.06.2019 |      5 | CI toimintaan, projektin refaktorointia, bugien korjailua       |
-|   yhteensä |     23 |                                                                 |
+| 14.06.2019 |      5 | CI toimintaan, projektin refaktorointia, bugien korjailua       |
+| 16.06.2019 |      3 | Reseptien lisäys käyttöliittymään, App refaktorointia.          |
+|   yhteensä |     27 |                                                                 |
