@@ -1,5 +1,5 @@
 import React from 'react'
-import { withRouter } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 
 import { useField } from '../hooks/form'
 import handleError from '../util/error/authFormErrorHandler'
@@ -55,7 +55,7 @@ const LoginForm = ({ history, login, setToken }) => {
           </Segment>
         </Form>
         <Message>
-          New to us? <a href='/register'>Sign up</a>
+          New to us? <Link to='/register'>Sign up</Link>
         </Message>
       </Grid.Column>
     </Grid>

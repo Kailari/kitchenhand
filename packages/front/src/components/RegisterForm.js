@@ -1,5 +1,5 @@
 import React from 'react'
-import { withRouter } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 
 import { useField } from '../hooks/form'
 import handleError from '../util/error/authFormErrorHandler'
@@ -56,7 +56,7 @@ const RegisterForm = ({ history, registerUser }) => {
           </Segment>
         </Form>
         <Message>
-          Already an user? <a href='/login'>Log in</a>
+          Already an user? <Link to='/login'>Log in</Link>
         </Message>
       </Grid.Column>
     </Grid>
