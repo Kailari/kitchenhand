@@ -1,28 +1,12 @@
-import React, { useState } from 'react'
-import { gql } from 'apollo-boost';
-import { useQuery, useMutation, useApolloClient } from 'react-apollo-hooks'
+import React, { useState, useEffect } from 'react'
+import { gql } from 'apollo-boost'
+import { useMutation, useApolloClient } from 'react-apollo-hooks'
 
-import { Route, Redirect, Switch, BrowserRouter as Router } from 'react-router-dom'
+import { Redirect, Route, Switch, BrowserRouter as Router } from 'react-router-dom'
 
 import RegisterForm from './components/RegisterForm'
 import LoginForm from './components/LoginForm'
-import Dashboard from './components/Dashboard'
-import ResponsiveContainer from './components/ResponsiveContainer'
-import RecipeList from './components/recipes/RecipeList'
-
-const ALL_RECIPES = gql`
-{
-  allRecipes {
-    id
-    name
-    description
-    owner {
-      id
-      name
-    }
-  }
-}
-`
+import MainApp from './components/MainApp';
 
 const LOGIN = gql`
 mutation login($loginname: String!, $password: String!) {
@@ -31,15 +15,6 @@ mutation login($loginname: String!, $password: String!) {
     password: $password,
   ) {
     value
-  }
-}
-`
-
-const ME = gql`
-{
-  me {
-    id
-    name
   }
 }
 `
@@ -60,80 +35,39 @@ mutation register($loginname: String!, $name: String!, $password: String!) {
 const App = () => {
   const client = useApolloClient()
 
-  const allRecipes = useQuery(ALL_RECIPES)
-  const me = useMutation(ME)
-  const login = useMutation(LOGIN)
-  const register = useMutation(REGISTER/*, {
-    refetchQueries: [{ query: ALL_USERS }]
-  }*/)
+  const login = useMutation(LOGIN, {
+    update: (proxy, mutationResult) => {
+      client.resetStore()
+    }
+  })
+  const register = useMutation(REGISTER)
 
-  const [token, setToken] = useState(localStorage.getItem('menu-app-user-token'))
-  const [currentUser, setCurrentUser] = useState(null)
+  const [token, setToken] = useState(null)
 
-  const logout = () => {
-    localStorage.clear()
-    client.resetStore()
-    setToken(null)
-  }
+  useEffect(() => {
+    const storedToken = localStorage.getItem('menu-app-user-token')
+    if (storedToken) {
+      setToken(storedToken)
+    }
+  }, [])
 
-  if (token && !currentUser) {
-    // TODO: Redirect to error-page
-    me()
-      .then(result => {
-        const user = result.data.me
-        if (!user) {
-          console.log('Login failed')
-          setToken(null)
-          window.localStorage.clear()
-        } else {
-          setCurrentUser(result.data.me)
-        }
-      })
-      .catch(error => {
-        console.log('Error fetching user: ', error)
-        setToken(null)
-        window.localStorage.clear()
-      })
-
-    return (<div>
-      Loading...
-    </div>)
-  }
-
+  console.log('Rendering@App')
   return (
     <Router>
-      <Switch>
-        <Route exact path='/login' render={() =>
-          !token
-            ? <LoginForm login={login} setToken={(token) => setToken(token)} />
-            : <Redirect to='/' />
-        } />
-        <Route exact path='/register' render={() =>
-          !token
-            ? <RegisterForm registerUser={register} />
-            : <Redirect to='/' />
-        } />
-        <Route path='/' render={() =>
-          !token && <Redirect to='/login' />
-        } />
-      </Switch>
+      {!token &&
+        <Switch>
+          <Route exact path='/register' render={() =>
+            <RegisterForm registerUser={register} />
+          } />
+          <Route exact path='/login' render={() =>
+            <LoginForm login={login} setToken={(token) => setToken(token)} />
+          } />
+          <Route path='/' render={() => <Redirect to='/login' />} />
+        </Switch>
+      }
 
       {token && (
-        <ResponsiveContainer logout={logout} currentUser={currentUser}>
-          <Switch>
-            <Route exact path='/' render={() =>
-              <Dashboard />
-            } />
-
-            <Route exact path='/recipes/create' render={() =>
-              <Dashboard />
-            } />
-
-            <Route exact path='/recipes/discover' render={() =>
-              <RecipeList result={allRecipes}/>
-            } />
-          </Switch>
-        </ResponsiveContainer>
+        <MainApp token={token} setToken={setToken} />
       )}
     </Router>
   )

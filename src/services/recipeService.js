@@ -1,4 +1,5 @@
 const Recipe = require('../models/Recipe')
+const mongoose = require('mongoose')
 
 const count = async () => {
   return Recipe.collection.countDocuments()
@@ -12,13 +13,22 @@ const find = async (id) => {
   return Recipe.findById(id)
 }
 
-const add = async (name, user) => {
+const findAllByUser = async (ownerId) => {
+  console.log('ownerId:', ownerId)
+  return Recipe.find({
+    owner: {
+      _id: ownerId
+    }
+  }).populate('owner')
+}
+
+const add = async (name, description, user) => {
   const recipe = new Recipe({
     name: name,
+    description: description,
     owner: user.id,
   })
   recipe.ingredients = []
-  recipe.description = null
 
   const addedRecipe = await recipe.save()
   user.recipes.concat(addedRecipe.id)
@@ -36,6 +46,7 @@ module.exports = {
   count,
   getAll,
   find,
+  findAllByUser,
   add,
   remove
 }

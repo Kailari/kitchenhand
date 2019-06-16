@@ -49,7 +49,7 @@ const LoginForm = ({ history, login, setToken }) => {
             <FieldWithError field={loginField} />
             <FieldWithError field={passwordField} />
 
-            <Button color='teal' fluid size='large' type='submit' style={{ cursor: 'pointer' }}>
+            <Button color='teal' fluid size='large' type='submit'>
               Login
             </Button>
           </Segment>

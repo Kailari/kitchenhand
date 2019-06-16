@@ -16,15 +16,14 @@ const RevealColumn = ({ text, defaultText, hiddenText, icon }) => {
   )
 }
 
-const RecipeList = ({ result }) => {
-  if (result.loading) {
-    return (<div>Loading...</div>)
+const RecipeList = ({ recipes, title }) => {
+  if (!recipes) {
+    return <div>ERROR</div>
   }
 
-  const recipes = result.data.allRecipes
   return (
     <Container>
-      <Header as='h1'>List of all recipes:</Header>
+      <Header as='h1'>{title}</Header>
       <Item.Group divided>
         {recipes.map(r =>
           <Item key={r.id}>
@@ -53,10 +52,10 @@ const RecipeList = ({ result }) => {
                 />
               </Item.Meta>
               <Item.Description>
-                {r.description || <span>No description available</span>}
+                {r.description || 'No description available'}
               </Item.Description>
               <Item.Extra>
-                Added by {r.owner ? r.owner.name : <span>Unknown</span>}
+                Added by {r.owner ? r.owner.name : 'Unknown'}
               </Item.Extra>
             </Item.Content>
           </Item>

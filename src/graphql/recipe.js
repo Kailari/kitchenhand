@@ -39,6 +39,7 @@ const types = gql`
   extend type Mutation {
     addRecipe(
       name: String!
+      description: String!
     ): Recipe
     removeRecipe(
       id: ID!
@@ -77,7 +78,7 @@ const mutations = {
 
     let newRecipe = null
     try {
-      newRecipe = await recipeService.add(args.name, currentUser)
+      newRecipe = await recipeService.add(args.name, args.description, currentUser)
     } catch (error) {
       throw new UserInputError(error.message, {
         invalidArgs: Object.keys(error.errors)
