@@ -79,7 +79,10 @@ const MainApp = ({ token, onLogout }) => {
   const me = useQuery(ME)
 
   const createRecipe = useMutation(CREATE_RECIPE, {
-    refetchQueries: [{ query: ALL_RECIPES }]
+    refetchQueries: [
+      { query: ALL_RECIPES },
+      { query: MY_RECIPES },
+    ]
   })
 
   const [currentUser, setCurrentUser] = useState(null)
