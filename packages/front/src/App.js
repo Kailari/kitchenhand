@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { gql } from 'apollo-boost'
 import { useMutation, useApolloClient } from 'react-apollo-hooks'
 
@@ -35,21 +35,30 @@ mutation register($loginname: String!, $name: String!, $password: String!) {
 const App = () => {
   const client = useApolloClient()
 
-  const login = useMutation(LOGIN, {
+  const loginMutation = useMutation(LOGIN, {
     update: (proxy, mutationResult) => {
       client.resetStore()
     }
   })
   const register = useMutation(REGISTER)
 
-  const [token, setToken] = useState(null)
+  const [token, setToken] = useState(localStorage.getItem('menu-app-user-token'))
 
-  useEffect(() => {
-    const storedToken = localStorage.getItem('menu-app-user-token')
-    if (storedToken) {
-      setToken(storedToken)
-    }
-  }, [])
+  const logout = () => {
+    localStorage.clear()
+    setToken(null)
+  }
+
+  const login = async (loginname, password) => {
+    const result = await loginMutation({
+      variables: { loginname, password }
+    })
+
+    const resultToken = result.data.login.value
+    localStorage.setItem('menu-app-user-token', resultToken)
+    setToken(resultToken)
+  }
+
 
   console.log('Rendering@App')
   return (
@@ -60,14 +69,14 @@ const App = () => {
             <RegisterForm registerUser={register} />
           } />
           <Route exact path='/login' render={() =>
-            <LoginForm login={login} setToken={(token) => setToken(token)} />
+            <LoginForm onLogin={login} />
           } />
           <Route path='/' render={() => <Redirect to='/login' />} />
         </Switch>
       }
 
       {token && (
-        <MainApp token={token} setToken={setToken} />
+        <MainApp token={token} onLogout={logout} />
       )}
     </Router>
   )

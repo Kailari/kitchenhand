@@ -7,7 +7,7 @@ import handleError from '../util/error/authFormErrorHandler'
 import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
 import FieldWithError from '../components/FieldWithError'
 
-const LoginForm = ({ history, login, setToken }) => {
+const LoginForm = ({ history, onLogin }) => {
   const loginField = useField({ placeholder: 'Login Name', icon: 'user' })
   const passwordField = useField({ placeholder: 'Password', icon: 'lock', type: 'password' })
 
@@ -15,17 +15,7 @@ const LoginForm = ({ history, login, setToken }) => {
     e.preventDefault()
 
     try {
-      const result = await login({
-        variables: {
-          loginname: loginField.value,
-          password: passwordField.value
-        }
-      })
-
-      const token = result.data.login.value
-      localStorage.setItem('menu-app-user-token', token)
-
-      setToken(token)
+      await onLogin(loginField.value, passwordField.value)
       history.push('/')
     } catch (error) {
       loginField.setError(null)

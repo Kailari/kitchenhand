@@ -71,7 +71,7 @@ const ME = gql`
 }
 `
 
-const MainApp = ({ token, setToken }) => {
+const MainApp = ({ token, onLogout }) => {
   const client = useApolloClient()
 
   const allRecipes = useQuery(ALL_RECIPES)
@@ -95,7 +95,7 @@ const MainApp = ({ token, setToken }) => {
     localStorage.clear()
     client.clearStore()
     setCurrentUser(null)
-    setToken(null)
+    onLogout()
   }
 
   if (token && !currentUser) {
