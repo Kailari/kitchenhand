@@ -34,6 +34,7 @@ const AddRecipeForm = ({ history, create }) => {
     }
   }
 
+  console.log('Rendering@AddRecipeForm')
   return (
     <Container style={{ height: '100vh' }}>
       <Header as='h1'>Create a new recipe</Header>

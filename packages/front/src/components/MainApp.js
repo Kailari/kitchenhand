@@ -7,20 +7,8 @@ import Dashboard from './Dashboard'
 import ResponsiveContainer from './ResponsiveContainer'
 import RecipeList from './recipes/RecipeList'
 import AddRecipeForm from './recipes/AddRecipeForm'
-
-const ALL_RECIPES = gql`
-{
-  allRecipes {
-    id
-    name
-    description
-    owner {
-      id
-      name
-    }
-  }
-}
-`
+import { NEW_RECIPES } from './recipes/RecipesQuery';
+import DiscoverPage from './recipes/DiscoverPage';
 
 const MY_RECIPES = gql`
 {
@@ -74,13 +62,12 @@ const ME = gql`
 const MainApp = ({ token, onLogout }) => {
   const client = useApolloClient()
 
-  const allRecipes = useQuery(ALL_RECIPES)
   const myRecipes = useQuery(MY_RECIPES)
   const me = useQuery(ME)
 
   const createRecipe = useMutation(CREATE_RECIPE, {
     refetchQueries: [
-      { query: ALL_RECIPES },
+      { query: NEW_RECIPES },
       { query: MY_RECIPES },
     ]
   })
@@ -109,7 +96,6 @@ const MainApp = ({ token, onLogout }) => {
   }
   
   console.log('Rendering@MainApp')
-  // TODO: Move handling query.loading to components instead of doing it here to avoid having to re-render everything
   return (
     <ResponsiveContainer logout={logout} currentUser={currentUser}>
       <Switch>
@@ -122,9 +108,11 @@ const MainApp = ({ token, onLogout }) => {
         } />
 
         <Route exact path='/recipes/discover' render={() =>
-          !allRecipes.loading
-            ? <RecipeList recipes={allRecipes.data.allRecipes} title='List of all recipes:' />
-            : <div>Loading...</div>
+          <DiscoverPage breadcrumbs={[
+            { name: 'Kitchenhand', path: ''},
+            { name: 'Recipes', path: 'recipes'},
+            { name: 'Discover', path: 'discover'},
+          ]}/>
         } />
 
         <Route exact path='/recipes/my' render={() =>

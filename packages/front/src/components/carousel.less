@@ -1,0 +1,28 @@
+.carousel {
+  padding: 14px 48px !important;
+}
+
+.carousel .indicators {
+  text-align: center;
+}
+
+.carousel-button {
+  background: transparent;
+  position: absolute;
+  border: none;
+  top: 0% !important;
+  height: 99%;
+  &:hover {
+    background: fadeout(#000000, 90%);
+  }
+}
+
+.carousel .next {
+  .carousel-button();
+  right: -4px;
+}
+
+.carousel .prev {
+  .carousel-button();
+  left: 0;
+}
