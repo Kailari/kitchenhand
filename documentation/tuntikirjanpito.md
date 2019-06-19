@@ -8,4 +8,7 @@
 | 13.06.2019 |      3 | Atorisoinnin työstöä, käyttöliittymän kanssa kikkailua          |
 | 14.06.2019 |      5 | CI toimintaan, projektin refaktorointia, bugien korjailua       |
 | 16.06.2019 |      3 | Reseptien lisäys käyttöliittymään, App refaktorointia.          |
-|   yhteensä |     27 |                                                                 |
+| 17.06.2019 |      2 | App siistimistä, CI conffit kuntoon.                            |
+| 18.06.2019 |      2 | Semantic UI:n harjoittelua.                                     |
+| 19.06.2019 |      3 | Semantic UI:n harjoittelua, "karuselli" discover-sivulle        |
+|   yhteensä |     34 |                                                                 |
