@@ -3,25 +3,41 @@ const jwt = require('jsonwebtoken')
 
 const config = require('../config')
 const User = require('../models/User')
+const { UserInputError, AuthenticationError } = require('apollo-server')
 
-const userCount = () => {
+const requireAuth = (fn) => {
+  return (context, ...otherArgs) => {
+    if (!context || !context.currentUser) {
+      throw new AuthenticationError('Not authenticated')
+    }
+
+    return fn(...otherArgs)
+  }
+}
+
+const userCount = requireAuth(() => {
   return User.collection.countDocuments()
-}
+})
 
-const getAll = () => {
+const getAll = requireAuth(() => {
   return User.find({})
-}
+})
 
-const find = (id) => {
+const find = requireAuth((id) => {
   return User.findById(id)
-}
+})
 
 
 const register = async (name, loginname, password) => {
-  // TODO: validate password
+  if (!password) {
+    throw new UserInputError('`password` is required')
+  }
 
-  const saltRounds = 10
-  const hashedPassword = await bcrypt.hash(password, saltRounds)
+  if (password.length < 6 || password.length > 128) {
+    throw new UserInputError('password must be 6 to 128 characters long')
+  }
+
+  const hashedPassword = await bcrypt.hash(password, config.SALT_ROUNDS)
 
   const user = new User({
     name: name,
@@ -33,6 +49,14 @@ const register = async (name, loginname, password) => {
 }
 
 const login = async (loginname, password) => {
+  if (loginname === null) {
+    throw new UserInputError('`loginname` is required')
+  }
+
+  if (password === null) {
+    throw new UserInputError('`password` is required')
+  }
+
   const user = await User.findOne({ loginname: loginname })
   const correctPassword = user === null
     ? false
@@ -64,4 +88,4 @@ module.exports = {
   register,
   login,
   getUserFromToken
-}
+} 

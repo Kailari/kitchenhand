@@ -1,4 +1,4 @@
-const {  UserInputError, gql } = require('apollo-server')
+const { UserInputError, gql } = require('apollo-server')
 const authService = require('../services/authService')
 
 
@@ -33,14 +33,14 @@ const types = gql`
 `
 
 const queries = {
-  userCount: () => authService.userCount(),
-  allUsers: () => authService.getAll(),
-  findUser: (root, args) => {
+  userCount: (root, args, context) => authService.userCount(context),
+  allUsers: (root, args, context) => authService.getAll(context),
+  findUser: (root, args, context) => {
     if (!args.id) {
       throw new UserInputError('`id` is required', { invalidArgs: 'id' })
     }
 
-    authService.find(args.id)
+    authService.find(context, args.id)
   },
   me: (root, args, context) => context.currentUser
 }
