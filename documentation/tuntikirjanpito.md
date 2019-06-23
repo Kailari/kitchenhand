@@ -11,4 +11,6 @@
 | 17.06.2019 |      2 | App siistimistä, CI conffit kuntoon.                            |
 | 18.06.2019 |      2 | Semantic UI:n harjoittelua.                                     |
 | 19.06.2019 |      3 | Semantic UI:n harjoittelua, "karuselli" discover-sivulle        |
-|   yhteensä |     34 |                                                                 |
+| 22.06.2019 |      2 | Jest harjoittelua/asentamista. Backendin testien toteutusta.    |
+| 22.06.2019 |      3 | Backendin testien toteutusta. Testien suoritus Travisissa.      |
+|   yhteensä |     38 |                                                                 |
