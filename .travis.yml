@@ -13,7 +13,7 @@ jobs:
     - stage: "Tests"
       name: "Test (Backend, Unit/Integration)"
       script: yarn test
-    - script: yarn workspace front test
+    - script: yarn workspace front test --watchAll=false --passWithNoTests
       name: "Test (Frontend, Unit/Integration)"
     - stage: build
       script: yarn workspace front build && sh ./copy_front.sh
