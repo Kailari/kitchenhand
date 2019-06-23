@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const { allUsers } = require('./createRows')
 
 const mongooseOptions = {
   autoIndex: false,
@@ -24,12 +25,16 @@ const disconnectMongoose = async () => {
 
 const resetDatabase = async () => {
   for (var i in mongoose.connection.collections) {
-    mongoose.connection.collections[i].remove(() => {})
+    mongoose.connection.collections[i].remove(() => { })
   }
   await mongoose.connection.db.dropDatabase()
-  global.__COUNTERS__ = {
-    user: 0,
-  }
+  allUsers.length = 0
+  global.__COUNTERS__ = Object.keys(global.__COUNTERS__)
+    .reduce(
+      (prev, curr) => {
+        return { ...prev, [curr]: 0 }
+      },
+      {})
 }
 
 module.exports = {

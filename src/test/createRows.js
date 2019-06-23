@@ -2,6 +2,8 @@ const config = require('../config')
 const User = require('../models/User')
 const bcrypt = require('bcrypt')
 
+const allUsers = []
+
 const createUser = async (overrides) => {
   const n = (global.__COUNTERS__.user += 1)
   const user = new User({
@@ -11,9 +13,12 @@ const createUser = async (overrides) => {
     ...overrides
   })
 
-  return user.save()
+  const savedUser = await user.save()
+  allUsers.push(savedUser)
+  return savedUser
 }
 
 module.exports = {
-  createUser
+  createUser,
+  allUsers
 }

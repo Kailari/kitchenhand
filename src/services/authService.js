@@ -6,7 +6,7 @@ const User = require('../models/User')
 const { UserInputError, AuthenticationError } = require('apollo-server')
 
 const requireAuth = (fn) => {
-  return (context, ...otherArgs) => {
+  return async (context, ...otherArgs) => {
     if (!context || !context.currentUser) {
       throw new AuthenticationError('Not authenticated')
     }
@@ -15,16 +15,20 @@ const requireAuth = (fn) => {
   }
 }
 
-const userCount = requireAuth(() => {
-  return User.collection.countDocuments()
+const userCount = requireAuth(async () => {
+  return await User.collection.countDocuments()
 })
 
-const getAll = requireAuth(() => {
-  return User.find({})
+const getAll = requireAuth(async () => {
+  return await User.find({})
 })
 
-const find = requireAuth((id) => {
-  return User.findById(id)
+const find = requireAuth(async (id) => {
+  try {
+    return await User.findById(id)
+  } catch (ignored) {
+    return null
+  }
 })
 
 
@@ -45,7 +49,7 @@ const register = async (name, loginname, password) => {
     password: hashedPassword
   })
 
-  return user.save()
+  return await user.save()
 }
 
 const login = async (loginname, password) => {
@@ -74,10 +78,13 @@ const login = async (loginname, password) => {
   return { value: jwt.sign(tokenUser, config.JWT_SECRET) }
 }
 
-const getUserFromToken = (tokenString) => {
-  const decodedToken = jwt.verify(tokenString, config.JWT_SECRET)
-
-  return User.findById(decodedToken.id)
+const getUserFromToken = async (tokenString) => {
+  try {
+    const decodedToken = jwt.verify(tokenString, config.JWT_SECRET)
+    return await User.findById(decodedToken.id)
+  } catch (ignored) {
+    return null
+  }
 }
 
 module.exports = {
@@ -87,5 +94,7 @@ module.exports = {
 
   register,
   login,
-  getUserFromToken
+  getUserFromToken,
+
+  requireAuth
 } 
