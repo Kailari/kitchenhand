@@ -8,9 +8,6 @@ cache: yarn
 before_install:
   - npm install -g yarn
 
-deploy:
-  - skip_cleanup: true
-
 jobs:
   include:
     - stage: "Tests"
@@ -19,7 +16,7 @@ jobs:
     - script: yarn workspace front test --watchAll=false --passWithNoTests
       name: "Test (Frontend, Unit/Integration)"
     - stage: build
-      name: "Build & E2E => Deploy"
+      name: "Build && E2E Tests"
       script: 
         - yarn workspace front build && sh ./copy_front.sh
         - echo 'TODO'
@@ -27,3 +24,4 @@ jobs:
         provider: heroku
         api_key:
           secure: D45gbHgImsOsyRNhT8QyMGBbNyxR86fpmeiW6QSGAMMMNj2801Fbbe5psUV+f4e9ImPq8Ja6ADIm7hJjlgXvEEWkYlFt81Tl9FrpONz0zIwFdji/d8rvr4DjMODIOWoi+dBa6LmY2BSVZaWNFujgCwv0AMaa07X8EuFMZgykTVukD+NjK8kejspMxXatLa2+fP1dhIi9y54whsBh376WCnrm7ZMIAckRCb1DQ2LuV/ERsBsukDVukimQcO19jM5QY6poBgoCDk+EK0FXKMSeHoeE7bkLpzWhdruSaqj9F6+xgjLSlA1FD2d1hFaT0dtQXRTk+u+pagcV+i6foB+OEMnNiy1T/EdqmsxEtzDvMm0lZ8NcFHHRZXEyZubWyHRbsfX7sV9K9/UpDJfcSqb+Rspb2sH8XPx714hFTCt7WaA8/LMWIeqQWu2aGsCDHs+0BF89/uFE7kFyZkNoZeOa/3IeqSZ/WvBYUxlvYUIIaQzdq/sWJjKakgsZxSKddNUFYqX1lOh17aN7Df0j8NF1B3iYB6PcjSnb3AvTvsvpVahFx5G6FEyZ7mwQyAHM0X6MrFyN5cddx6ZxxPGSrjd6g2Vn0QCow8Tbc0itWeyiccfrVhkAz9Qz5OE41ChsKN51jw/Eze5ElCxRHed9mo/jMXJdtKY37AbXQWyZ2iFDTsk=
+        skip_cleanup: true
