@@ -17,7 +17,7 @@ mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true })
   })
 
 const app = express()
-app.use(express.static(path.join(__dirname, 'build')))
+app.use(express.static(path.join(__dirname, '../', 'build')))
 
 const server = new ApolloServer({
   typeDefs,
@@ -34,7 +34,7 @@ const server = new ApolloServer({
 })
 server.applyMiddleware({ app })
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'))
+  res.sendFile(path.join(__dirname, '../', 'build', 'index.html'))
 })
 
 module.exports = app
