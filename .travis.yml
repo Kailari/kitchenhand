@@ -19,7 +19,7 @@ jobs:
     - script: yarn workspace front test --watchAll=false --passWithNoTests
       name: "Test (Frontend, Unit/Integration)"
     - stage: build
-      name: "Build && E2E => Deploy"
+      name: "Build & E2E => Deploy"
       script: 
         - yarn workspace front build && sh ./copy_front.sh
         - echo 'TODO'
