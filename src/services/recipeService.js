@@ -14,7 +14,6 @@ const find = async (id) => {
 }
 
 const findAllByUser = async (ownerId) => {
-  console.log('ownerId:', ownerId)
   return Recipe.find({
     owner: {
       _id: ownerId
