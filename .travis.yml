@@ -16,10 +16,10 @@ jobs:
     - script: yarn workspace front test --watchAll=false --passWithNoTests
       name: "Test (Frontend, Unit/Integration)"
     - stage: build
-      script: yarn workspace front build && sh ./copy_front.sh
-    - stage: "Tests (E2E)"
-      script: echo 'TODO'
-      name: "Test (E2E)"
+      name: "Build && E2E Tests"
+      script: 
+        - yarn workspace front build && sh ./copy_front.sh
+        - echo 'TODO'
     - stage: deploy
       script: skip
       deploy: &heroku
