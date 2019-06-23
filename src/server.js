@@ -4,6 +4,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const path = require('path')
 
+const { sslRedirect } = require('./middleware')
 const authService = require('./services/authService')
 const { typeDefs, resolvers } = require('./graphql/schema')
 
@@ -17,6 +18,7 @@ mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true })
   })
 
 const app = express()
+app.use(sslRedirect(['production']))
 app.use(express.static(path.join(__dirname, '../', 'build')))
 
 const server = new ApolloServer({
