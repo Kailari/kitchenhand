@@ -14,11 +14,13 @@ Simple recipebook-app for storing your recipes and scheduling weekly menu.
 
 ## Stack
 ### Frontend
+- TypeScript
 - React (bootstrapped with *Create-react-app*)
 - ReactApollo
 - Semantic UI React
 
 ### Backend
+- Runs on NodeJS, code written in TypeScript
 - [ApolloServer](https://www.apollographql.com/docs/apollo-server/) for GraphQL endpoint
 - [Express](https://expressjs.com/) for serving front
 - [MongoDB](https://www.mongodb.com/) + [Mongoose](https://mongoosejs.com/)
