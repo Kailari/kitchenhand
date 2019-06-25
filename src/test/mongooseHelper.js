@@ -25,7 +25,7 @@ const disconnectMongoose = async () => {
 
 const resetDatabase = async () => {
   for (var i in mongoose.connection.collections) {
-    mongoose.connection.collections[i].remove(() => { })
+    mongoose.connection.collections[i].deleteMany(() => { })
   }
   await mongoose.connection.db.dropDatabase()
   allUsers.length = 0
