@@ -12,5 +12,6 @@
 | 18.06.2019 |      2 | Semantic UI:n harjoittelua.                                     |
 | 19.06.2019 |      3 | Semantic UI:n harjoittelua, "karuselli" discover-sivulle        |
 | 22.06.2019 |      2 | Jest harjoittelua/asentamista. Backendin testien toteutusta.    |
-| 22.06.2019 |      3 | Backendin testien toteutusta. Testien suoritus Travisissa.      |
-|   yhteensä |     38 |                                                                 |
+| 24.06.2019 |      3 | Backendin testien toteutusta. Testien suoritus Travisissa.      |
+| 25.06.2019 |      6 | TypeScript harjoittelua, backendin muuttaminen TypeScriptiksi.  |
+|   yhteensä |     44 |                                                                 |
