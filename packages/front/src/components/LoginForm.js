@@ -8,8 +8,8 @@ import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui
 import FieldWithError from '../components/FieldWithError'
 
 const LoginForm = ({ history, onLogin }) => {
-  const loginField = useField({ placeholder: 'Login Name', icon: 'user' })
-  const passwordField = useField({ placeholder: 'Password', icon: 'lock', type: 'password' })
+  const loginField = useField({ placeholder: 'Login Name', icon: 'user', className: 'loginname' })
+  const passwordField = useField({ placeholder: 'Password', icon: 'lock', type: 'password', className: 'password' })
 
   const submit = async (e) => {
     e.preventDefault()

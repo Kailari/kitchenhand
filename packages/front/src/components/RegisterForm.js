@@ -8,9 +8,9 @@ import FieldWithError from '../components/FieldWithError'
 import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
 
 const RegisterForm = ({ history, registerUser }) => {
-  const loginField = useField({ placeholder: 'Login Name', icon: 'user' })
-  const nameField = useField({ placeholder: 'Display name', icon: 'user' })
-  const passwordField = useField({ placeholder: 'Password', icon: 'lock', type: 'password' })
+  const loginField = useField({ placeholder: 'Login Name', icon: 'user', className: 'loginname' })
+  const nameField = useField({ placeholder: 'Display Name', icon: 'user', className: 'realname' })
+  const passwordField = useField({ placeholder: 'Password', icon: 'lock', type: 'password', className: 'password' })
 
   const submit = async (e) => {
     e.preventDefault()
