@@ -13,11 +13,11 @@ import DiscoverPage from './recipes/DiscoverPage';
 const MY_RECIPES = gql`
 {
   myRecipes {
-    id
+    _id
     name
     description
     owner {
-      id
+      _id
       name
     }
   }
@@ -30,18 +30,18 @@ mutation create($name: String!, $description: String!) {
     name: $name,
     description: $description
   ) {
-    id
+    _id
     name
     description
     ingredients {
-      id
+      _id
       ingredient {
-        id
+        _id
         name
       }
       amount
       unit {
-        id
+        _id
         name
         abbreviation
       }
@@ -53,7 +53,7 @@ mutation create($name: String!, $description: String!) {
 const ME = gql`
 {
   me {
-    id
+    _id
     name
   }
 }

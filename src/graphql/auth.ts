@@ -1,11 +1,18 @@
-const { UserInputError, gql } = require('apollo-server')
-const authService = require('../services/authService')
+import { UserInputError, gql } from 'apollo-server'
 
+import authService from '../services/authService'
+import { Context } from '../server'
+import { QueryResolvers, MutationResolvers } from '../generated/graphql'
 
-const types = gql`
-  type User {
-    id: ID!
-    name: String!
+export const types = gql`
+  type User @entity(
+    additionalFields: [
+      { path: "password", type: "string" },
+      { path: "loginname", type: "string" },
+    ]
+  ) {
+    _id: ID! @id
+    name: String! @column
   }
 
   type Token {
@@ -32,20 +39,20 @@ const types = gql`
   }
 `
 
-const queries = {
+export const queries: QueryResolvers = {
   userCount: (root, args, context) => authService.userCount(context),
   allUsers: (root, args, context) => authService.getAll(context),
-  findUser: (root, args, context) => {
+  findUser: async (root, args, context) => {
     if (!args.id) {
       throw new UserInputError('`id` is required', { invalidArgs: 'id' })
     }
 
-    authService.find(context, args.id)
+    return await authService.find(context, args.id)
   },
   me: (root, args, context) => context.currentUser
 }
 
-const mutations = {
+export const mutations: MutationResolvers = {
   registerUser: async (root, args) => {
     let newUser = null
     try {
@@ -84,5 +91,3 @@ const mutations = {
     return token
   },
 }
-
-module.exports = { types, queries, mutations }

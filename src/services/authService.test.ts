@@ -1,13 +1,14 @@
-const mongoose = require('mongoose')
-const { ValidationError } = mongoose
-const { AuthenticationError } = require('apollo-server')
-const jwt = require('jsonwebtoken')
+import mongoose from 'mongoose'
+import { AuthenticationError } from 'apollo-server'
+import jwt from 'jsonwebtoken';
 
-const config = require('../config')
-const { connectMongoose, resetDatabase, disconnectMongoose } = require('../test/mongooseHelper')
-const { allUsers, createUser } = require('../test/createRows')
+import * as config from '../config';
+import { connectMongoose, resetDatabase, disconnectMongoose } from '../test/mongooseHelper'
+import { allUsers, createUser } from '../test/createRows'
+import { IUser } from '../models/User'
+import { Context } from '../server'
 
-const authService = require('./authService')
+import authService from './authService'
 
 beforeAll(connectMongoose)
 
@@ -18,7 +19,7 @@ afterAll(disconnectMongoose)
 const NUM_USERS = 10
 describe(`with a newly initialized test database with ${NUM_USERS} users`, () => {
   beforeEach(async () => {
-    let promises = []
+    let promises: Promise<IUser>[] = []
     for (var i = 1; i <= NUM_USERS; i++) {
       await createUser()
     }
@@ -28,24 +29,6 @@ describe(`with a newly initialized test database with ${NUM_USERS} users`, () =>
 
   describe('register()', () => {
     const VERY_LONG_STRING = 'some very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very long string'
-
-    test('throws if name is null', async () => {
-      await expect(authService.register(null, 'avalidname', 'some_secret'))
-        .rejects
-        .toThrow(ValidationError)
-    })
-
-    test('throws if loginname is null', async () => {
-      await expect(authService.register('A Valid Name', null, 'some_secret'))
-        .rejects
-        .toThrow()
-    })
-
-    test('throws if password is null', async () => {
-      await expect(authService.register('A Valid Name', 'avalidname', null))
-        .rejects
-        .toThrow()
-    })
 
     test('throws if name is too short', async () => {
       await expect(authService.register('a', 'avalidname', 'some_secret'))
@@ -98,17 +81,6 @@ describe(`with a newly initialized test database with ${NUM_USERS} users`, () =>
   })
 
   describe('login()', () => {
-    test('throws if loginname is null', async () => {
-      await expect(authService.login(null, 'some_password'))
-        .rejects
-        .toThrow()
-    })
-
-    test('throws if password is null, regardless of loginname being valid', async () => {
-      await expect(authService.login('idonotexist', null)).rejects.toThrow()
-      await expect(authService.login('normie_1', null)).rejects.toThrow()
-    })
-
     test('returns null if loginname is invalid', async () => {
       await expect(authService.login('idonotexist', 'some_password'))
         .resolves
@@ -144,21 +116,19 @@ describe(`with a newly initialized test database with ${NUM_USERS} users`, () =>
       }
       const token = jwt.sign(tokenUser, config.JWT_SECRET)
 
-      const resolved = await authService.getUserFromToken(token)
+      const resolved = await authService.getUserFromToken(token) as IUser
       expect(resolved._id).toStrictEqual(tokenUser.id)
       expect(resolved.loginname).toBe(tokenUser.loginname)
     })
   })
 
   describe('if currentUser is null', () => {
-    const context = {
+    const context: Context = {
       currentUser: null,
     }
 
     test('requireAuth-decorated function throws AuthenticationError', async () => {
-      const fn = authService.requireAuth(() => {
-        // do nothing
-      })
+      const fn = authService.requireAuth(async () => { })
 
       await expect(fn(context))
         .rejects
@@ -185,7 +155,7 @@ describe(`with a newly initialized test database with ${NUM_USERS} users`, () =>
   })
 
   describe('if current user is a valid normal user', () => {
-    let context
+    let context: Context
 
     beforeEach(async () => {
       context = {
@@ -194,7 +164,7 @@ describe(`with a newly initialized test database with ${NUM_USERS} users`, () =>
     })
 
     test('requireAuth-decorated function passes', async () => {
-      const fn = authService.requireAuth(() => {
+      const fn = authService.requireAuth(async () => {
         return true
       })
 
@@ -222,7 +192,7 @@ describe(`with a newly initialized test database with ${NUM_USERS} users`, () =>
       //        Jest uses `===` and `Object.is` to compare equality in `toContain*`-methods,
       //        meaning that IDs are not considered equal even when they should be
       //        Converting to strings obviously fixes the issue, but is kind of hacky.
-      const idToString = (u) => u._id = u._id.toString()
+      const idToString = (u: IUser) => u._id = u._id.toString()
       const allUsersMapped = allUsers.map(idToString)
       const usersMapped = users.map(idToString)
 
@@ -251,7 +221,7 @@ describe(`with a newly initialized test database with ${NUM_USERS} users`, () =>
 
       test('correct user when user with the id exists', async () => {
         const user = allUsers[5]
-        await expect(authService.find(context, user))
+        await expect(authService.find(context, user.id))
           .resolves
           .not
           .toEqual(user)

@@ -1,11 +1,21 @@
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import { UserInputError, AuthenticationError } from 'apollo-server'
+import mongoose from 'mongoose'
 
-const config = require('../config')
-const User = require('../models/User')
-const { UserInputError, AuthenticationError } = require('apollo-server')
+import { Context } from '../server'
+import * as config from '../config'
+import User, { IUser } from '../models/User'
 
-const requireAuth = (fn) => {
+interface TokenData {
+  loginname: string,
+  id: mongoose.Types.ObjectId
+}
+
+type AuthenticatedFunction<T> = (context: Context, ...otherArgs: any[]) => Promise<T>
+type AuthenticationRequiringFunction<T> = (...args: any[]) => Promise<T>
+
+const requireAuth = <T>(fn: AuthenticationRequiringFunction<T>): AuthenticatedFunction<T> => {
   return async (context, ...otherArgs) => {
     if (!context || !context.currentUser) {
       throw new AuthenticationError('Not authenticated')
@@ -20,10 +30,10 @@ const userCount = requireAuth(async () => {
 })
 
 const getAll = requireAuth(async () => {
-  return await User.find({})
+  return await User.find({}) as IUser[]
 })
 
-const find = requireAuth(async (id) => {
+const find = requireAuth(async (id): Promise<IUser | null> => {
   try {
     return await User.findById(id)
   } catch (ignored) {
@@ -32,7 +42,7 @@ const find = requireAuth(async (id) => {
 })
 
 
-const register = async (name, loginname, password) => {
+const register = async (name: string, loginname: string, password: string) => {
   if (!password) {
     throw new UserInputError('`password` is required')
   }
@@ -52,25 +62,25 @@ const register = async (name, loginname, password) => {
   return await user.save()
 }
 
-const login = async (loginname, password) => {
-  if (loginname === null) {
+const login = async (loginname: string, password: string) => {
+  if (!loginname) {
     throw new UserInputError('`loginname` is required')
   }
 
-  if (password === null) {
+  if (!password) {
     throw new UserInputError('`password` is required')
   }
 
   const user = await User.findOne({ loginname: loginname })
-  const correctPassword = user === null
-    ? false
-    : await bcrypt.compare(password, user.password)
-
-  if (!correctPassword) {
+  if (!user) {
     return null
   }
 
-  const tokenUser = {
+  if (!await bcrypt.compare(password, user.password)) {
+    return null
+  }
+
+  const tokenUser: TokenData = {
     loginname: user.loginname,
     id: user._id
   }
@@ -78,16 +88,16 @@ const login = async (loginname, password) => {
   return { value: jwt.sign(tokenUser, config.JWT_SECRET) }
 }
 
-const getUserFromToken = async (tokenString) => {
+const getUserFromToken = async (token: string) => {
   try {
-    const decodedToken = jwt.verify(tokenString, config.JWT_SECRET)
+    const decodedToken = jwt.verify(token, config.JWT_SECRET) as TokenData
     return await User.findById(decodedToken.id)
   } catch (ignored) {
     return null
   }
 }
 
-module.exports = {
+export default {
   userCount,
   find,
   getAll,

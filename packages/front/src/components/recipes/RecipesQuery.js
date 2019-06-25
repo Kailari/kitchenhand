@@ -5,11 +5,11 @@ import { gql } from 'apollo-boost'
 export const TRENDING_RECIPES = gql`
 {
   allRecipes {
-    id
+    _id
     name
     description
     owner {
-      id
+      _id
       name
     }
   }
@@ -19,11 +19,11 @@ export const TRENDING_RECIPES = gql`
 export const NEW_RECIPES = gql`
 {
   allRecipes {
-    id
+    _id
     name
     description
     owner {
-      id
+      _id
       name
     }
   }

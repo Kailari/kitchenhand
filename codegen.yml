@@ -1,0 +1,12 @@
+schema: ./src/graphql/schema.ts
+require:
+  - ts-node/register
+generates:
+  src/generated/graphql.ts:
+    plugins:
+      - typescript
+      - typescript-resolvers
+      - typescript-mongodb
+    config:
+      objectIdType: any
+      contextType: ../server#Context

@@ -26,7 +26,7 @@ mutation register($loginname: String!, $name: String!, $password: String!) {
     loginname: $loginname,
     password: $password
   ) {
-    id
+    _id
     name
   }
 }

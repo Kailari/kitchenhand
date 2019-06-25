@@ -6,10 +6,10 @@ echo '\nBuilding...'
 yarn workspace front build | indent
 
 echo '\nRemoving existing installation...'
-rm -Rfv build | indent
+rm -Rfv ./build/static | indent
 
 echo '\nCopying new files...'
-mkdir build
-cp -vr ./packages/front/build ./ | indent
+mkdir -p build
+cp -vr ./packages/front/build ./build/static | indent
 
 echo '\n======     Installation finished      ======'

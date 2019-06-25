@@ -1,14 +1,14 @@
 module.exports = {
-  testEnvironment: '<rootDir>src/test/environment/mongodb',
+  testEnvironment: '<rootDir>/test/environment/mongodb',
   setupFilesAfterEnv: ['jest-extended'],
+  rootDir: './src',
   coveragePathIgnorePatterns: [
-    '<rootDir>/build/',
-    '<rootDir>/node_modules/',
-    '<rootDir>/packages/'
+    '<rootDir>/static/'
   ],
   testPathIgnorePatterns: [
-    '<rootDir>/build/',
-    '<rootDir>/node_modules/',
-    '<rootDir>/packages/'
-  ]
+    '<rootDir>/static/'
+  ],
+  transform: {
+    '^.+\\.ts?$': 'ts-jest',
+  },
 }

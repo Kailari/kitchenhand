@@ -1,31 +1,31 @@
-const { gql, UserInputError, AuthenticationError, ApolloError } = require('apollo-server')
-const recipeService = require('../services/recipeService')
+import { gql, UserInputError, AuthenticationError, ApolloError } from 'apollo-server'
+import recipeService from '../services/recipeService';
 
-const types = gql`
-  type Ingredient {
-    id: ID!
-    name: String!
+export const types = gql`
+  type Ingredient @entity {
+    _id: ID! @id
+    name: String! @column
   }
 
-  type Unit {
-    id: ID!
-    name: String!
-    abbreviation: String!
+  type Unit @entity {
+    _id: ID! @id
+    name: String! @column
+    abbreviation: String! @column
   }
 
-  type RecipeIngredient {
-    id: ID!
-    ingredient: Ingredient!
-    amount: Float!
-    unit: Unit!
+  type RecipeIngredient @entity {
+    _id: ID! @id
+    ingredient: Ingredient! @embedded
+    amount: Float! @column
+    unit: Unit! @embedded
   }
 
-  type Recipe {
-    id: ID!
-    name: String!
-    owner: User!
-    description: String
-    ingredients: [RecipeIngredient!]!
+  type Recipe @entity {
+    _id: ID! @id
+    name: String! @column
+    owner: User! @link
+    description: String @column
+    ingredients: [RecipeIngredient!]! @link
   }
 
   extend type Query {
@@ -46,7 +46,7 @@ const types = gql`
     ): Recipe
   }
 `
-
+/*
 const queries = {
   recipeCount: () => recipeService.count(),
   allRecipes: () => recipeService.getAll(),
@@ -104,5 +104,4 @@ const mutations = {
     return recipe
   }
 }
-
-module.exports = { types, queries, mutations }
+*/

@@ -1,12 +1,17 @@
-const config = require('./config')
-const { ApolloServer } = require('apollo-server-express')
-const express = require('express')
-const mongoose = require('mongoose')
-const path = require('path')
+import * as config from './config';
+import { ApolloServer } from 'apollo-server-express'
+import express from 'express'
+import mongoose from 'mongoose'
+import path from 'path'
 
-const { sslRedirect } = require('./middleware')
-const authService = require('./services/authService')
-const { typeDefs, resolvers } = require('./graphql/schema')
+import { IUser } from './models/User'
+import { sslRedirect } from './middleware';
+import authService from './services/authService';
+import schema from './graphql/schema'
+
+export interface Context {
+  currentUser: IUser | null,
+}
 
 console.log('connecting to', config.MONGODB_URI)
 mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true })
@@ -17,13 +22,12 @@ mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true })
     console.error('Error connecting: ', error.message)
   })
 
-const app = express()
-app.use(sslRedirect(['production']))
-app.use(express.static(path.join(__dirname, '../', 'build')))
+const app: express.Application = express()
+//app.use(sslRedirect(['production']))
+app.use(express.static(path.join(__dirname, config.STATIC_FILE_PATH)))
 
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+  schema,
   context: async ({ req }) => {
     const auth = req ? req.headers.authorization : null
 
@@ -36,7 +40,7 @@ const server = new ApolloServer({
 })
 server.applyMiddleware({ app })
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../', 'build', 'index.html'))
+  res.sendFile(path.join(__dirname, config.STATIC_FILE_PATH, 'index.html'))
 })
 
-module.exports = app
+export default app
