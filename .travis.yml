@@ -16,10 +16,11 @@ jobs:
     - script: yarn workspace front test
       name: "Test (Frontend, Unit/Integration)"
     - stage: build
-      name: "Build & E2E Tests"
+      name: "Build & E2E Tests => Deploy"
       script: 
-        - yarn workspace front build && sh ./copy_front.sh
-        - echo 'TODO'
+        - yarn workspace front build
+        - sh ./copy_front.sh
+        - echo 'TODO E2E tests'
       deploy: &heroku
         provider: heroku
         api_key:
