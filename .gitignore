@@ -4,4 +4,3 @@ build
 .jest-*
 .vscode
 /**/*.log
-src/generated
