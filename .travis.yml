@@ -18,8 +18,7 @@ jobs:
     - stage: build
       name: "Build & E2E Tests => Deploy"
       script: 
-        - yarn workspace front build
-        - sh ./copy_front.sh
+        - sh ./build_front.sh
         - echo 'TODO E2E tests'
       deploy: &heroku
         provider: heroku
