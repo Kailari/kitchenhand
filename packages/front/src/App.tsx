@@ -85,7 +85,10 @@ const App = () => {
       }
     })
 
-
+    if (!result.data) {
+      // TODO: Redirect to 'oops'-page
+      console.log('something may have gone wrong during registration!')
+    }
   }
 
 
