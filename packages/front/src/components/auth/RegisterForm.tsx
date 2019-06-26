@@ -1,29 +1,27 @@
 import React from 'react'
-import { Link, withRouter } from 'react-router-dom'
+import { Link, withRouter, RouteComponentProps } from 'react-router-dom'
 
-import { useField } from '../hooks/form'
-import handleError from '../util/error/authFormErrorHandler'
+import { useField } from '../../hooks/form'
+import handleError from '../../util/error/authFormErrorHandler'
 
-import FieldWithError from '../components/FieldWithError'
+import FieldWithError from './FieldWithError'
 import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
 
-const RegisterForm = ({ history, registerUser }) => {
+interface RegisterFormProps extends RouteComponentProps {
+  onRegister: (loginname: string, name: string, password: string) => void
+}
+
+const RegisterForm = ({ history, onRegister }: RegisterFormProps) => {
   const loginField = useField({ placeholder: 'Login Name', icon: 'user', className: 'loginname' })
   const nameField = useField({ placeholder: 'Display Name', icon: 'user', className: 'realname' })
   const passwordField = useField({ placeholder: 'Password', icon: 'lock', type: 'password', className: 'password' })
 
-  const submit = async (e) => {
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     try {
-      await registerUser({
-        variables: {
-          loginname: loginField.value,
-          name: nameField.value,
-          password: passwordField.value
-        }
-      })
-
+      await onRegister(loginField.value, nameField.value, passwordField.value)
+      // TODO: Display "register succesfull, please, login" -message
       history.push('/login')
     } catch (error) {
       passwordField.reset()

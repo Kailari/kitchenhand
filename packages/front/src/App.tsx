@@ -4,9 +4,9 @@ import { useMutation, useApolloClient } from 'react-apollo-hooks'
 
 import { Redirect, Route, Switch, BrowserRouter as Router } from 'react-router-dom'
 
-import RegisterForm from './components/RegisterForm'
-import LoginForm from './components/LoginForm'
-import MainApp from './components/MainApp';
+import RegisterForm from './components/auth/RegisterForm'
+import LoginForm from './components/auth/LoginForm'
+import MainApp from './components/MainApp'
 
 const LOGIN = gql`
 mutation login($loginname: String!, $password: String!) {
@@ -19,6 +19,12 @@ mutation login($loginname: String!, $password: String!) {
 }
 `
 
+interface LoginResult {
+  login: {
+    value: string
+  }
+}
+
 const REGISTER = gql`
 mutation register($loginname: String!, $name: String!, $password: String!) {
   registerUser(
@@ -29,18 +35,23 @@ mutation register($loginname: String!, $name: String!, $password: String!) {
     _id
     name
   }
+}`
+
+interface RegisterResult {
+  id: string,
+  name: string
 }
-`
+
 
 const App = () => {
   const client = useApolloClient()
 
-  const loginMutation = useMutation(LOGIN, {
+  const loginMutation = useMutation<LoginResult>(LOGIN, {
     update: (proxy, mutationResult) => {
       client.resetStore()
     }
   })
-  const register = useMutation(REGISTER)
+  const registerMutation = useMutation<RegisterResult>(REGISTER)
 
   const [token, setToken] = useState(localStorage.getItem('menu-app-user-token'))
 
@@ -49,14 +60,32 @@ const App = () => {
     setToken(null)
   }
 
-  const login = async (loginname, password) => {
+  const login = async (loginname: string, password: string) => {
     const result = await loginMutation({
       variables: { loginname, password }
     })
 
+    if (!result.data) {
+      // TODO: Redirect to 'oops'-page
+      console.log('login failed')
+      return
+    }
+
     const resultToken = result.data.login.value
     localStorage.setItem('menu-app-user-token', resultToken)
     setToken(resultToken)
+  }
+
+  const register = async (loginname: string, name: string, password: string) => {
+    const result = await registerMutation({
+      variables: {
+        loginname,
+        name,
+        password
+      }
+    })
+
+
   }
 
 
@@ -66,7 +95,7 @@ const App = () => {
       {!token &&
         <Switch>
           <Route exact path='/register' render={() =>
-            <RegisterForm registerUser={register} />
+            <RegisterForm onRegister={register} />
           } />
           <Route exact path='/login' render={() =>
             <LoginForm onLogin={login} />

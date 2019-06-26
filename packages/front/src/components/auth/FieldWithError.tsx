@@ -1,7 +1,8 @@
 import React from 'react'
 import { Form, Message } from 'semantic-ui-react'
+import { Field } from '../../hooks/form'
 
-const FieldWithError = ({ field }) => {
+const FieldWithError = ({ field }: { field: Field }) => {
   return (
     <>
       <Form.Input

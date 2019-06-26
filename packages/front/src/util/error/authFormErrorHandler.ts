@@ -1,5 +1,14 @@
-const handleError = ({ setLoginnameError, setNameError, setPasswordError }) =>
-  (error) => {
+type ErrorSetter = (err: string) => void
+
+interface ErrorHandlerProps {
+  setLoginnameError: ErrorSetter | null,
+  setNameError: ErrorSetter | null,
+  setPasswordError: ErrorSetter | null,
+}
+
+const handleError = ({ setLoginnameError, setNameError, setPasswordError }: ErrorHandlerProps) =>
+  // TODO: Clean up this mess
+  (error: any) => {
     if (!error || !error.graphQLErrors || error.graphQLErrors.length === 0) {
       return
     }

@@ -1,17 +1,21 @@
 import React from 'react'
-import { Link, withRouter } from "react-router-dom";
+import { Link, withRouter, RouteComponentProps } from "react-router-dom"
 
-import { useField } from '../hooks/form'
-import handleError from '../util/error/authFormErrorHandler'
+import { useField } from '../../hooks/form'
+import handleError from '../../util/error/authFormErrorHandler'
 
 import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
-import FieldWithError from '../components/FieldWithError'
+import FieldWithError from './FieldWithError'
 
-const LoginForm = ({ history, onLogin }) => {
+interface LoginFormProps extends RouteComponentProps {
+  onLogin: (loginname: string, password: string) => void
+}
+
+const LoginForm = ({ history, onLogin }: LoginFormProps) => {
   const loginField = useField({ placeholder: 'Login Name', icon: 'user', className: 'loginname' })
   const passwordField = useField({ placeholder: 'Password', icon: 'lock', type: 'password', className: 'password' })
 
-  const submit = async (e) => {
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     try {
