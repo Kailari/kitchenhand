@@ -7,7 +7,7 @@ import RegisterForm from './RegisterForm'
 test('Form has loginname field', () => {
   const component = render(
     <Router>
-      <RegisterForm registerUser={() => { }} />
+      <RegisterForm onRegister={() => { }} />
     </Router>
   )
 
@@ -18,7 +18,7 @@ test('Form has loginname field', () => {
 test('Form has display name field', () => {
   const component = render(
     <Router>
-      <RegisterForm registerUser={() => { }} />
+      <RegisterForm onRegister={() => { }} />
     </Router>
   )
 
@@ -29,7 +29,7 @@ test('Form has display name field', () => {
 test('Form has password field', () => {
   const component = render(
     <Router>
-      <RegisterForm registerUser={() => { }} />
+      <RegisterForm onRegister={() => { }} />
     </Router>
   )
 
@@ -40,7 +40,7 @@ test('Form has password field', () => {
 test('Form has link to /login', () => {
   const component = render(
     <Router>
-      <RegisterForm registerUser={() => { }} />
+      <RegisterForm onRegister={() => { }} />
     </Router>
   )
 
@@ -51,7 +51,7 @@ test('Form has link to /login', () => {
 test('Has Register button', () => {
   const component = render(
     <Router>
-      <RegisterForm registerUser={() => { }} />
+      <RegisterForm onRegister={() => { }} />
     </Router>
   )
 
@@ -63,12 +63,13 @@ test('Pressing register triggers callback', () => {
   const mockLogin = jest.fn()
   const component = render(
     <Router>
-      <RegisterForm registerUser={mockLogin} />
+      <RegisterForm onRegister={mockLogin} />
     </Router>
   )
 
   const button = component.container.querySelector('button[type=submit]')
-  fireEvent.click(button)
-
+  expect(button).not.toBeNull()
+  
+  fireEvent.click(button as Element)
   expect(mockLogin.mock.calls.length).toBe(1)
 })

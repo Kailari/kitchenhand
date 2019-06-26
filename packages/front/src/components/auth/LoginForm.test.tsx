@@ -57,7 +57,8 @@ test('Pressing login triggers callback', () => {
   )
 
   const button = component.container.querySelector('button[type=submit]')
-  fireEvent.click(button)
+  expect(button).not.toBeNull()
 
+  fireEvent.click(button as Element)
   expect(mockLogin.mock.calls.length).toBe(1)
 })
