@@ -75,8 +75,11 @@ export interface User {
 export interface Recipe {
   id: string,
   name: string,
-  description: string | null,
-  owner: User | null,
+  views: number,
+  category?: string,
+  date?: Date,
+  description?: string,
+  owner?: User,
 }
 
 const MainApp = ({ token, onLogout }: MainAppProps) => {
@@ -85,7 +88,7 @@ const MainApp = ({ token, onLogout }: MainAppProps) => {
   const myRecipes = useQuery<RecipeQueryData>(MY_RECIPES)
   const me = useQuery(ME)
 
-  const createRecipe = useMutation(CREATE_RECIPE, {
+  const createMutation = useMutation(CREATE_RECIPE, {
     refetchQueries: [
       { query: NEW_RECIPES },
       { query: MY_RECIPES },
@@ -108,6 +111,15 @@ const MainApp = ({ token, onLogout }: MainAppProps) => {
     onLogout()
   }
 
+  const createRecipe = async (name: string, description: string) => {
+    await createMutation({
+      variables: {
+        name,
+        description
+      }
+    })
+  }
+
   if (token && !currentUser) {
     console.log('Loading@MainApp')
     return (<div>
@@ -124,7 +136,7 @@ const MainApp = ({ token, onLogout }: MainAppProps) => {
         } />
 
         <Route exact path='/recipes/create' render={() =>
-          <AddRecipeForm create={createRecipe} />
+          <AddRecipeForm onCreate={createRecipe} />
         } />
 
         <Route exact path='/recipes/discover' render={() =>

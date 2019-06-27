@@ -1,8 +1,16 @@
-import React from 'react'
+import React, { FunctionComponent } from 'react'
 import { Link } from 'react-router-dom'
-import { Item, Reveal, Grid, Icon } from 'semantic-ui-react'
+import { Item, Reveal, Grid, Icon, SemanticICONS } from 'semantic-ui-react'
+import { Recipe } from '../MainApp';
 
-const RevealColumn = ({ text, defaultText, hiddenText, icon }) => {
+interface RevealColumnProps {
+  text?: string,
+  defaultText: string,
+  hiddenText: string,
+  icon: SemanticICONS,
+}
+
+const RevealColumn: FunctionComponent<RevealColumnProps> = ({ text, defaultText, hiddenText, icon }) => {
   // TODO: Styles to .css
   return (
     <Reveal as={Grid.Column} animated='fade' style={{ padding: '0.5em' }}>
@@ -16,7 +24,11 @@ const RevealColumn = ({ text, defaultText, hiddenText, icon }) => {
   )
 }
 
-const RecipeCard = ({ recipe }) => (
+interface RecipeCardProps {
+  recipe: Recipe,
+}
+
+const RecipeCard: FunctionComponent<RecipeCardProps> = ({ recipe }) => (
   <Item>
     <Item.Content>
       <Item.Header as='h3'>
@@ -30,13 +42,13 @@ const RecipeCard = ({ recipe }) => (
           icon='book'
         />
         <RevealColumn
-          text={recipe.views}
+          text={`${recipe.views}`}
           defaultText='0'
           hiddenText='Views'
           icon='eye'
         />
         <RevealColumn
-          text={recipe.date}
+          text={`${recipe.date}`}
           defaultText='Unknown'
           hiddenText='Date added'
           icon='calendar'
