@@ -18,9 +18,9 @@
     "typescript": "^3.5.2"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test",
+    "start": "SKIP_PREFLIGHT_CHECK=true craco start",
+    "build": "SKIP_PREFLIGHT_CHECK=true craco build",
+    "test": "SKIP_PREFLIGHT_CHECK=true craco test",
     "eject": "craco eject"
   },
   "eslintConfig": {
