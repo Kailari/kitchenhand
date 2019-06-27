@@ -1,8 +1,14 @@
-import React from 'react'
+import React, { FunctionComponent } from 'react'
 import { Menu, Container, Image, Icon, Dropdown, Button, Sidebar, Segment } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
+import { User } from './MainApp'
 
-export const DesktopNavbar = ({ logout, currentUser }) => {
+interface NavbarProps {
+  logout: () => void,
+  currentUser: User
+}
+
+export const DesktopNavbar: FunctionComponent<NavbarProps> = ({ logout, currentUser }) => {
   return (
     <Menu size='large'>
       <Container>
@@ -37,8 +43,13 @@ export const DesktopNavbar = ({ logout, currentUser }) => {
   )
 }
 
-export const MobileNavbar = ({ children, logout, currentUser, sidebarVisible, setSidebarVisible }) => {
-  const toggleSidebarVisible = (oldValue) => () => setSidebarVisible(!oldValue)
+interface MobileNavbarProps extends NavbarProps {
+  sidebarVisible: boolean,
+  setSidebarVisible: (value: boolean) => void,
+}
+
+export const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({ children, logout, currentUser, sidebarVisible, setSidebarVisible }) => {
+  const toggleSidebarVisible = (oldValue: boolean) => () => setSidebarVisible(!oldValue)
 
   return (
     <>

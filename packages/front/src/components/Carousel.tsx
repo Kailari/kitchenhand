@@ -1,33 +1,49 @@
-import React, { useState } from 'react'
+import React, { useState, FunctionComponent } from 'react'
 import { Button, Transition } from 'semantic-ui-react';
 import './carousel.less'
 
-const Carousel = ({ elements, render }) => {
+interface CarouselProps<TElement> {
+  elements: TElement[],
+  elementKeyMapper: (element: TElement) => any
+  render: (element: TElement) => JSX.Element,
+}
+
+interface AnimationState {
+  animation: string | null,
+  state: 'out' | 'in' | 'finished',
+}
+
+interface VisibleIndex {
+  current: number,
+  new: number
+}
+
+const Carousel = <TElement extends {}>({ elements, elementKeyMapper, render }: CarouselProps<TElement>) => {
   const animLeft = 'slide left'
   const animRight = 'slide right'
   const fadeOutTime = 250
   const fadeInTime = 250
 
-  const [visibleIndex, setVisibleIndex] = useState({ current: 0, new: 0 })
-  const [animation, setAnimation] = useState({ animation: null, state: 'finished' })
+  const [visibleIndex, setVisibleIndex] = useState<VisibleIndex>({ current: 0, new: 0 })
+  const [animation, setAnimation] = useState<AnimationState>({ animation: null, state: 'finished' })
 
-  const switchLeft = (iCurrent, iNew) => () => {
+  const switchLeft = (iCurrent: number, iNew: number) => () => {
     setVisibleIndex({ current: iCurrent, new: iNew })
     setAnimation({ animation: animLeft, state: 'out' })
   }
 
-  const switchRight = (iCurrent, iNew) => () => {
+  const switchRight = (iCurrent: number, iNew: number) => () => {
     setVisibleIndex({ current: iCurrent, new: iNew })
     setAnimation({ animation: animRight, state: 'out' })
   }
 
-  const switchTo = (iCurrent, iNew) => iNew < iCurrent
+  const switchTo = (iCurrent: number, iNew: number) => iNew < iCurrent
     ? switchLeft(iCurrent, iNew)
     : iNew > iCurrent
       ? switchRight(iCurrent, iNew)
       : () => { }
 
-  const onTransitionComplete = (visIndex, anim) => () => {
+  const onTransitionComplete = (visIndex: VisibleIndex, anim: AnimationState) => () => {
     setVisibleIndex({ current: visIndex.new, new: visIndex.new })
     if (anim.state === 'out') {
       const nextAnimation = anim.animation === animLeft ? animRight : animLeft
@@ -45,27 +61,27 @@ const Carousel = ({ elements, render }) => {
   return (
     <div className='carousel'>
       <Transition.Group>
-        {elements.map((e, index) =>
+        {elements.map((element, index) =>
           <Transition
-            animation={animation.animation}
+            animation={animation.animation as string}
             duration={fadingIn ? fadeInTime : fadeOutTime}
-            key={e.id}
+            key={elementKeyMapper(element)}
             visible={index === visibleIndex.current && index === visibleIndex.new}
             unmountOnHide={true}
             onComplete={onTransitionComplete(visibleIndex, animation)}
           >
-            {render(e)}
+            {render(element)}
           </Transition>
         )}
       </Transition.Group>
       <div className='indicators'>
         <Button.Group>
-          {elements.map((e, index) =>
+          {elements.map((element, index) =>
             <Button
               compact
               size='small'
               color='olive'
-              key={e.id}
+              key={elementKeyMapper(element)}
               active={index === visibleIndex.new}
               disabled={animationInProgress}
               icon={index === visibleIndex.new ? 'circle' : 'circle outline'}

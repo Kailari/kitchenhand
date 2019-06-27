@@ -1,15 +1,31 @@
-import React from 'react'
+import React, { FunctionComponent } from 'react'
 import { Link } from 'react-router-dom'
 import { Container, Header, Breadcrumb } from 'semantic-ui-react'
 
-export const PageWithHeading = ({ title, children }) => (
+export interface PageWithHeadingProps {
+  title: string
+}
+
+export const PageWithHeading: FunctionComponent<PageWithHeadingProps> = ({ title, children }) => (
   <Container>
     <Header as='h1'>{title}</Header>
     {children}
   </Container>
 )
 
-export const PageWithHeadingAndBreadcrumb = ({ children, breadcrumbs, ...props }) => (
+export interface Breadcrumbs {
+  name: string,
+  path: string
+}
+
+export interface PageWithBreadcrumbsProps {
+  breadcrumbs: Breadcrumbs[]
+}
+
+export interface PageWithHeadingAndBreadcrumbsProps extends PageWithHeadingProps, PageWithBreadcrumbsProps {
+}
+
+export const PageWithHeadingAndBreadcrumb: FunctionComponent<PageWithHeadingAndBreadcrumbsProps> = ({ children, breadcrumbs, ...props }) => (
   <PageWithHeading {...props}>
     <Breadcrumb>
       {breadcrumbs.map((b, index) =>

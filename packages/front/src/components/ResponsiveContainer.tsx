@@ -1,14 +1,21 @@
-import React, { useState } from 'react'
+import React, { useState, FunctionComponent } from 'react'
 import { Responsive, Visibility, Sidebar } from 'semantic-ui-react'
 
 import { DesktopNavbar, MobileNavbar } from './Navbar'
+import { User } from './MainApp'
 
-const getWidth = () => {
-  const isSSR = typeof window === undefined
-  return isSSR ? Responsive.onlyTablet.minWidth : window.innerWidth
+interface ResponsiveContainerProps {
+  logout: () => void,
+  currentUser: User
 }
 
-const DesktopContainer = ({ children, ...otherProps }) => {
+const getWidth = (): number => {
+  const isSSR = typeof window === undefined
+  const width = isSSR ? Responsive.onlyTablet.minWidth : window.innerWidth
+  return width as number
+}
+
+const DesktopContainer: FunctionComponent<ResponsiveContainerProps> = ({ children, ...otherProps }) => {
   const [menuVisible, setMenuVisible] = useState(true)
 
   const hideMenu = () => setMenuVisible(false)
@@ -22,7 +29,7 @@ const DesktopContainer = ({ children, ...otherProps }) => {
         onBottomPassedReverse={hideMenu}
         style={{ marginBottom: '1em' }}
       >
-        <DesktopNavbar menuVisible={menuVisible} {...otherProps} />
+        <DesktopNavbar /*menuVisible={menuVisible}*/ {...otherProps} />
       </Visibility>
       {children}
 
@@ -30,7 +37,7 @@ const DesktopContainer = ({ children, ...otherProps }) => {
   )
 }
 
-const MobileContainer = ({ children, ...otherProps }) => {
+const MobileContainer: FunctionComponent<ResponsiveContainerProps> = ({ children, ...otherProps }) => {
   const [sidebarVisible, setSidebarVisible] = useState(false)
 
   return (
@@ -49,7 +56,7 @@ const MobileContainer = ({ children, ...otherProps }) => {
   )
 }
 
-const ResponsiveContainer = ({ children, ...otherProps }) => (
+const ResponsiveContainer: FunctionComponent<ResponsiveContainerProps> = ({ children, ...otherProps }) => (
   <>
     <DesktopContainer {...otherProps}>{children}</DesktopContainer>
     <MobileContainer {...otherProps}>{children}</MobileContainer>

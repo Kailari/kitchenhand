@@ -7,8 +7,8 @@ import Dashboard from './Dashboard'
 import ResponsiveContainer from './ResponsiveContainer'
 import RecipeList from './recipes/RecipeList'
 import AddRecipeForm from './recipes/AddRecipeForm'
-import { NEW_RECIPES } from './recipes/RecipesQuery';
-import DiscoverPage from './recipes/DiscoverPage';
+import { NEW_RECIPES } from './recipes/RecipesQuery'
+import DiscoverPage from './recipes/DiscoverPage'
 
 const MY_RECIPES = gql`
 {
@@ -21,8 +21,11 @@ const MY_RECIPES = gql`
       name
     }
   }
+}`
+
+interface RecipeQueryData {
+  myRecipes: Recipe[]
 }
-`
 
 const CREATE_RECIPE = gql`
 mutation create($name: String!, $description: String!) {
@@ -59,10 +62,27 @@ const ME = gql`
 }
 `
 
-const MainApp = ({ token, onLogout }) => {
+interface MainAppProps {
+  token: string,
+  onLogout: () => void,
+}
+
+export interface User {
+  _id: string,
+  name: string,
+}
+
+export interface Recipe {
+  _id: string,
+  name: string,
+  description: string | null,
+  owner: User | null,
+}
+
+const MainApp = ({ token, onLogout }: MainAppProps) => {
   const client = useApolloClient()
 
-  const myRecipes = useQuery(MY_RECIPES)
+  const myRecipes = useQuery<RecipeQueryData>(MY_RECIPES)
   const me = useQuery(ME)
 
   const createRecipe = useMutation(CREATE_RECIPE, {
@@ -72,7 +92,7 @@ const MainApp = ({ token, onLogout }) => {
     ]
   })
 
-  const [currentUser, setCurrentUser] = useState(null)
+  const [currentUser, setCurrentUser] = useState<User | null>(null)
 
   useEffect(() => {
     if (!me.loading && me.data.me !== null) {
@@ -94,10 +114,10 @@ const MainApp = ({ token, onLogout }) => {
       Loading...
     </div>)
   }
-  
+
   console.log('Rendering@MainApp')
   return (
-    <ResponsiveContainer logout={logout} currentUser={currentUser}>
+    <ResponsiveContainer logout={logout} currentUser={currentUser as User}>
       <Switch>
         <Route exact path='/' render={() =>
           <Dashboard />
@@ -109,15 +129,15 @@ const MainApp = ({ token, onLogout }) => {
 
         <Route exact path='/recipes/discover' render={() =>
           <DiscoverPage breadcrumbs={[
-            { name: 'Kitchenhand', path: ''},
-            { name: 'Recipes', path: 'recipes'},
-            { name: 'Discover', path: 'discover'},
-          ]}/>
+            { name: 'Kitchenhand', path: '' },
+            { name: 'Recipes', path: 'recipes' },
+            { name: 'Discover', path: 'discover' },
+          ]} />
         } />
 
         <Route exact path='/recipes/my' render={() =>
-          !myRecipes.loading
-            ? <RecipeList recipes={myRecipes.data.myRecipes} title='List of my recipes:' />
+          !myRecipes.loading && myRecipes.data
+            ? <RecipeList recipes={myRecipes.data.myRecipes} />
             : <div>Loading...</div>
         } />
       </Switch>
