@@ -1,26 +1,27 @@
 import { UserInputError, AuthenticationError, ApolloError } from 'apollo-server'
 
-import recipeService from '../../services/recipeService';
+import recipeService from '../../services/recipeService'
 import { QueryResolvers, MutationResolvers } from '../../generated/graphql'
+import { IRecipe } from '../../models/Recipe'
 
 export const queries: QueryResolvers = {
-  recipeCount: (root, args, context) => recipeService.count(),
-  allRecipes: (root, args, context) => recipeService.getAll(),
-  recipe: async (root, args, context) => {
+  recipeCount: (): Promise<number> => recipeService.count(),
+  allRecipes: (): Promise<IRecipe[]> => recipeService.getAll(),
+  recipe: async (root, args): Promise<IRecipe | null> => {
     if (!args.id) {
       throw new UserInputError('`id` is required', { invalidArgs: 'id' })
     }
 
     return await recipeService.find(args.id)
   },
-  userRecipes: async (root, args) => {
+  userRecipes: async (root, args): Promise<IRecipe[] | null> => {
     if (!args.id) {
       throw new UserInputError('`id` is required', { invalidArgs: 'id' })
     }
 
     return await recipeService.findAllByUser(args.id)
   },
-  myRecipes: async (root, args, context) => {
+  myRecipes: async (root, args, context): Promise<IRecipe[] | null> => {
     const user = context.currentUser
     return !user
       ? null
@@ -29,7 +30,7 @@ export const queries: QueryResolvers = {
 }
 
 export const mutations: MutationResolvers = {
-  addRecipe: async (root, args, { currentUser }) => {
+  addRecipe: async (root, args, { currentUser }): Promise<IRecipe> => {
     if (!currentUser) {
       throw new AuthenticationError('Not authenticated')
     }
@@ -45,7 +46,7 @@ export const mutations: MutationResolvers = {
 
     return newRecipe
   },
-  removeRecipe: async (root, args, { currentUser }) => {
+  removeRecipe: async (root, args, { currentUser }): Promise<IRecipe> => {
     if (!currentUser) {
       throw new AuthenticationError('Not authenticated')
     }

@@ -22,6 +22,7 @@ module.exports = {
     'ecmaVersion': 2018
   },
   'rules': {
+    'arrow-parens': 2,
     '@typescript-eslint/member-delimiter-style': [
       'error',
       {
@@ -31,7 +32,7 @@ module.exports = {
         },
         'singleline': {
           'delimiter': 'comma',
-          'requireLast': true
+          'requireLast': false
         },
       }
     ],
@@ -50,5 +51,23 @@ module.exports = {
       'error',
       'never'
     ]
-  }
+  },
+  'overrides': [
+    {
+      'files': [
+        '*.test.ts'
+      ],
+      'rules': {
+        '@typescript-eslint/explicit-function-return-type': 0,
+      }
+    },
+    {
+      'files': [
+        'src/models/*.ts'
+      ],
+      'rules': {
+        '@typescript-eslint/interface-name-prefix': 0,
+      }
+    }
+  ]
 }

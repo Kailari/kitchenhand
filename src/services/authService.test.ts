@@ -1,8 +1,8 @@
 import mongoose from 'mongoose'
-import { AuthenticationError } from 'apollo-server'
-import jwt from 'jsonwebtoken';
+import { AuthenticationError, UserInputError } from 'apollo-server'
+import jwt from 'jsonwebtoken'
 
-import * as config from '../config';
+import * as config from '../config'
 import { connectMongoose, resetDatabase, disconnectMongoose } from '../test/mongooseHelper'
 import { allUsers, createUser } from '../test/createRows'
 import { IUser } from '../models/User'
@@ -19,8 +19,8 @@ afterAll(disconnectMongoose)
 const NUM_USERS = 10
 describe(`with a newly initialized test database with ${NUM_USERS} users`, () => {
   beforeEach(async () => {
-    let promises: Promise<IUser>[] = []
-    for (var i = 1; i <= NUM_USERS; i++) {
+    const promises: Promise<IUser>[] = []
+    for (let i = 1; i <= NUM_USERS; i++) {
       await createUser()
     }
 
@@ -81,23 +81,24 @@ describe(`with a newly initialized test database with ${NUM_USERS} users`, () =>
   })
 
   describe('login()', () => {
-    test('returns null if loginname is invalid', async () => {
+    test('throws UserInputError if loginname is invalid', async () => {
       await expect(authService.login('idonotexist', 'some_password'))
-        .resolves
-        .toBeNull()
+        .rejects
+        .toThrow(UserInputError)
     })
 
-    test('returns null if password is wrong', async () => {
+    test('throws UserInputError if password is wrong', async () => {
       await expect(authService.login('normie_1', 'wrong_password'))
-        .resolves
-        .toBeNull()
+        .rejects
+        .toThrow(UserInputError)
     })
 
     test('returns a token if password is correct', async () => {
       await expect(authService.login('normie_1', 'some_secret_1'))
         .resolves
-        .not
-        .toBeNull()
+        .toMatchObject({
+          value: expect.any(String)
+        })
     })
   })
 
@@ -127,9 +128,13 @@ describe(`with a newly initialized test database with ${NUM_USERS} users`, () =>
       currentUser: null,
     }
 
-    test('requireAuth-decorated function throws AuthenticationError', async () => {
-      const fn = authService.requireAuth(async () => { })
+    test('withAuth-decorated function throws AuthenticationError', () => {
+      const fn = authService.withAuth(() => { })
+      expect(() => fn(context)).toThrow(AuthenticationError)
+    })
 
+    test('withAuthAsync-decorated function throws AuthenticationError', async () => {
+      const fn = authService.withAuthAsync(async () => { })
       await expect(fn(context))
         .rejects
         .toThrow(AuthenticationError)
@@ -164,7 +169,7 @@ describe(`with a newly initialized test database with ${NUM_USERS} users`, () =>
     })
 
     test('requireAuth-decorated function passes', async () => {
-      const fn = authService.requireAuth(async () => {
+      const fn = authService.withAuth(async () => {
         return true
       })
 

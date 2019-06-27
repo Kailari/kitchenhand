@@ -1,13 +1,12 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 import { allUsers, resetCounters } from './createRows'
-import { MongoMemoryServer } from 'mongodb-memory-server'
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace NodeJS {
     interface Global {
-      MONGO_URI: string
-      MONGO_DB_NAME: string
-      MONGOD: MongoMemoryServer
+      MONGO_URI: string,
+      MONGO_DB_NAME: string,
     }
   }
 }
@@ -19,7 +18,7 @@ const mongooseOptions = {
   useNewUrlParser: true
 }
 
-export const connectMongoose = async () => {
+export const connectMongoose = async (): Promise<typeof mongoose> => {
   jest.setTimeout(20000)
   return mongoose.connect(
     global.MONGO_URI,
@@ -30,13 +29,13 @@ export const connectMongoose = async () => {
   )
 }
 
-export const disconnectMongoose = async () => {
+export const disconnectMongoose = async (): Promise<void> => {
   await mongoose.disconnect()
 }
 
-export const resetDatabase = async () => {
-  for (var i in mongoose.connection.collections) {
-    mongoose.connection.collections[i].deleteMany(() => { })
+export const resetDatabase = async (): Promise<void> => {
+  for (const i in mongoose.connection.collections) {
+    mongoose.connection.collections[i].deleteMany((): void => { })
   }
   await mongoose.connection.db.dropDatabase()
   allUsers.length = 0

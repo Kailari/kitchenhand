@@ -30,7 +30,7 @@ const schema = new mongoose.Schema({
 schema.plugin(uniqueValidator)
 
 schema.set('toJSON', {
-  transform: (document, returnedObject) => {
+  transform: (document, returnedObject): void => {
     delete returnedObject.password
   }
 })

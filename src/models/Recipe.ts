@@ -25,7 +25,7 @@ const schema = new mongoose.Schema({
 })
 
 export interface IRecipe extends mongoose.Document, RecipeDbObject {
-  id: string
+  id: string,
 }
 
 export default mongoose.model<IRecipe>('Recipe', schema)

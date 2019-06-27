@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const NodeEnvironment = require('jest-environment-node')
 const MongodbMemoryServer = require('mongodb-memory-server')
 

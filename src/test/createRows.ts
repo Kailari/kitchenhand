@@ -3,14 +3,15 @@ import User, { IUser } from '../models/User'
 import { hash } from 'bcrypt'
 
 interface Counters {
-  user: number
+  user: number,
 }
 
 let counters: Counters
 
 const allUsers: IUser[] = []
 
-const createUser = async (overrides: any = []) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const createUser = async (...overrides: any[]): Promise<IUser> => {
   const n = (counters.user += 1)
   const user = new User({
     name: `Normal user #${n}`,
@@ -24,7 +25,7 @@ const createUser = async (overrides: any = []) => {
   return savedUser
 }
 
-const resetCounters = () => {
+const resetCounters = (): void => {
   counters = {
     user: 0
   }

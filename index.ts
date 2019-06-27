@@ -4,6 +4,6 @@ import http from 'http'
 import app from './src/server'
 
 const httpServer: http.Server = http.createServer(app)
-httpServer.listen(config.PORT, () => {
+httpServer.listen(config.PORT, (): void => {
   console.log(`listening on port: ${config.PORT}`)
 })

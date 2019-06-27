@@ -9,31 +9,39 @@ import User, { IUser } from '../models/User'
 
 interface TokenData {
   loginname: string,
-  id: mongoose.Types.ObjectId
+  id: mongoose.Types.ObjectId,
 }
 
-type AuthenticatedFunction<T> = (context: Context, ...otherArgs: any[]) => Promise<T>
-type AuthenticationRequiringFunction<T> = (...args: any[]) => Promise<T>
-
-const requireAuth = <T>(fn: AuthenticationRequiringFunction<T>): AuthenticatedFunction<T> => {
-  return async (context, ...otherArgs) => {
+// Wraps function given as argument, adding context argument and auth check to it
+export const withAuth = <T, U extends T[], V>(fn: (...args: U) => V): ((context: Context, ...args: U) => V) => {
+  return function (context: Context, ...args: U): V {
     if (!context || !context.currentUser) {
       throw new AuthenticationError('Not authenticated')
     }
 
-    return fn(...otherArgs)
+    return fn(...args)
   }
 }
 
-const userCount = requireAuth(async () => {
+export const withAuthAsync = <T, U extends T[], V>(fn: (...args: U) => V): ((context: Context, ...args: U) => Promise<V>) => {
+  return async function (context: Context, ...args: U): Promise<V> {
+    if (!context || !context.currentUser) {
+      throw new AuthenticationError('Not authenticated')
+    }
+
+    return fn(...args)
+  }
+}
+
+const userCount = withAuthAsync(async (): Promise<number> => {
   return await User.collection.countDocuments()
 })
 
-const getAll = requireAuth(async () => {
-  return await User.find({}) as IUser[]
+const getAll = withAuthAsync(async (): Promise<IUser[]> => {
+  return await User.find({})
 })
 
-const find = requireAuth(async (id): Promise<IUser | null> => {
+const find = withAuthAsync(async (id: string | mongoose.Types.ObjectId): Promise<IUser | null> => {
   try {
     return await User.findById(id)
   } catch (ignored) {
@@ -42,7 +50,7 @@ const find = requireAuth(async (id): Promise<IUser | null> => {
 })
 
 
-const register = async (name: string, loginname: string, password: string) => {
+const register = async (name: string, loginname: string, password: string): Promise<IUser> => {
   if (!password) {
     throw new UserInputError('`password` is required')
   }
@@ -62,22 +70,30 @@ const register = async (name: string, loginname: string, password: string) => {
   return await user.save()
 }
 
-const login = async (loginname: string, password: string) => {
+export interface LoginResult {
+  value: string,
+}
+
+const login = async (loginname: string, password: string): Promise<LoginResult> => {
   if (!loginname) {
-    throw new UserInputError('`loginname` is required')
+    throw new UserInputError('`loginname` is required', {
+      invalidArgs: ['loginname']
+    })
   }
 
   if (!password) {
-    throw new UserInputError('`password` is required')
+    throw new UserInputError('`password` is required', {
+      invalidArgs: ['password']
+    })
   }
 
   const user = await User.findOne({ loginname: loginname })
-  if (!user) {
-    return null
-  }
+  const passwordCorrect = user && await bcrypt.compare(password, user.password)
 
-  if (!await bcrypt.compare(password, user.password)) {
-    return null
+  if (!user || !passwordCorrect) {
+    throw new UserInputError('Invalid `loginname` or `password`', {
+      invalidArgs: ['loginname', 'password']
+    })
   }
 
   const tokenUser: TokenData = {
@@ -88,7 +104,7 @@ const login = async (loginname: string, password: string) => {
   return { value: jwt.sign(tokenUser, config.JWT_SECRET) }
 }
 
-const getUserFromToken = async (token: string) => {
+const getUserFromToken = async (token: string): Promise<IUser | null> => {
   try {
     const decodedToken = jwt.verify(token, config.JWT_SECRET) as TokenData
     return await User.findById(decodedToken.id)
@@ -106,5 +122,6 @@ export default {
   login,
   getUserFromToken,
 
-  requireAuth
+  withAuth,
+  withAuthAsync
 } 

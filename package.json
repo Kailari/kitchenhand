@@ -24,7 +24,7 @@
     "watch": "cross-env NODE_ENV=development ts-node-dev --respawn --transpileOnly index.ts",
     "tsc": "tsc",
     "generate": "graphql-codegen --config codegen.yml",
-    "lint": "eslint index.ts src/**/*.ts"
+    "lint": "eslint . --ext ts"
   },
   "dependencies": {
     "apollo-server": "^2.5.0",

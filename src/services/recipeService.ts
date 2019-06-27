@@ -3,19 +3,19 @@ import mongoose from 'mongoose'
 import Recipe, { IRecipe } from '../models/Recipe'
 import { IUser } from '../models/User'
 
-const count = async () => {
+const count = async (): Promise<number> => {
   return await Recipe.collection.countDocuments()
 }
 
-const getAll = async () => {
+const getAll = async (): Promise<IRecipe[]> => {
   return await Recipe.find({}).populate('owner')
 }
 
-const find = async (id: mongoose.Types.ObjectId | string) => {
+const find = async (id: mongoose.Types.ObjectId | string): Promise<IRecipe | null> => {
   return Recipe.findById(id)
 }
 
-const findAllByUser = async (ownerId: mongoose.Types.ObjectId | string) => {
+const findAllByUser = async (ownerId: mongoose.Types.ObjectId | string): Promise<IRecipe[] | null> => {
   return Recipe.find({
     owner: {
       _id: ownerId
@@ -23,7 +23,7 @@ const findAllByUser = async (ownerId: mongoose.Types.ObjectId | string) => {
   }).populate('owner')
 }
 
-const add = async (name: string, description: string, user: IUser) => {
+const add = async (name: string, description: string, user: IUser): Promise<IRecipe> => {
   const recipe = new Recipe({
     name: name,
     description: description,
@@ -40,7 +40,7 @@ const add = async (name: string, description: string, user: IUser) => {
   return addedRecipe
 }
 
-const remove = async (id: mongoose.Types.ObjectId | string) => {
+const remove = async (id: mongoose.Types.ObjectId | string): Promise<IRecipe | null> => {
   return Recipe.findByIdAndDelete(id)
 }
 
