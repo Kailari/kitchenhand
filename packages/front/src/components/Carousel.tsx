@@ -1,4 +1,4 @@
-import React, { useState, FunctionComponent } from 'react'
+import React, { useState } from 'react'
 import { Button, Transition } from 'semantic-ui-react';
 import './carousel.less'
 
