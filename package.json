@@ -21,8 +21,10 @@
 
     "prestart": "yarn generate",
     "start": "cross-env NODE_ENV=production tsc && node ./build/index.js",
-
+    
+    "prewatch": "yarn generate",
     "watch": "cross-env NODE_ENV=development ts-node-dev --respawn --transpileOnly index.ts",
+
     "tsc": "tsc",
     "generate": "graphql-codegen --config codegen.yml"
   },
