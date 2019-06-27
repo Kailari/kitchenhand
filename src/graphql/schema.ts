@@ -3,18 +3,19 @@ import { IResolvers } from 'graphql-tools'
 import { DIRECTIVES } from '@graphql-codegen/typescript-mongodb'
 import { GraphQLSchema } from 'graphql'
 
+import authTypes from './types/auth'
 import {
-  types as authTypes,
   queries as authQueries,
   mutations as authMutations
-} from './auth'
+} from './resolvers/auth'
 
+import recipeTypes from './types/recipe'
 import {
-  types as recipeTypes,
-  //queries as recipeQueries,
-  //mutations as recipeMutations
-} from './recipe'
-import { Resolvers } from '../generated/graphql';
+  queries as recipeQueries,
+  mutations as recipeMutations
+} from './resolvers/recipe'
+
+import { Resolvers } from '../generated/graphql'
 
 const typeDefsInternal = gql`
   type Query {
@@ -35,12 +36,12 @@ const typeDefs = [
 
 const resolvers: Resolvers = {
   Query: {
-    ...authQueries
-    //...recipeQueries
+    ...authQueries,
+    ...recipeQueries,
   },
   Mutation: {
     ...authMutations,
-    //...recipeMutations
+    ...recipeMutations,
   }
 }
 

@@ -4,11 +4,11 @@ import Recipe, { IRecipe } from '../models/Recipe'
 import { IUser } from '../models/User'
 
 const count = async () => {
-  return Recipe.collection.countDocuments()
+  return await Recipe.collection.countDocuments()
 }
 
 const getAll = async () => {
-  return Recipe.find({}).populate('owner')
+  return await Recipe.find({}).populate('owner')
 }
 
 const find = async (id: mongoose.Types.ObjectId | string) => {

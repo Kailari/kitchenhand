@@ -1,43 +1,7 @@
-import { UserInputError, gql } from 'apollo-server'
+import { UserInputError } from 'apollo-server'
 
-import authService from '../services/authService'
-import { Context } from '../server'
-import { QueryResolvers, MutationResolvers } from '../generated/graphql'
-
-export const types = gql`
-  type User @entity(
-    additionalFields: [
-      { path: "password", type: "string" },
-      { path: "loginname", type: "string" },
-    ]
-  ) {
-    _id: ID! @id
-    name: String! @column
-  }
-
-  type Token {
-    value: String!
-  }
-
-  extend type Query {
-    userCount: Int!
-    allUsers: [User!]!
-    findUser(id: ID!): User
-    me: User
-  }
-
-  extend type Mutation {
-    registerUser(
-      name: String!
-      loginname: String!
-      password: String!
-    ): User
-    login(
-      loginname: String!
-      password: String!
-    ): Token
-  }
-`
+import authService from '../../services/authService'
+import { QueryResolvers, MutationResolvers } from '../../generated/graphql'
 
 export const queries: QueryResolvers = {
   userCount: (root, args, context) => authService.userCount(context),

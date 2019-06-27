@@ -1,56 +1,12 @@
-import { gql, UserInputError, AuthenticationError, ApolloError } from 'apollo-server'
-import recipeService from '../services/recipeService';
+import { UserInputError, AuthenticationError, ApolloError } from 'apollo-server'
 
-export const types = gql`
-  type Ingredient @entity {
-    _id: ID! @id
-    name: String! @column
-  }
+import recipeService from '../../services/recipeService';
+import { QueryResolvers, MutationResolvers } from '../../generated/graphql'
 
-  type Unit @entity {
-    _id: ID! @id
-    name: String! @column
-    abbreviation: String! @column
-  }
-
-  type RecipeIngredient @entity {
-    _id: ID! @id
-    ingredient: Ingredient! @embedded
-    amount: Float! @column
-    unit: Unit! @embedded
-  }
-
-  type Recipe @entity {
-    _id: ID! @id
-    name: String! @column
-    owner: User! @link
-    description: String @column
-    ingredients: [RecipeIngredient!]! @link
-  }
-
-  extend type Query {
-    recipeCount: Int!
-    allRecipes: [Recipe!]!
-    recipe(id: ID!): Recipe
-    myRecipes: [Recipe!]!
-    userRecipes(id: ID!): [Recipe!]!
-  }
-
-  extend type Mutation {
-    addRecipe(
-      name: String!
-      description: String!
-    ): Recipe
-    removeRecipe(
-      id: ID!
-    ): Recipe
-  }
-`
-/*
-const queries = {
-  recipeCount: () => recipeService.count(),
-  allRecipes: () => recipeService.getAll(),
-  recipe: async (root, args) => {
+export const queries: QueryResolvers = {
+  recipeCount: (root, args, context) => recipeService.count(),
+  allRecipes: (root, args, context) => recipeService.getAll(),
+  recipe: async (root, args, context) => {
     if (!args.id) {
       throw new UserInputError('`id` is required', { invalidArgs: 'id' })
     }
@@ -66,11 +22,13 @@ const queries = {
   },
   myRecipes: async (root, args, context) => {
     const user = context.currentUser
-    return await recipeService.findAllByUser(user.id)
+    return !user
+      ? null
+      : await recipeService.findAllByUser(user._id)
   }
 }
 
-const mutations = {
+export const mutations: MutationResolvers = {
   addRecipe: async (root, args, { currentUser }) => {
     if (!currentUser) {
       throw new AuthenticationError('Not authenticated')
@@ -104,4 +62,3 @@ const mutations = {
     return recipe
   }
 }
-*/

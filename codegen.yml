@@ -1,4 +1,4 @@
-schema: ./src/graphql/schema.ts
+schema: ./src/graphql/schema.gen.ts
 require:
   - ts-node/register
 generates:
