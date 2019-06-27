@@ -2,25 +2,25 @@ import { gql } from 'apollo-server'
 
 const types = gql`
   type Ingredient @entity {
-    _id: ID! @id
+    id: ID! @id
     name: String! @column
   }
 
   type Unit @entity {
-    _id: ID! @id
+    id: ID! @id
     name: String! @column
     abbreviation: String! @column
   }
 
   type RecipeIngredient @entity {
-    _id: ID! @id
+    id: ID! @id
     ingredient: Ingredient! @embedded
     amount: Float! @column
     unit: Unit! @embedded
   }
 
   type Recipe @entity {
-    _id: ID! @id
+    id: ID! @id
     name: String! @column
     owner: User! @link
     description: String @column

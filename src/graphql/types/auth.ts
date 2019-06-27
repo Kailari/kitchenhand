@@ -7,7 +7,7 @@ const types = gql`
       { path: "loginname", type: "string" },
     ]
   ) {
-    _id: ID! @id
+    id: ID! @id
     name: String! @column
   }
 

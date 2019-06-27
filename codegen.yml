@@ -8,5 +8,5 @@ generates:
       - typescript-resolvers
       - typescript-mongodb
     config:
-      objectIdType: any
+      objectIdType: any | import('mongoose').Types.ObjectId
       contextType: ../server#Context

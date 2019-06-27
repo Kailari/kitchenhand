@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import { RecipeDbObject } from '../generated/graphql';
+import mongoose from 'mongoose'
+import { RecipeDbObject } from '../generated/graphql'
 
 const schema = new mongoose.Schema({
   name: {
@@ -19,11 +19,13 @@ const schema = new mongoose.Schema({
   ingredients: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      //ref: 'User'
+      //ref: 'RecipeIngredient'
     }
   ]
 })
 
-export interface IRecipe extends mongoose.Document, RecipeDbObject {}
+export interface IRecipe extends mongoose.Document, RecipeDbObject {
+  id: string
+}
 
 export default mongoose.model<IRecipe>('Recipe', schema)
