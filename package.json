@@ -18,15 +18,13 @@
   "scripts": {
     "pretest": "yarn generate",
     "test": "cross-env NODE_ENV=test jest --verbose",
-
     "prestart": "yarn generate",
     "start": "cross-env NODE_ENV=production tsc && node ./build/index.js",
-    
     "prewatch": "yarn generate",
     "watch": "cross-env NODE_ENV=development ts-node-dev --respawn --transpileOnly index.ts",
-
     "tsc": "tsc",
-    "generate": "graphql-codegen --config codegen.yml"
+    "generate": "graphql-codegen --config codegen.yml",
+    "lint": "eslint index.ts src/**/*.ts"
   },
   "dependencies": {
     "apollo-server": "^2.5.0",
@@ -54,7 +52,10 @@
     "@types/mongodb-memory-server": "^1.8.0",
     "@types/mongoose": "^5.5.6",
     "@types/mongoose-unique-validator": "^1.0.1",
+    "@typescript-eslint/eslint-plugin": "^1.11.0",
+    "@typescript-eslint/parser": "^1.11.0",
     "cross-env": "^5.2.0",
+    "eslint": "^6.0.1",
     "jest": "24.7.1",
     "jest-extended": "^0.11.1",
     "mongodb-memory-server": "^5.1.5",
