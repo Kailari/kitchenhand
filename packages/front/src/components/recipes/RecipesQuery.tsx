@@ -6,11 +6,11 @@ import { Recipe } from '../MainApp'
 export const TRENDING_RECIPES: DocumentNode = gql`
 {
   allRecipes {
-    _id
+    id
     name
     description
     owner {
-      _id
+      id
       name
     }
   }
@@ -19,11 +19,11 @@ export const TRENDING_RECIPES: DocumentNode = gql`
 export const NEW_RECIPES: DocumentNode = gql`
 {
   allRecipes {
-    _id
+    id
     name
     description
     owner {
-      _id
+      id
       name
     }
   }

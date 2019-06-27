@@ -15,7 +15,7 @@ const RecipeList = ({ recipes }: RecipeListProps) => {
   return (
     <Item.Group divided>
       {recipes.map(r =>
-        <RecipeCard key={r._id} recipe={r} />
+        <RecipeCard key={r.id} recipe={r} />
       )}
     </Item.Group>
   )

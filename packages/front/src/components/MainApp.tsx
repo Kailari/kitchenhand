@@ -13,11 +13,11 @@ import DiscoverPage from './recipes/DiscoverPage'
 const MY_RECIPES = gql`
 {
   myRecipes {
-    _id
+    id
     name
     description
     owner {
-      _id
+      id
       name
     }
   }
@@ -33,18 +33,18 @@ mutation create($name: String!, $description: String!) {
     name: $name,
     description: $description
   ) {
-    _id
+    id
     name
     description
     ingredients {
-      _id
+      id
       ingredient {
-        _id
+        id
         name
       }
       amount
       unit {
-        _id
+        id
         name
         abbreviation
       }
@@ -56,7 +56,7 @@ mutation create($name: String!, $description: String!) {
 const ME = gql`
 {
   me {
-    _id
+    id
     name
   }
 }
@@ -68,12 +68,12 @@ interface MainAppProps {
 }
 
 export interface User {
-  _id: string,
+  id: string,
   name: string,
 }
 
 export interface Recipe {
-  _id: string,
+  id: string,
   name: string,
   description: string | null,
   owner: User | null,

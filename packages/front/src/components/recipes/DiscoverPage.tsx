@@ -19,7 +19,7 @@ const DiscoverPage: FunctionComponent<PageWithBreadcrumbsProps> = ({ breadcrumbs
           {result.loading || !result.data || !result.data.allRecipes
             ? <Loader active inline='centered'>Loading...</Loader>
             : <Carousel
-              elementKeyMapper={recipe => recipe._id}
+              elementKeyMapper={recipe => recipe.id}
               elements={result.data.allRecipes.reverse().slice(0, Math.min(result.data.allRecipes.length, 5))} render={
                 recipe => <Item.Group><RecipeCard recipe={recipe} /></Item.Group>
               } />
@@ -34,7 +34,7 @@ const DiscoverPage: FunctionComponent<PageWithBreadcrumbsProps> = ({ breadcrumbs
       <RecipesQuery query={TRENDING_RECIPES} render={result => result.loading || !result.data || !result.data.allRecipes
         ? <Loader active inline='centered'>Loading...</Loader>
         : <Carousel
-          elementKeyMapper={recipe => recipe._id}
+          elementKeyMapper={recipe => recipe.id}
           elements={result.data.allRecipes.slice(0, Math.min(result.data.allRecipes.length, 5))} render={
             recipe => <Item.Group><RecipeCard recipe={recipe} /></Item.Group>
           } />
