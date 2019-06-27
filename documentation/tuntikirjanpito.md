@@ -14,4 +14,6 @@
 | 22.06.2019 |      2 | Jest harjoittelua/asentamista. Backendin testien toteutusta.    |
 | 24.06.2019 |      3 | Backendin testien toteutusta. Testien suoritus Travisissa.      |
 | 25.06.2019 |      6 | TypeScript harjoittelua, backendin muuttaminen TypeScriptiksi.  |
-|   yhteensä |     44 |                                                                 |
+| 26.06.2019 |      3 | Frontend typescriptiksi.                                        |
+| 27.06.2019 |      3 | ESLint toimimaan typescriptin kanssa, codegen bugien korjailua. |
+|   yhteensä |     50 |                                                                 |
