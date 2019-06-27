@@ -21,8 +21,8 @@ mutation login($loginname: String!, $password: String!) {
 
 interface LoginResult {
   login: {
-    value: string
-  }
+    value: string,
+  },
 }
 
 const REGISTER = gql`
@@ -39,7 +39,7 @@ mutation register($loginname: String!, $name: String!, $password: String!) {
 
 interface RegisterResult {
   id: string,
-  name: string
+  name: string,
 }
 
 
@@ -47,7 +47,7 @@ const App = () => {
   const client = useApolloClient()
 
   const loginMutation = useMutation<LoginResult>(LOGIN, {
-    update: (proxy, mutationResult) => {
+    update: (/*proxy, mutationResult*/) => {
       client.resetStore()
     }
   })
@@ -114,4 +114,4 @@ const App = () => {
   )
 }
 
-export default App;
+export default App

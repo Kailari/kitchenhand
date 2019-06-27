@@ -31,12 +31,12 @@ export const NEW_RECIPES: DocumentNode = gql`
 
 
 interface RecipeQueryData {
-  allRecipes: Recipe[]
+  allRecipes: Recipe[],
 }
 
 interface RecipesQueryProps {
   query: DocumentNode,
-  render: (recipes: QueryHookResult<RecipeQueryData, OperationVariables>) => JSX.Element
+  render: (recipes: QueryHookResult<RecipeQueryData, OperationVariables>) => JSX.Element,
 }
 
 export const RecipesQuery: FunctionComponent<RecipesQueryProps> = ({ query, render }) => {

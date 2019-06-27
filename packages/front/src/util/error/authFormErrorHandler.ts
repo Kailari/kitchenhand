@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 type ErrorSetter = (err: string) => void
 
 interface ErrorHandlerProps {

@@ -5,7 +5,7 @@ import { User } from './MainApp'
 
 interface NavbarProps {
   logout: () => void,
-  currentUser: User
+  currentUser: User,
 }
 
 export const DesktopNavbar: FunctionComponent<NavbarProps> = ({ logout, currentUser }) => {
@@ -48,7 +48,7 @@ interface MobileNavbarProps extends NavbarProps {
   setSidebarVisible: (value: boolean) => void,
 }
 
-export const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({ children, logout, currentUser, sidebarVisible, setSidebarVisible }) => {
+export const MobileNavbar: FunctionComponent<MobileNavbarProps> = ({ children, logout, /*currentUser,*/ sidebarVisible, setSidebarVisible }) => {
   const toggleSidebarVisible = (oldValue: boolean) => () => setSidebarVisible(!oldValue)
 
   return (

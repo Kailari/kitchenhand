@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { Container, Header, Breadcrumb } from 'semantic-ui-react'
 
 export interface PageWithHeadingProps {
-  title: string
+  title: string,
 }
 
 export const PageWithHeading: FunctionComponent<PageWithHeadingProps> = ({ title, children }) => (
@@ -15,11 +15,11 @@ export const PageWithHeading: FunctionComponent<PageWithHeadingProps> = ({ title
 
 export interface Breadcrumbs {
   name: string,
-  path: string
+  path: string,
 }
 
 export interface PageWithBreadcrumbsProps {
-  breadcrumbs: Breadcrumbs[]
+  breadcrumbs: Breadcrumbs[],
 }
 
 export interface PageWithHeadingAndBreadcrumbsProps extends PageWithHeadingProps, PageWithBreadcrumbsProps {
@@ -39,7 +39,7 @@ export const PageWithHeadingAndBreadcrumb: FunctionComponent<PageWithHeadingAndB
                 to={
                   breadcrumbs
                     .slice(0, index + 1)
-                    .map(b => b.path)
+                    .map((b) => b.path)
                     .join('/')
                 }
               >

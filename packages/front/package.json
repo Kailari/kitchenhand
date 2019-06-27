@@ -18,13 +18,10 @@
     "typescript": "^3.5.2"
   },
   "scripts": {
-    "start": "SKIP_PREFLIGHT_CHECK=true craco start",
-    "build": "SKIP_PREFLIGHT_CHECK=true craco build",
-    "test": "SKIP_PREFLIGHT_CHECK=true craco test",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
     "eject": "craco eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": {
     "production": [

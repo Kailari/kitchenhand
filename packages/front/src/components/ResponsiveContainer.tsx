@@ -6,7 +6,7 @@ import { User } from './MainApp'
 
 interface ResponsiveContainerProps {
   logout: () => void,
-  currentUser: User
+  currentUser: User,
 }
 
 const getWidth = (): number => {
@@ -49,9 +49,9 @@ const MobileContainer: FunctionComponent<ResponsiveContainerProps> = ({ children
       <MobileNavbar
         sidebarVisible={sidebarVisible}
         setSidebarVisible={setSidebarVisible}
-        children={children}
-        {...otherProps}
-      />
+        {...otherProps}>
+        {children}
+      </MobileNavbar>
     </Responsive>
   )
 }

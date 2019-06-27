@@ -1,9 +1,13 @@
-import React from 'react'
-import { withRouter } from 'react-router-dom'
+import React, { FunctionComponent } from 'react'
+import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { Form, Container, Header, Segment, Button } from 'semantic-ui-react'
 import { useField } from '../../hooks/form'
 
-const AddRecipeForm = ({ history, create }) => {
+interface AddRecipeFormProps extends RouteComponentProps {
+  onCreate: (name: string, description: string) => void,
+}
+
+const AddRecipeForm: FunctionComponent<AddRecipeFormProps> = ({ history, onCreate }) => {
   const nameField = useField({
     control: Form.Input,
     type: 'text',
@@ -17,16 +21,11 @@ const AddRecipeForm = ({ history, create }) => {
     placeholder: 'A short one-line description of your recipe',
   })
 
-  const submit = async (e) => {
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     try {
-      /*const addedRecipe =*/ await create({
-        variables: {
-          name: nameField.value,
-          description: descriptionField.value,
-        }
-      })
+      /*const addedRecipe =*/ await onCreate(nameField.value, descriptionField.value)
 
       history.push('/recipes/discover')
     } catch (error) {
@@ -42,7 +41,7 @@ const AddRecipeForm = ({ history, create }) => {
         <Segment stacked>
           <Form.Field {...nameField.elementArgs} />
           <Form.Field {...descriptionField.elementArgs} />
-          <Button onClick={submit}>
+          <Button>
             Create
           </Button>
         </Segment>

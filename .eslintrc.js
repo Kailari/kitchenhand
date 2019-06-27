@@ -7,7 +7,7 @@ module.exports = {
   },
   'extends': [
     'eslint:recommended',
-    'plugin:@typescript-eslint/eslint-recommended',
+    //'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
   ],
   'globals': {
@@ -16,10 +16,13 @@ module.exports = {
   },
   'parser': '@typescript-eslint/parser',
   'plugins': [
-    '@typescript-eslint'
+    '@typescript-eslint',
+    'react-hooks'
   ],
   'parserOptions': {
-    'ecmaVersion': 2018
+    'ecmaVersion': 2018,
+    'jsx': true,
+    'useJSXTextNode': true
   },
   'rules': {
     'arrow-parens': 2,
@@ -36,6 +39,16 @@ module.exports = {
         },
       }
     ],
+    'eol-last': ['warn', 'always'],
+    'no-trailing-spaces': 'warn',
+    'no-multiple-empty-lines': [
+      'warn',
+      {
+        'max': 2,
+        'maxEOF': 1,
+        'maxBOF': 0
+      }
+    ],
     "indent": "off",
     '@typescript-eslint/indent': ['error', 2],
     'no-console': 0,
@@ -50,12 +63,15 @@ module.exports = {
     'semi': [
       'error',
       'never'
-    ]
+    ],
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
   },
   'overrides': [
     {
       'files': [
-        '*.test.ts'
+        '*.test.ts',
+        '*.tsx'
       ],
       'rules': {
         '@typescript-eslint/explicit-function-return-type': 0,

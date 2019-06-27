@@ -24,7 +24,7 @@
     "watch": "cross-env NODE_ENV=development ts-node-dev --respawn --transpileOnly index.ts",
     "tsc": "tsc",
     "generate": "graphql-codegen --config codegen.yml",
-    "lint": "eslint . --ext ts"
+    "lint": "eslint . --ext ts,tsx"
   },
   "dependencies": {
     "apollo-server": "^2.5.0",
@@ -55,7 +55,9 @@
     "@typescript-eslint/eslint-plugin": "^1.11.0",
     "@typescript-eslint/parser": "^1.11.0",
     "cross-env": "^5.2.0",
-    "eslint": "^6.0.1",
+    "eslint": "^5.16.0",
+    "eslint-plugin-react": "^7.14.2",
+    "eslint-plugin-react-hooks": "^1.6.1",
     "jest": "24.7.1",
     "jest-extended": "^0.11.1",
     "mongodb-memory-server": "^5.1.5",

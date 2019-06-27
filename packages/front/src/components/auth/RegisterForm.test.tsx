@@ -69,7 +69,7 @@ test('Pressing register triggers callback', () => {
 
   const button = component.container.querySelector('button[type=submit]')
   expect(button).not.toBeNull()
-  
+
   fireEvent.click(button as Element)
   expect(mockLogin.mock.calls.length).toBe(1)
 })

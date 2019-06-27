@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import { Button, Transition } from 'semantic-ui-react';
+import { Button, Transition } from 'semantic-ui-react'
 import './carousel.less'
 
 interface CarouselProps<TElement> {
   elements: TElement[],
-  elementKeyMapper: (element: TElement) => any
+  elementKeyMapper: (element: TElement) => string | number,
   render: (element: TElement) => JSX.Element,
 }
 
@@ -15,7 +15,7 @@ interface AnimationState {
 
 interface VisibleIndex {
   current: number,
-  new: number
+  new: number,
 }
 
 const Carousel = <TElement extends {}>({ elements, elementKeyMapper, render }: CarouselProps<TElement>) => {

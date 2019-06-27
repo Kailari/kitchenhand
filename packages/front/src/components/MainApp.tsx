@@ -24,7 +24,7 @@ const MY_RECIPES = gql`
 }`
 
 interface RecipeQueryData {
-  myRecipes: Recipe[]
+  myRecipes: Recipe[],
 }
 
 const CREATE_RECIPE = gql`

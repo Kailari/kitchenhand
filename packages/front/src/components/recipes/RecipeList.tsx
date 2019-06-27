@@ -4,7 +4,7 @@ import RecipeCard from './RecipeCard'
 import { Recipe } from '../MainApp'
 
 interface RecipeListProps {
-  recipes: Recipe[]
+  recipes: Recipe[],
 }
 
 const RecipeList = ({ recipes }: RecipeListProps) => {
@@ -14,7 +14,7 @@ const RecipeList = ({ recipes }: RecipeListProps) => {
 
   return (
     <Item.Group divided>
-      {recipes.map(r =>
+      {recipes.map((r) =>
         <RecipeCard key={r.id} recipe={r} />
       )}
     </Item.Group>

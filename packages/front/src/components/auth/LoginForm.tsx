@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, withRouter, RouteComponentProps } from "react-router-dom"
+import { Link, withRouter, RouteComponentProps } from 'react-router-dom'
 
 import { useField } from '../../hooks/form'
 import handleError from '../../util/error/authFormErrorHandler'
@@ -8,7 +8,7 @@ import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui
 import FieldWithError from './FieldWithError'
 
 interface LoginFormProps extends RouteComponentProps {
-  onLogin: (loginname: string, password: string) => void
+  onLogin: (loginname: string, password: string) => void,
 }
 
 const LoginForm = ({ history, onLogin }: LoginFormProps) => {

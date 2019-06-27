@@ -124,4 +124,4 @@ export default {
 
   withAuth,
   withAuthAsync
-} 
+}

@@ -8,7 +8,7 @@ import FieldWithError from './FieldWithError'
 import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
 
 interface RegisterFormProps extends RouteComponentProps {
-  onRegister: (loginname: string, name: string, password: string) => void
+  onRegister: (loginname: string, name: string, password: string) => void,
 }
 
 const RegisterForm = ({ history, onRegister }: RegisterFormProps) => {
