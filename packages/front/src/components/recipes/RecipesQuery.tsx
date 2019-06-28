@@ -5,7 +5,7 @@ import { Recipe } from '../MainApp'
 
 export const TRENDING_RECIPES: DocumentNode = gql`
 {
-  allRecipes {
+  recipes: allRecipes {
     id
     name
     description
@@ -18,7 +18,20 @@ export const TRENDING_RECIPES: DocumentNode = gql`
 
 export const NEW_RECIPES: DocumentNode = gql`
 {
-  allRecipes {
+  recipes: allRecipes {
+    id
+    name
+    description
+    owner {
+      id
+      name
+    }
+  }
+}`
+
+export const MY_RECIPES = gql`
+{
+  recipes: myRecipes {
     id
     name
     description
@@ -30,8 +43,8 @@ export const NEW_RECIPES: DocumentNode = gql`
 }`
 
 
-interface RecipeQueryData {
-  allRecipes: Recipe[],
+export interface RecipeQueryData {
+  recipes: Recipe[],
 }
 
 interface RecipesQueryProps {

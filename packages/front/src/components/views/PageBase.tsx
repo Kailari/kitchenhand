@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { Container, Header, Breadcrumb } from 'semantic-ui-react'
 
 export interface PageWithHeadingProps {
-  title: string,
+  title: string | JSX.Element,
 }
 
 export const PageWithHeading: FunctionComponent<PageWithHeadingProps> = ({ title, children }) => (

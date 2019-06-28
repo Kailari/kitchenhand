@@ -1,13 +1,12 @@
 import React, { FunctionComponent } from 'react'
-import { withRouter, RouteComponentProps } from 'react-router-dom'
-import { Form, Container, Header, Segment, Button } from 'semantic-ui-react'
+import { Form, Segment, Button } from 'semantic-ui-react'
 import { useField } from '../../hooks/form'
 
-interface AddRecipeFormProps extends RouteComponentProps {
+interface AddRecipeFormProps {
   onCreate: (name: string, description: string) => void,
 }
 
-const AddRecipeForm: FunctionComponent<AddRecipeFormProps> = ({ history, onCreate }) => {
+const AddRecipeForm: FunctionComponent<AddRecipeFormProps> = ({ onCreate }) => {
   const nameField = useField({
     control: Form.Input,
     type: 'text',
@@ -25,9 +24,7 @@ const AddRecipeForm: FunctionComponent<AddRecipeFormProps> = ({ history, onCreat
     e.preventDefault()
 
     try {
-      /*const addedRecipe =*/ await onCreate(nameField.value, descriptionField.value)
-
-      history.push('/recipes/discover')
+      await onCreate(nameField.value, descriptionField.value)
     } catch (error) {
       console.log(error)
     }
@@ -35,19 +32,14 @@ const AddRecipeForm: FunctionComponent<AddRecipeFormProps> = ({ history, onCreat
 
   console.log('Rendering@AddRecipeForm')
   return (
-    <Container style={{ height: '100vh' }}>
-      <Header as='h1'>Create a new recipe</Header>
-      <Form size='large' onSubmit={submit}>
-        <Segment stacked>
-          <Form.Field {...nameField.elementArgs} />
-          <Form.Field {...descriptionField.elementArgs} />
-          <Button>
-            Create
-          </Button>
-        </Segment>
-      </Form>
-    </Container>
+    <Form size='large' onSubmit={submit}>
+      <Segment stacked>
+        <Form.Field {...nameField.elementArgs} />
+        <Form.Field {...descriptionField.elementArgs} />
+        <Button type='submit'>Create</Button>
+      </Segment>
+    </Form>
   )
 }
 
-export default withRouter(AddRecipeForm)
+export default AddRecipeForm

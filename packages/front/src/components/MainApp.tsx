@@ -1,57 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { gql } from 'apollo-boost'
-import { useQuery, useMutation, useApolloClient } from 'react-apollo-hooks'
+import { useQuery, useApolloClient } from 'react-apollo-hooks'
 import { Switch, Route } from 'react-router-dom'
 
-import Dashboard from './Dashboard'
+import Dashboard from './views/Dashboard'
 import ResponsiveContainer from './ResponsiveContainer'
 import RecipeList from './recipes/RecipeList'
-import AddRecipeForm from './recipes/AddRecipeForm'
-import { NEW_RECIPES } from './recipes/RecipesQuery'
-import DiscoverPage from './recipes/DiscoverPage'
-
-const MY_RECIPES = gql`
-{
-  myRecipes {
-    id
-    name
-    description
-    owner {
-      id
-      name
-    }
-  }
-}`
-
-interface RecipeQueryData {
-  myRecipes: Recipe[],
-}
-
-const CREATE_RECIPE = gql`
-mutation create($name: String!, $description: String!) {
-  addRecipe(
-    name: $name,
-    description: $description
-  ) {
-    id
-    name
-    description
-    ingredients {
-      id
-      ingredient {
-        id
-        name
-      }
-      amount
-      unit {
-        id
-        name
-        abbreviation
-      }
-    }
-  }
-}
-`
+import RecipeEditor from './views/RecipeEditor'
+import Discover from './views/DiscoverPage'
+import { MY_RECIPES, RecipeQueryData } from './recipes/RecipesQuery'
 
 const ME = gql`
 {
@@ -88,13 +45,6 @@ const MainApp = ({ token, onLogout }: MainAppProps) => {
   const myRecipes = useQuery<RecipeQueryData>(MY_RECIPES)
   const me = useQuery(ME)
 
-  const createMutation = useMutation(CREATE_RECIPE, {
-    refetchQueries: [
-      { query: NEW_RECIPES },
-      { query: MY_RECIPES },
-    ]
-  })
-
   const [currentUser, setCurrentUser] = useState<User | null>(null)
 
   useEffect(() => {
@@ -109,15 +59,6 @@ const MainApp = ({ token, onLogout }: MainAppProps) => {
     client.clearStore()
     setCurrentUser(null)
     onLogout()
-  }
-
-  const createRecipe = async (name: string, description: string) => {
-    await createMutation({
-      variables: {
-        name,
-        description
-      }
-    })
   }
 
   if (token && !currentUser) {
@@ -135,12 +76,28 @@ const MainApp = ({ token, onLogout }: MainAppProps) => {
           <Dashboard />
         } />
 
+        <Route exact path='/recipes/:id/edit' render={({ match }) =>
+          <RecipeEditor
+            recipeId={match.params.id}
+            breadcrumbs={[
+              { name: 'Kitchenhand', path: '' },
+              { name: 'Recipes', path: 'recipes' },
+              { name: 'Recipe', path: match.params.id },
+              { name: 'Edit', path: 'edit' },
+            ]}
+          />
+        } />
+
         <Route exact path='/recipes/create' render={() =>
-          <AddRecipeForm onCreate={createRecipe} />
+          <RecipeEditor breadcrumbs={[
+            { name: 'Kitchenhand', path: '' },
+            { name: 'Recipes', path: 'recipes' },
+            { name: 'Create', path: 'create' },
+          ]} />
         } />
 
         <Route exact path='/recipes/discover' render={() =>
-          <DiscoverPage breadcrumbs={[
+          <Discover breadcrumbs={[
             { name: 'Kitchenhand', path: '' },
             { name: 'Recipes', path: 'recipes' },
             { name: 'Discover', path: 'discover' },
@@ -149,7 +106,7 @@ const MainApp = ({ token, onLogout }: MainAppProps) => {
 
         <Route exact path='/recipes/my' render={() =>
           !myRecipes.loading && myRecipes.data
-            ? <RecipeList recipes={myRecipes.data.myRecipes} />
+            ? <RecipeList recipes={myRecipes.data.recipes} />
             : <div>Loading...</div>
         } />
       </Switch>
