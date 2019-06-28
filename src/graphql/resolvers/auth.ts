@@ -5,8 +5,8 @@ import { QueryResolvers, MutationResolvers } from '../../generated/graphql'
 import { IUser } from '../../models/User'
 
 export const queries: QueryResolvers = {
-  userCount: (root, args, context): Promise<number> => authService.userCount(context),
-  allUsers: (root, args, context): Promise<IUser[]> => authService.getAll(context),
+  userCount: async (root, args, context): Promise<number> => authService.userCount(context),
+  allUsers: async (root, args, context): Promise<IUser[]> => authService.getAll(context),
   findUser: async (root, args, context): Promise<IUser | null> => {
     if (!args.id) {
       throw new UserInputError('`id` is required', { invalidArgs: 'id' })
