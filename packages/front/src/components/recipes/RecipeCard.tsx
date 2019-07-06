@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react'
 import { Link } from 'react-router-dom'
 import { Item, Reveal, Grid, Icon, SemanticICONS } from 'semantic-ui-react'
-import { Recipe } from '../MainApp';
+import { Recipe } from '../MainApp'
 
 interface RevealColumnProps {
   text?: string,

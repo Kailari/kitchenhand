@@ -1,0 +1,77 @@
+.ingredient-entry {
+  display: flex !important;
+  align-items: stretch;
+  padding: 14px !important;
+  border-radius: 25px !important;
+  user-select: none;
+}
+
+.ingredient-entry i {
+  cursor: all-scroll;
+  padding-right: 28px !important;
+}
+
+.ingredient-entry .controls {
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.ingredient-entry .controls.mobile {
+  min-height: 100% !important;
+  justify-content: space-between !important;
+}
+
+.ingredient-entry .inputs {
+  display: flex !important;
+  flex-wrap: nowrap;
+  width: 100%;
+  align-items: center;
+  user-select: none;
+  justify-content: stretch;
+}
+
+.ingredient-entry .inputs .amount {
+  flex: 1 1 60px;
+  max-width: 100px;
+  min-width: 60px;
+}
+
+.ingredient-entry .inputs .unit {
+  flex: 1 1 75px;
+  max-width: 100px;
+  min-width: 75px;
+}
+
+
+.ingredient-entry .inputs .ingredient {
+  flex: 1 1 100px;
+  min-width: 100px;
+}
+
+.ingredient-entry .inputs .unit input {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  padding-right: 2px;
+}
+
+.ingredient-entry .inputs .unit div.label {
+  border-right: transparent;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.ingredient-entry .inputs .ingredient input {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.ingredient-entry .inputs .ingredient button {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  text-align: center;
+}
+
+.ingredient-entry .inputs .ingredient button i {
+  padding: 0 !important;
+}

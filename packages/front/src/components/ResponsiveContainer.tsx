@@ -9,7 +9,7 @@ interface ResponsiveContainerProps {
   currentUser: User,
 }
 
-const getWidth = (): number => {
+export const getWidth = (): number => {
   const isSSR = typeof window === undefined
   const width = isSSR ? Responsive.onlyTablet.minWidth : window.innerWidth
   return width as number

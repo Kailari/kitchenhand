@@ -25,6 +25,12 @@ module.exports = {
     'useJSXTextNode': true
   },
   'rules': {
+    '@typescript-eslint/no-unused-vars': [
+      'warn',
+      {
+        'argsIgnorePattern': '^_'
+      }
+    ],
     'arrow-parens': 2,
     '@typescript-eslint/member-delimiter-style': [
       'error',

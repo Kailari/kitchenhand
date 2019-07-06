@@ -1,13 +1,16 @@
-import React, { FunctionComponent, useState, useEffect } from 'react'
+import React, { FunctionComponent } from 'react'
 import { gql } from 'apollo-boost'
 import { useMutation, useQuery } from 'react-apollo-hooks'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
+import { Header, Segment, Loader, Button } from 'semantic-ui-react'
 
 import AddRecipeForm from '../recipes/AddRecipeForm'
+import IngredientList from '../recipes/IngredientList'
 import { NEW_RECIPES, MY_RECIPES } from '../recipes/RecipesQuery'
 import { PageWithBreadcrumbsProps, PageWithHeadingAndBreadcrumb } from './PageBase'
 import { Recipe } from '../MainApp'
-import { Header, Segment, Loader } from 'semantic-ui-react'
+
+import './RecipeEditor.less'
 
 const CREATE_RECIPE = gql`
 mutation create($name: String!, $description: String!) {
@@ -40,6 +43,11 @@ query find($id: ID!) {
 
 interface FindRecipeResult {
   recipe: Recipe | null,
+}
+
+export interface RecipeIngredient {
+  id: string,
+  amount: number,
 }
 
 interface RecipeEditorProps extends PageWithBreadcrumbsProps, RouteComponentProps {
@@ -87,6 +95,7 @@ const RecipeEditor: FunctionComponent<RecipeEditorProps> = ({ history, breadcrum
     </>
   )
 
+  // TODO: make + button a menu with options for remove, add ingredient etc.
   const editForm = (recipe: Recipe) => (
     <>
       <Header as='h2'>Basic info</Header>
@@ -95,8 +104,11 @@ const RecipeEditor: FunctionComponent<RecipeEditorProps> = ({ history, breadcrum
         {recipe.description}
       </Segment>
       <Header as='h2'>Ingredients</Header>
-      <Segment>
-        TODO
+      <Segment className='clearfix'>
+        <IngredientList />
+        <Button floated='right' className='add'>
+          Add new ingredient
+        </Button>
       </Segment>
       <Header as='h2'>Method</Header>
       <Segment>
@@ -108,8 +120,6 @@ const RecipeEditor: FunctionComponent<RecipeEditorProps> = ({ history, breadcrum
   const recipe = !recipeQuery.loading && recipeQuery.data
     ? recipeQuery.data.recipe
     : null
-
-  console.log(recipe)
 
   const title = recipeId
     ? <span>Editing: {recipe ? recipe.name : <Loader style={{ marginLeft: '10px' }} active inline size='small' />}</span>

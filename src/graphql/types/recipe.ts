@@ -1,15 +1,16 @@
 import { gql } from 'apollo-server'
 
 const types = gql`
-  type Ingredient @entity {
-    id: ID! @id
-    name: String! @column
-  }
-
   type Unit @entity {
     id: ID! @id
     name: String! @column
     abbreviation: String! @column
+  }
+
+  type Ingredient @entity {
+    id: ID! @id
+    name: String! @column
+    defaultUnit: Unit @link
   }
 
   type RecipeIngredient @entity {
@@ -39,10 +40,16 @@ const types = gql`
     addRecipe(
       name: String!
       description: String!
-    ): Recipe
+    ): Recipe!
     removeRecipe(
       id: ID!
     ): Recipe
+
+    addRecipeIngredient(
+      recipeId: ID!
+      ingredientId: ID!
+      amount: Float!
+    ): RecipeIngredient!
   }
 `
 
