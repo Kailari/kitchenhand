@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react'
+import React, { FunctionComponent, useState } from 'react'
 import { gql } from 'apollo-boost'
 import { useMutation, useQuery } from 'react-apollo-hooks'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
@@ -55,6 +55,12 @@ interface RecipeEditorProps extends PageWithBreadcrumbsProps, RouteComponentProp
 }
 
 const RecipeEditor: FunctionComponent<RecipeEditorProps> = ({ history, breadcrumbs, recipeId }) => {
+  const [ingredients, setIngredients] = useState<RecipeIngredient[]>([
+    { id: '2137', amount: 100 },
+    { id: '1324', amount: 200 },
+    { id: '3424', amount: 300 }
+  ])
+
   const createMutation = useMutation<CreateRecipeResult>(CREATE_RECIPE, {
     refetchQueries: [
       { query: NEW_RECIPES },
@@ -105,7 +111,7 @@ const RecipeEditor: FunctionComponent<RecipeEditorProps> = ({ history, breadcrum
       </Segment>
       <Header as='h2'>Ingredients</Header>
       <Segment className='clearfix'>
-        <IngredientList />
+        <IngredientList ingredients={ingredients} setIngredients={setIngredients} />
         <Button floated='right' className='add'>
           Add new ingredient
         </Button>

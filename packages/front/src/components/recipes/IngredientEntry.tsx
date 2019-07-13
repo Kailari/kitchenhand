@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react'
+import React, { FunctionComponent } from 'react'
 import { Segment, Input, Icon, Label, Button, Responsive } from 'semantic-ui-react'
 
 import './IngredientEntry.less'
@@ -54,7 +54,6 @@ const IngredientEntry: FunctionComponent<IngredientEntryProps> = ({ setDraggedEl
         </Input>
         <Input list='units' placeholder='grams' labelPosition='right' className='unit'>
           <input />
-          <Label>of</Label>
         </Input>
         <datalist id='units'>
           <option value='grams' />
@@ -63,6 +62,7 @@ const IngredientEntry: FunctionComponent<IngredientEntryProps> = ({ setDraggedEl
           <option value='milliliters' />
         </datalist>
         <Input list='ingredients' placeholder='ingredient' labelPosition='right' className='ingredient'>
+          <Label>of</Label>
           <input />
           <Button icon='plus' size='mini' />
         </Input>

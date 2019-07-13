@@ -32,7 +32,7 @@ const RecipeCard: FunctionComponent<RecipeCardProps> = ({ recipe }) => (
   <Item>
     <Item.Content>
       <Item.Header as='h3'>
-        <Link to={`/recipe/${recipe.id}`}>{recipe.name}</Link>
+        <Link to={`/recipes/${recipe.id}`}>{recipe.name}</Link>
       </Item.Header>
       <Item.Meta as={Grid} divided columns='equal' textAlign='center' verticalAlign='middle'>
         <RevealColumn
