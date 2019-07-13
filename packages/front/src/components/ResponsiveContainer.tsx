@@ -1,5 +1,5 @@
 import React, { useState, FunctionComponent } from 'react'
-import { Responsive, Visibility, Sidebar } from 'semantic-ui-react'
+import { Responsive, Sidebar } from 'semantic-ui-react'
 
 import { DesktopNavbar, MobileNavbar } from './Navbar'
 import { User } from './MainApp'
@@ -16,23 +16,10 @@ export const getWidth = (): number => {
 }
 
 const DesktopContainer: FunctionComponent<ResponsiveContainerProps> = ({ children, ...otherProps }) => {
-  const [menuVisible, setMenuVisible] = useState(true)
-
-  const hideMenu = () => setMenuVisible(false)
-  const showMenu = () => setMenuVisible(true)
-
   return (
     <Responsive getWidth={getWidth} minWidth={Responsive.onlyTablet.minWidth}>
-      <Visibility
-        once={false}
-        onBottomPassed={showMenu}
-        onBottomPassedReverse={hideMenu}
-        style={{ marginBottom: '1em' }}
-      >
-        <DesktopNavbar /*menuVisible={menuVisible}*/ {...otherProps} />
-      </Visibility>
+      <DesktopNavbar {...otherProps} />
       {children}
-
     </Responsive>
   )
 }
