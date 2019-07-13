@@ -40,8 +40,20 @@ const schema = new mongoose.Schema({
   },
   ingredients: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'RecipeIngredient'
+      ingredient: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Ingredient',
+        required: true
+      },
+      amount: {
+        type: Number,
+        required: true
+      },
+      unit: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Unit',
+        required: true
+      },
     }
   ]
 })

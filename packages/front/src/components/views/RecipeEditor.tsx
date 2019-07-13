@@ -2,7 +2,7 @@ import React, { FunctionComponent, useState } from 'react'
 import { gql } from 'apollo-boost'
 import { useMutation, useQuery } from 'react-apollo-hooks'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
-import { Header, Segment, Loader, Button } from 'semantic-ui-react'
+import { Header, Segment, Loader, Button, Checkbox, CheckboxProps } from 'semantic-ui-react'
 
 import AddRecipeForm from '../recipes/AddRecipeForm'
 import IngredientList from '../recipes/IngredientList'
@@ -55,6 +55,7 @@ interface RecipeEditorProps extends PageWithBreadcrumbsProps, RouteComponentProp
 }
 
 const RecipeEditor: FunctionComponent<RecipeEditorProps> = ({ history, breadcrumbs, recipeId }) => {
+  const [showDelete, setShowDelete] = useState<boolean>(false)
   const [ingredients, setIngredients] = useState<RecipeIngredient[]>([
     { id: '2137', amount: 100 },
     { id: '1324', amount: 200 },
@@ -101,6 +102,23 @@ const RecipeEditor: FunctionComponent<RecipeEditorProps> = ({ history, breadcrum
     </>
   )
 
+  const addIngredient = () => {
+    const newIngredients = ingredients.concat({
+      id: `${ingredients.length * 1234}`, // TODO: generate an actual ID
+      amount: ingredients.length * 100,
+    })
+    setIngredients(newIngredients)
+  }
+
+  const removeIngredient = (id: string) => {
+    const ingredientsAfterRemoval = ingredients.filter((ingredient) => ingredient.id !== id)
+    setIngredients(ingredientsAfterRemoval)
+  }
+
+  const toggleRemoval = (e: React.FormEvent, data: CheckboxProps) => {
+    setShowDelete(data.checked as boolean)
+  }
+
   // TODO: make + button a menu with options for remove, add ingredient etc.
   const editForm = (recipe: Recipe) => (
     <>
@@ -111,10 +129,13 @@ const RecipeEditor: FunctionComponent<RecipeEditorProps> = ({ history, breadcrum
       </Segment>
       <Header as='h2'>Ingredients</Header>
       <Segment className='clearfix'>
-        <IngredientList ingredients={ingredients} setIngredients={setIngredients} />
-        <Button floated='right' className='add'>
-          Add new ingredient
-        </Button>
+        <IngredientList showDelete={showDelete} onRemove={removeIngredient} ingredients={ingredients} setIngredients={setIngredients} />
+        <div className='ingredient-controls'>
+          <Checkbox toggle label='Remove ingredients' onChange={toggleRemoval} />
+          <Button className='add' onClick={addIngredient}>
+            Add new ingredient
+          </Button>
+        </div>
       </Segment>
       <Header as='h2'>Method</Header>
       <Segment>

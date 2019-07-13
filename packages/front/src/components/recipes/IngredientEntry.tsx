@@ -4,13 +4,15 @@ import { Segment, Input, Icon, Label, Button, Responsive } from 'semantic-ui-rea
 import './IngredientEntry.less'
 
 interface IngredientEntryProps {
+  showDelete: boolean,
+  onRemove: () => void,
   setDraggedElement: () => void,
   onDragOver: (index: number) => void,
   amount: number,
   setAmount: (amount: number) => void,
 }
 
-const IngredientEntry: FunctionComponent<IngredientEntryProps> = ({ setDraggedElement, onDragOver, amount, setAmount }) => {
+const IngredientEntry: FunctionComponent<IngredientEntryProps> = ({ showDelete, onRemove, setDraggedElement, onDragOver, amount, setAmount }) => {
   const onDragStart = (e: React.DragEvent) => {
     setDraggedElement()
     e.dataTransfer.setData('text/html', (e.currentTarget.parentElement as Element).innerHTML)
@@ -33,8 +35,7 @@ const IngredientEntry: FunctionComponent<IngredientEntryProps> = ({ setDraggedEl
   )
 
   const ButtonControls = () => (
-    <div
-    >
+    <div>
       <Icon name='arrow circle up' size='large' />
       <Icon name='arrow circle down' size='large' />
     </div>
@@ -72,6 +73,9 @@ const IngredientEntry: FunctionComponent<IngredientEntryProps> = ({ setDraggedEl
           <option value='Pasta' />
         </datalist>
       </div>
+      {showDelete && (
+        <Button negative onClick={onRemove}>Remove</Button>
+      )}
     </Segment>
   )
 }

@@ -15,9 +15,9 @@ const types = gql`
 
   type RecipeIngredient @entity {
     id: ID! @id
-    ingredient: Ingredient! @embedded
+    ingredient: Ingredient! @link
     amount: Float! @column
-    unit: Unit! @embedded
+    unit: Unit! @link
   }
 
   type Recipe @entity {
@@ -25,7 +25,7 @@ const types = gql`
     name: String! @column
     owner: User! @link
     description: String @column
-    ingredients: [RecipeIngredient!]! @link
+    ingredients: [RecipeIngredient!]! @embedded
   }
 
   extend type Query {

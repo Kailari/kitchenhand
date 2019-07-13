@@ -3,6 +3,8 @@ import IngredientEntry from './IngredientEntry'
 import { RecipeIngredient } from '../views/RecipeEditor'
 
 interface IngredientListProps {
+  showDelete: boolean,
+  onRemove: (id: string) => void,
   ingredients: RecipeIngredient[],
   setIngredients: (ingredients: RecipeIngredient[]) => void,
 }
@@ -42,6 +44,8 @@ class IngredientList extends React.Component<IngredientListProps, IngredientList
       <div>
         {this.props.ingredients.map((ingredient, index) =>
           <IngredientEntry
+            showDelete={this.props.showDelete}
+            onRemove={() => this.props.onRemove(ingredient.id)}
             key={ingredient.id}
             setDraggedElement={() => this.setDraggedElement(index)}
             amount={ingredient.amount}
