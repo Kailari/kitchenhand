@@ -49,7 +49,13 @@ class IngredientList extends React.Component<IngredientListProps, IngredientList
             key={ingredient.id}
             setDraggedElement={() => this.setDraggedElement(index)}
             amount={ingredient.amount}
-            setAmount={(amount) => ingredient.amount = amount}
+            setAmount={(amount) => {
+              const newIngredients = this.props.ingredients.concat()
+                .map((i) => i.id !== ingredient.id
+                  ? i
+                  : { ...i, amount: amount})
+              this.props.setIngredients(newIngredients)
+            }}
             onDragOver={() => this.onDragOver(index)}
           />
         )}

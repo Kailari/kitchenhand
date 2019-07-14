@@ -50,7 +50,13 @@ const IngredientEntry: FunctionComponent<IngredientEntryProps> = ({ showDelete, 
       <Responsive as={DragAndDropControls} minWidth={Responsive.onlyTablet.minWidth} />
       <Responsive as={ButtonControls} maxWidth={Responsive.onlyMobile.maxWidth} />
       <div className='inputs'>
-        <Input type='number' placeholder='150' labelPosition='right' className='amount' value={amount} onChange={(e) => setAmount(e.target.valueAsNumber)}>
+        <Input type='number' placeholder='150' labelPosition='right' className='amount' value={amount} onChange={(e) => {
+          if (e.target.value.match('-?(\\d+|\\d+\\.\\d+|\\.\\d+)([eE][-+]?\\d+)?')) {
+            setAmount(e.target.valueAsNumber)
+          } else {
+            setAmount(0)
+          }
+        }}>
           <input />
         </Input>
         <Input list='units' placeholder='grams' labelPosition='right' className='unit'>
