@@ -25,7 +25,7 @@ const types = gql`
     name: String! @column
     owner: User! @link
     description: String @column
-    ingredients: [RecipeIngredient!]! @embedded
+    ingredients: [RecipeIngredient!]! @link
   }
 
   extend type Query {
@@ -47,9 +47,18 @@ const types = gql`
 
     addRecipeIngredient(
       recipeId: ID!
-      ingredientId: ID!
-      amount: Float!
-    ): RecipeIngredient!
+    ): RecipeIngredient
+    updateRecipeIngredient(
+      id: ID!
+      recipeId: ID!
+      ingredientId: ID
+      unitId: ID
+      amount: Float
+    ): RecipeIngredient
+    removeRecipeIngredient(
+      recipeId: ID!
+      id: ID!
+    ): ID
   }
 `
 

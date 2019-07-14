@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import { RecipeDbObject, RecipeIngredientDbObject } from '../generated/graphql'
-import { DdObjectDocument } from '../util/codegen'
+import { DdObjectDocument, DdObjectSubDocument } from '../util/codegen'
 
 const recipeIngredientSchema = new mongoose.Schema({
   ingredient: {
@@ -19,7 +19,7 @@ const recipeIngredientSchema = new mongoose.Schema({
   },
 })
 
-export interface IRecipeIngredient extends DdObjectDocument, RecipeIngredientDbObject {}
+export interface IRecipeIngredient extends DdObjectSubDocument, RecipeIngredientDbObject { }
 
 export const RecipeIngredient = mongoose.model<IRecipeIngredient>('RecipeIngredient', recipeIngredientSchema)
 
@@ -38,24 +38,7 @@ const schema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
-  ingredients: [
-    {
-      ingredient: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Ingredient',
-        required: true
-      },
-      amount: {
-        type: Number,
-        required: true
-      },
-      unit: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Unit',
-        required: true
-      },
-    }
-  ]
+  ingredients: [recipeIngredientSchema]
 })
 
 export interface IRecipe extends DdObjectDocument, RecipeDbObject { }

@@ -1,6 +1,6 @@
 import React from 'react'
 import IngredientEntry from './IngredientEntry'
-import { RecipeIngredient } from '../views/RecipeEditor'
+import { RecipeIngredient } from '../MainApp'
 
 interface IngredientListProps {
   showDelete: boolean,
@@ -35,8 +35,8 @@ class IngredientList extends React.Component<IngredientListProps, IngredientList
     this.props.setIngredients(newIngredients)
   }
 
-  public shouldComponentUpdate(nextProps: {}, _nextState: IngredientListState) {
-    return nextProps !== this.props /*|| nextState.ingredients !== this.state.ingredients*/
+  public shouldComponentUpdate(nextProps: IngredientListProps, _nextState: IngredientListState) {
+    return nextProps !== this.props || nextProps.ingredients !== this.props.ingredients /*|| nextState.ingredients !== this.state.ingredients*/
   }
 
   public render() {

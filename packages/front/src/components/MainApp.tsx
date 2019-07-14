@@ -29,6 +29,21 @@ export interface User {
   name: string,
 }
 
+
+export interface RecipeIngredient {
+  id: string,
+  amount: number,
+  ingredient: {
+    id: string,
+    name: string,
+  },
+  unit: {
+    id: string,
+    name: string,
+    abbreviation: string,
+  },
+}
+
 export interface Recipe {
   id: string,
   name: string,
@@ -37,6 +52,7 @@ export interface Recipe {
   date?: Date,
   description?: string,
   owner?: User,
+  ingredients?: RecipeIngredient[],
 }
 
 const MainApp = ({ token, onLogout }: MainAppProps) => {

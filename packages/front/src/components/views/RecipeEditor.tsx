@@ -8,7 +8,7 @@ import AddRecipeForm from '../recipes/AddRecipeForm'
 import IngredientList from '../recipes/IngredientList'
 import { NEW_RECIPES, MY_RECIPES } from '../recipes/RecipesQuery'
 import { PageWithBreadcrumbsProps, PageWithHeadingAndBreadcrumb } from './PageBase'
-import { Recipe } from '../MainApp'
+import { Recipe, RecipeIngredient } from '../MainApp'
 
 import './RecipeEditor.less'
 
@@ -38,16 +38,52 @@ query find($id: ID!) {
     id
     name
     description
+    ingredients {
+      id
+      amount
+    }
   }
 }`
 
+const ADD_INGREDIENT = gql`
+mutation addIngredient($recipeId: ID!) {
+  recipeIngredient: addRecipeIngredient(recipeId: $recipeId) {
+    id
+    amount
+    ingredient {
+      id
+      name
+    }
+    unit {
+      id
+      name
+      abbreviation
+    }
+  }
+}`
+
+
+const REMOVE_INGREDIENT = gql`
+mutation removeIngredient(
+  $id: ID!
+  $recipeId: ID!
+) {
+  id: removeRecipeIngredient(
+    recipeId: $recipeId
+    id: $id
+  )
+}`
+
 interface FindRecipeResult {
-  recipe: Recipe | null,
+  recipe?: Recipe,
 }
 
-export interface RecipeIngredient {
-  id: string,
-  amount: number,
+interface AddIngredientResult {
+  recipeIngredient?: RecipeIngredient,
+}
+
+interface RemoveIngredientResult {
+  id?: string,
 }
 
 interface RecipeEditorProps extends PageWithBreadcrumbsProps, RouteComponentProps {
@@ -56,11 +92,7 @@ interface RecipeEditorProps extends PageWithBreadcrumbsProps, RouteComponentProp
 
 const RecipeEditor: FunctionComponent<RecipeEditorProps> = ({ history, breadcrumbs, recipeId }) => {
   const [showDelete, setShowDelete] = useState<boolean>(false)
-  const [ingredients, setIngredients] = useState<RecipeIngredient[]>([
-    { id: '2137', amount: 100 },
-    { id: '1324', amount: 200 },
-    { id: '3424', amount: 300 }
-  ])
+  const [ingredients, setIngredients] = useState<RecipeIngredient[] | null>(null)
 
   const createMutation = useMutation<CreateRecipeResult>(CREATE_RECIPE, {
     refetchQueries: [
@@ -68,6 +100,9 @@ const RecipeEditor: FunctionComponent<RecipeEditorProps> = ({ history, breadcrum
       { query: MY_RECIPES },
     ]
   })
+
+  const addIngredientMutation = useMutation<AddIngredientResult>(ADD_INGREDIENT)
+  const removeIngredientMutation = useMutation<RemoveIngredientResult>(REMOVE_INGREDIENT)
 
   const recipeQuery = useQuery<FindRecipeResult>(FIND_RECIPE, {
     variables: {
@@ -102,17 +137,46 @@ const RecipeEditor: FunctionComponent<RecipeEditorProps> = ({ history, breadcrum
     </>
   )
 
-  const addIngredient = () => {
-    const newIngredients = ingredients.concat({
-      id: `${ingredients.length * 1234}`, // TODO: generate an actual ID
-      amount: ingredients.length * 100,
-    })
-    setIngredients(newIngredients)
+  const addIngredient = async (recipeId: string) => {
+    try {
+      const result = await addIngredientMutation({
+        variables: {
+          recipeId
+        }
+      })
+
+      if (recipeQuery.data && result.data) {
+        const recipe = recipeQuery.data.recipe as Recipe
+        const added = result.data.recipeIngredient as RecipeIngredient
+        recipe.ingredients = (recipe.ingredients || []).concat(added)
+        setIngredients(recipe.ingredients)
+      }
+    } catch (error) {
+      console.log('error adding ingredient: ', error)
+    }
   }
 
-  const removeIngredient = (id: string) => {
-    const ingredientsAfterRemoval = ingredients.filter((ingredient) => ingredient.id !== id)
-    setIngredients(ingredientsAfterRemoval)
+  const removeIngredient = async (recipeId: string, id: string) => {
+    try {
+      const result = await removeIngredientMutation({
+        variables: {
+          id,
+          recipeId
+        }
+      })
+
+      if (recipeQuery.data && result.data) {
+        const recipe = recipeQuery.data.recipe as Recipe
+        const removed = result.data.id
+        console.log(result)
+        if (removed) {
+          recipe.ingredients = (recipe.ingredients || []).filter((i) => i.id !== removed)
+          setIngredients(recipe.ingredients)
+        }
+      }
+    } catch (error) {
+      console.log('error adding ingredient: ', error)
+    }
   }
 
   const toggleRemoval = (e: React.FormEvent, data: CheckboxProps) => {
@@ -129,10 +193,18 @@ const RecipeEditor: FunctionComponent<RecipeEditorProps> = ({ history, breadcrum
       </Segment>
       <Header as='h2'>Ingredients</Header>
       <Segment className='clearfix'>
-        <IngredientList showDelete={showDelete} onRemove={removeIngredient} ingredients={ingredients} setIngredients={setIngredients} />
+        <IngredientList
+          showDelete={showDelete}
+          onRemove={(id) => removeIngredient(recipe.id, id)}
+          ingredients={ingredients || []}
+          setIngredients={(newIngredients) => {
+            recipe.ingredients = newIngredients
+            setIngredients(newIngredients)
+          }}
+        />
         <div className='ingredient-controls'>
           <Checkbox toggle label='Remove ingredients' onChange={toggleRemoval} />
-          <Button className='add' onClick={addIngredient}>
+          <Button className='add' onClick={() => addIngredient(recipe.id)}>
             Add new ingredient
           </Button>
         </div>
@@ -147,6 +219,10 @@ const RecipeEditor: FunctionComponent<RecipeEditorProps> = ({ history, breadcrum
   const recipe = !recipeQuery.loading && recipeQuery.data
     ? recipeQuery.data.recipe
     : null
+
+  if (recipe && !ingredients) {
+    setIngredients(recipe.ingredients || [])
+  }
 
   const title = recipeId
     ? <span>Editing: {recipe ? recipe.name : <Loader style={{ marginLeft: '10px' }} active inline size='small' />}</span>

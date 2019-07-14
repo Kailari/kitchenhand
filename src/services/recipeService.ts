@@ -1,7 +1,9 @@
 import mongoose from 'mongoose'
 
-import Recipe, { IRecipe } from '../models/Recipe'
+import Recipe, { IRecipe, RecipeIngredient, IRecipeIngredient } from '../models/Recipe'
 import { IUser } from '../models/User'
+import ingredientService from './ingredientService'
+import unitService from './unitService'
 
 const count = async (): Promise<number> => {
   return await Recipe.collection.countDocuments()
@@ -12,11 +14,11 @@ const getAll = async (): Promise<IRecipe[]> => {
 }
 
 const find = async (id: mongoose.Types.ObjectId | string): Promise<IRecipe | null> => {
-  return Recipe.findById(id)
+  return await Recipe.findById(id)
 }
 
 const findAllByUser = async (ownerId: mongoose.Types.ObjectId | string): Promise<IRecipe[] | null> => {
-  return Recipe.find({
+  return await Recipe.find({
     owner: {
       _id: ownerId
     }
@@ -32,8 +34,7 @@ const add = async (name: string, description: string, user: IUser): Promise<IRec
   })
 
   const addedRecipe = await recipe.save() as IRecipe
-  // FIXME: add recipes to user
-  //user.recipes.concat(addedRecipe.id)
+  user.recipes.push(addedRecipe.id)
   await user.save()
 
   addedRecipe.owner = user
@@ -41,7 +42,59 @@ const add = async (name: string, description: string, user: IUser): Promise<IRec
 }
 
 const remove = async (id: mongoose.Types.ObjectId | string): Promise<IRecipe | null> => {
-  return Recipe.findByIdAndDelete(id)
+  const recipe = await Recipe.findByIdAndDelete(id).populate('owner')
+  if (recipe === null) {
+    return null
+  }
+
+  const owner = recipe.owner
+  const remainingRecipes = owner.recipes.filter((r: IRecipe): boolean => r._id !== recipe._id)
+  owner.recipes = remainingRecipes
+  await owner.save()
+
+  //await RecipeIngredient.deleteMany({ _id: { $in: recipe.ingredients.map((ingredient): string => ingredient._id) } })
+  return recipe
+}
+
+const addIngredient = async (recipeId: string): Promise<IRecipeIngredient | null> => {
+  const recipe = await Recipe.findById(recipeId)
+  if (recipe === null) {
+    return null
+  }
+
+  const defaultIngredient = await ingredientService.getDefault()
+  const defaultUnit = await unitService.getDefault()
+  const newIngredient = new RecipeIngredient({
+    amount: 1.0,
+    ingredient: defaultIngredient,
+    unit: defaultUnit
+  })
+  recipe.ingredients.push(newIngredient)
+  await recipe.save()
+
+  return newIngredient
+}
+
+const removeIngredient = async (recipeId: string, id: string): Promise<string | null> => {
+  const parent = await Recipe.findById(recipeId)
+  if (!parent) {
+    return null
+  }
+
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const ingredient = (parent.ingredients as any).id(id)
+    if (!ingredient) {
+      return null
+    }
+    parent.ingredients = parent.ingredients.filter((i): boolean => i.id !== ingredient.id)
+    await parent.save()
+
+    return ingredient.id
+  } catch (error) {
+    console.log('error removing recipe ingredient: ', error)
+  }
+  return null
 }
 
 export default {
@@ -50,5 +103,7 @@ export default {
   find,
   findAllByUser,
   add,
-  remove
+  addIngredient,
+  remove,
+  removeIngredient,
 }

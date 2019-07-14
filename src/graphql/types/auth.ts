@@ -9,6 +9,7 @@ const types = gql`
   ) {
     id: ID! @id
     name: String! @column
+    recipes: [Recipe]! @link
   }
 
   type Token {
