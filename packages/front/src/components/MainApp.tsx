@@ -4,9 +4,10 @@ import { useQuery, useApolloClient } from 'react-apollo-hooks'
 import { Switch, Route } from 'react-router-dom'
 
 import Dashboard from './views/Dashboard'
+import RecipeEditorPage from './views/RecipeEditorPage'
+import CreateRecipePage from './views/CreateRecipePage'
 import ResponsiveContainer from './ResponsiveContainer'
 import RecipeList from './recipes/RecipeList'
-import RecipeEditor from './views/RecipeEditor'
 import Discover from './views/DiscoverPage'
 import { MY_RECIPES, RecipeQueryData } from './recipes/RecipesQuery'
 
@@ -52,7 +53,7 @@ export interface Recipe {
   date?: Date,
   description?: string,
   owner?: User,
-  ingredients?: RecipeIngredient[],
+  ingredients: RecipeIngredient[],
 }
 
 const MainApp = ({ token, onLogout }: MainAppProps) => {
@@ -93,7 +94,7 @@ const MainApp = ({ token, onLogout }: MainAppProps) => {
         } />
 
         <Route exact path='/recipes/:id/edit' render={({ match }) =>
-          <RecipeEditor
+          <RecipeEditorPage
             recipeId={match.params.id}
             breadcrumbs={[
               { name: 'Kitchenhand', path: '' },
@@ -105,7 +106,7 @@ const MainApp = ({ token, onLogout }: MainAppProps) => {
         } />
 
         <Route exact path='/recipes/create' render={() =>
-          <RecipeEditor breadcrumbs={[
+          <CreateRecipePage breadcrumbs={[
             { name: 'Kitchenhand', path: '' },
             { name: 'Recipes', path: 'recipes' },
             { name: 'Create', path: 'create' },
