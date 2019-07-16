@@ -16,4 +16,9 @@
 | 25.06.2019 |      6 | TypeScript harjoittelua, backendin muuttaminen TypeScriptiksi.  |
 | 26.06.2019 |      3 | Frontend typescriptiksi.                                        |
 | 27.06.2019 |      3 | ESLint toimimaan typescriptin kanssa, codegen bugien korjailua. |
-|   yhteensä |     50 |                                                                 |
+| 28.06.2019 |      3 | Reseptieditorin käyttöliittymän suunnittelua.                   |
+| 06.07.2019 |      4 | Reseptieditorin ainesosalistan Vedä&Pudota-järjestäminen.       |
+| 13.07.2019 |      1 | Reseptieditorin työstöä.                                        |
+| 14.07.2019 |      1 | Ainesosien lisääminen/poistaminen frontissa ja backissä         |
+| 16.07.2019 |      2 | Reseptieditorin/reseptin lisäyksen refaktorointi samaan koodiin |
+|   yhteensä |     61 |                                                                 |
