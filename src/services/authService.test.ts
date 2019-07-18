@@ -123,114 +123,58 @@ describe(`with a newly initialized test database with ${NUM_USERS} users`, () =>
     })
   })
 
-  describe('if currentUser is null', () => {
-    const context: Context = {
-      currentUser: null,
-    }
-
-    test('withAuth-decorated function throws AuthenticationError', () => {
-      const fn = authService.withAuth(() => { })
-      expect(() => fn(context)).toThrow(AuthenticationError)
-    })
-
-    test('withAuthAsync-decorated function throws AuthenticationError', async () => {
-      const fn = authService.withAuthAsync(async () => { })
-      await expect(fn(context))
-        .rejects
-        .toThrow(AuthenticationError)
-    })
-
-    test('userCount() throws AuthenticationError', async () => {
-      await expect(authService.userCount(context))
-        .rejects
-        .toThrow(AuthenticationError)
-    })
-
-    test('getAll() throws AuthenticationError', async () => {
-      await expect(authService.getAll(context))
-        .rejects
-        .toThrow(AuthenticationError)
-    })
-
-    test('find() throws AuthenticationError', async () => {
-      await expect(authService.find(context, 'invalid id'))
-        .rejects
-        .toThrow(AuthenticationError)
-    })
+  test('userCount() returns correct count', async () => {
+    await expect(authService.userCount())
+      .resolves
+      .toEqual(NUM_USERS)
   })
 
-  describe('if current user is a valid normal user', () => {
-    let context: Context
+  test('getAll() returns correct number of users', async () => {
+    await expect(authService.getAll())
+      .resolves
+      .toHaveLength(NUM_USERS)
+  })
 
-    beforeEach(async () => {
-      context = {
-        currentUser: allUsers[5]
-      }
-    })
+  test('getAll() returns all users', async () => {
+    const users = await authService.getAll()
 
-    test('requireAuth-decorated function passes', async () => {
-      const fn = authService.withAuth(async () => {
-        return true
-      })
+    // FIXME: Mongoose ObjectIDs are not treated equal unless compared with .equals
+    //        Jest uses `===` and `Object.is` to compare equality in `toContain*`-methods,
+    //        meaning that IDs are not considered equal even when they should be
+    //        Converting to strings obviously fixes the issue, but is kind of hacky.
+    const idToString = (u: IUser) => u._id = u._id.toString()
+    const allUsersMapped = allUsers.map(idToString)
+    const usersMapped = users.map(idToString)
 
-      await expect(fn(context))
+    await expect(usersMapped)
+      .toIncludeSameMembers(allUsersMapped)
+  })
+
+  describe('find(id) returns', () => {
+    test('null when user with the id does not exist', async () => {
+      await expect(authService.find('invalid id'))
         .resolves
-        .toBeTruthy()
-    })
-
-    test('userCount() matches', async () => {
-      await expect(authService.userCount(context))
+        .toBeNull()
+      const id = mongoose.Types.ObjectId()
+      await expect(authService.find(id))
         .resolves
-        .toEqual(NUM_USERS)
+        .toBeNull()
     })
 
-    test('getAll() returns correct number of users', async () => {
-      await expect(authService.getAll(context))
+    test('a non-null user when user with the id exists', async () => {
+      const id = allUsers[5]._id
+      await expect(authService.find(id))
         .resolves
-        .toHaveLength(NUM_USERS)
+        .not
+        .toBeNull()
     })
 
-    test('getAll() returns all users', async () => {
-      const users = await authService.getAll(context)
-
-      // FIXME: Mongoose ObjectIDs are not treated equal unless compared with .equals
-      //        Jest uses `===` and `Object.is` to compare equality in `toContain*`-methods,
-      //        meaning that IDs are not considered equal even when they should be
-      //        Converting to strings obviously fixes the issue, but is kind of hacky.
-      const idToString = (u: IUser) => u._id = u._id.toString()
-      const allUsersMapped = allUsers.map(idToString)
-      const usersMapped = users.map(idToString)
-
-      await expect(usersMapped)
-        .toIncludeSameMembers(allUsersMapped)
-    })
-
-    describe('find(id) returns', () => {
-      test('null when user with the id does not exist', async () => {
-        await expect(authService.find(context, 'invalid id'))
-          .resolves
-          .toBeNull()
-        const id = mongoose.Types.ObjectId()
-        await expect(authService.find(context, id))
-          .resolves
-          .toBeNull()
-      })
-
-      test('a non-null user when user with the id exists', async () => {
-        const id = allUsers[5]._id
-        await expect(authService.find(context, id))
-          .resolves
-          .not
-          .toBeNull()
-      })
-
-      test('correct user when user with the id exists', async () => {
-        const user = allUsers[5]
-        await expect(authService.find(context, user.id))
-          .resolves
-          .not
-          .toEqual(user)
-      })
+    test('correct user when user with the id exists', async () => {
+      const user = allUsers[5]
+      await expect(authService.find(user.id))
+        .resolves
+        .not
+        .toEqual(user)
     })
   })
 })
