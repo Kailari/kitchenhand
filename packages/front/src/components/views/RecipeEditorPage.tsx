@@ -83,12 +83,6 @@ const RecipeEditorPage: FunctionComponent<RecipeEditorProps> = ({ history, bread
     setRecipe(recipeQuery.data.recipe)
   }
 
-  const updateIngredients = (newIngredients: RecipeIngredient[]) => {
-    if (recipe) {
-      setRecipe({ ...recipe, ingredients: newIngredients })
-    }
-  }
-
   const addIngredient = async (recipeId: string) => {
     try {
       const result = await addIngredientMutation({

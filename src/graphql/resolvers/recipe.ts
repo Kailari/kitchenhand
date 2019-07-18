@@ -35,9 +35,11 @@ export const mutations: MutationResolvers = {
       throw new AuthenticationError('Not authenticated')
     }
 
+    const ingredients = args.ingredients || []
+
     let newRecipe = null
     try {
-      newRecipe = await recipeService.add(args.name, args.description, currentUser)
+      newRecipe = await recipeService.add(args.name, args.description, ingredients, currentUser)
     } catch (error) {
       throw new UserInputError(error.message, {
         invalidArgs: Object.keys(error.errors)

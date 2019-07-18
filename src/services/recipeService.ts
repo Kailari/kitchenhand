@@ -4,6 +4,7 @@ import Recipe, { IRecipe, RecipeIngredient, IRecipeIngredient } from '../models/
 import { IUser } from '../models/User'
 import ingredientService from './ingredientService'
 import unitService from './unitService'
+import { ShallowRecipeIngredient } from '../generated/graphql';
 
 const count = async (): Promise<number> => {
   return await Recipe.collection.countDocuments()
@@ -25,12 +26,12 @@ const findAllByUser = async (ownerId: mongoose.Types.ObjectId | string): Promise
   }).populate('owner')
 }
 
-const add = async (name: string, description: string, user: IUser): Promise<IRecipe> => {
+const add = async (name: string, description: string, ingredients: ShallowRecipeIngredient[], user: IUser): Promise<IRecipe> => {
   const recipe = new Recipe({
     name: name,
     description: description,
     owner: user.id,
-    ingredients: []
+    ingredients: ingredients
   })
 
   const addedRecipe = await recipe.save() as IRecipe

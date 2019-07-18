@@ -15,8 +15,8 @@ const types = gql`
 
   type RecipeIngredient @entity {
     id: ID! @id
-    ingredient: Ingredient! @link
     amount: Float! @column
+    ingredient: Ingredient! @link
     unit: Unit! @link
   }
 
@@ -26,6 +26,12 @@ const types = gql`
     owner: User! @link
     description: String @column
     ingredients: [RecipeIngredient!]! @link
+  }
+
+  input ShallowRecipeIngredient {
+    amount: Float!
+    ingredient: ID!
+    unit: ID!
   }
 
   extend type Query {
@@ -40,6 +46,7 @@ const types = gql`
     addRecipe(
       name: String!
       description: String!
+      ingredients: [ShallowRecipeIngredient!]
     ): Recipe!
     removeRecipe(
       id: ID!
