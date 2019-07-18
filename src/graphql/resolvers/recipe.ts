@@ -6,25 +6,25 @@ import { IRecipe, IRecipeIngredient } from '../../models/Recipe'
 import { IUser } from '../../models/User'
 
 export const queries: QueryResolvers = {
-  recipeCount: async (root, args, context): Promise<number> => recipeService.count(context),
-  allRecipes: async (root, args, context): Promise<IRecipe[]> => recipeService.getAll(context),
-  recipe: async (root, args, context): Promise<IRecipe | null> => {
+  recipeCount: async (): Promise<number> => recipeService.count(),
+  allRecipes: async (): Promise<IRecipe[]> => recipeService.getAll(),
+  recipe: async (root, args): Promise<IRecipe | null> => {
     if (!args.id) {
       throw new UserInputError('`id` is required', { invalidArgs: 'id' })
     }
 
-    return await recipeService.find(context, args.id)
+    return await recipeService.find(args.id)
   },
-  userRecipes: async (root, args, context): Promise<IRecipe[] | null> => {
+  userRecipes: async (root, args): Promise<IRecipe[] | null> => {
     if (!args.id) {
       throw new UserInputError('`id` is required', { invalidArgs: 'id' })
     }
 
-    return await recipeService.findAllByUser(context, args.id)
+    return await recipeService.findAllByUser(args.id)
   },
   myRecipes: async (root, args, context): Promise<IRecipe[] | null> => {
     return context.currentUser
-      ? await recipeService.findAllByUser(context, context.currentUser._id)
+      ? await recipeService.findAllByUser(context.currentUser._id)
       : null
   }
 }
@@ -35,7 +35,7 @@ export const mutations: MutationResolvers = {
 
     let newRecipe = null
     try {
-      newRecipe = await recipeService.add(context, args.name, args.description, ingredients, context.currentUser as IUser)
+      newRecipe = await recipeService.add(args.name, args.description, ingredients, context.currentUser as IUser)
     } catch (error) {
       throw new UserInputError(error.message, {
         invalidArgs: Object.keys(error.errors)
@@ -44,12 +44,12 @@ export const mutations: MutationResolvers = {
 
     return newRecipe
   },
-  removeRecipe: async (root, args, context): Promise<IRecipe> => {
+  removeRecipe: async (root, args): Promise<IRecipe> => {
     if (!args.id) {
       throw new UserInputError('`id` is required', { invalidArgs: 'id' })
     }
 
-    const recipe = await recipeService.remove(context, args.id)
+    const recipe = await recipeService.remove(args.id)
     if (!recipe) {
       throw new ApolloError('unknown `id`', 'BAD_ID')
     }
@@ -62,7 +62,7 @@ export const mutations: MutationResolvers = {
     }
 
     let newIngredient = null
-    newIngredient = await recipeService.addIngredient(context, args.recipeId)
+    newIngredient = await recipeService.addIngredient(args.recipeId)
     if (!newIngredient) {
       throw new ApolloError('unknown `recipeId`', 'BAD_ID')
     }
@@ -79,7 +79,7 @@ export const mutations: MutationResolvers = {
     }
 
     let removed = null
-    removed = await recipeService.removeIngredient(context, args.recipeId, args.id)
+    removed = await recipeService.removeIngredient(args.recipeId, args.id)
     if (!removed) {
       throw new ApolloError('unknown `id` or `recipeId`', 'BAD_ID')
     }

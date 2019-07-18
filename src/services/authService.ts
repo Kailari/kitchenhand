@@ -6,55 +6,31 @@ import mongoose from 'mongoose'
 import { Context } from '../server'
 import * as config from '../config'
 import User, { IUser } from '../models/User'
+import { UserPermissions } from '../generated/graphql';
 
 interface TokenData {
   loginname: string,
   id: mongoose.Types.ObjectId,
 }
 
-// Wraps function given as argument, adding context argument and auth check to it
-export const withAuth = <T, U extends T[], V>(fn: (...args: U) => V): ((context: Context, ...args: U) => V) => {
-  return function (context: Context, ...args: U): V {
-    if (!context || !context.currentUser) {
-      throw new AuthenticationError('Not authenticated')
-    }
-
-    return fn(...args)
-  }
-}
-
-export const withAuthAsync = <T, U extends T[], V>(fn: (...args: U) => V): ((context: Context, ...args: U) => Promise<V>) => {
-  return async function (context: Context, ...args: U): Promise<V> {
-    if (!context || !context.currentUser) {
-      throw new AuthenticationError('Not authenticated')
-    }
-
-    return fn(...args)
-  }
-}
-
-const userCount = withAuthAsync(async (): Promise<number> => {
+const userCount = async (): Promise<number> => {
   return await User.collection.countDocuments()
-})
+}
 
-const getAll = withAuthAsync(async (): Promise<IUser[]> => {
+const getAll = async (): Promise<IUser[]> => {
   return await User.find({})
-})
+}
 
-const find = withAuthAsync(async (id: string | mongoose.Types.ObjectId): Promise<IUser | null> => {
+const find = async (id: string | mongoose.Types.ObjectId): Promise<IUser | null> => {
   try {
     return await User.findById(id)
   } catch (ignored) {
     return null
   }
-})
+}
 
 
 const register = async (name: string, loginname: string, password: string): Promise<IUser> => {
-  if (!password) {
-    throw new UserInputError('`password` is required')
-  }
-
   if (password.length < 6 || password.length > 128) {
     throw new UserInputError('password must be 6 to 128 characters long')
   }
@@ -64,7 +40,8 @@ const register = async (name: string, loginname: string, password: string): Prom
   const user = new User({
     name: name,
     loginname: loginname,
-    password: hashedPassword
+    password: hashedPassword,
+    permissions: [],
   })
 
   return await user.save()
@@ -121,7 +98,4 @@ export default {
   register,
   login,
   getUserFromToken,
-
-  withAuth,
-  withAuthAsync
 }

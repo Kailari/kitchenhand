@@ -1,6 +1,12 @@
 import { gql } from 'apollo-server'
 
 const types = gql`
+  enum UserPermissions {
+    ADMIN,
+    PRIVATE_QUERIES,
+    SUPERUSER
+  }
+
   type User @entity(
     additionalFields: [
       { path: "password", type: "string" },
@@ -10,6 +16,7 @@ const types = gql`
     id: ID! @id
     name: String! @column
     recipes: [Recipe]! @link
+    permissions: [UserPermissions!]! @column
   }
 
   type Token {
@@ -17,10 +24,10 @@ const types = gql`
   }
 
   extend type Query {
-    userCount: Int!
-    allUsers: [User!]!
-    findUser(id: ID!): User
-    me: User
+    userCount: Int! @requirePermissions(permissions: [PRIVATE_QUERIES])
+    allUsers: [User!]! @requirePermissions(permissions: [PRIVATE_QUERIES])
+    findUser(id: ID!): User @requireLogin
+    me: User @requireLogin
   }
 
   extend type Mutation {

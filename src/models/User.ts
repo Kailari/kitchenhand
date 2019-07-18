@@ -26,7 +26,8 @@ const schema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Recipe'
     }
-  ]
+  ],
+  permissions: [String],
 })
 schema.plugin(uniqueValidator)
 
@@ -36,6 +37,6 @@ schema.set('toJSON', {
   }
 })
 
-export interface IUser extends DdObjectDocument, UserDbObject {}
+export interface IUser extends DdObjectDocument, UserDbObject { }
 
 export default mongoose.model<IUser>('User', schema)

@@ -23,11 +23,11 @@ const types = gql`
   }
 
   extend type Query {
-    recipeCount: Int!
-    allRecipes: [Recipe!]!
-    recipe(id: ID!): Recipe
-    myRecipes: [Recipe!]
-    userRecipes(id: ID!): [Recipe!]
+    recipeCount: Int! @requirePermissions(permissions: [PRIVATE_QUERIES])
+    allRecipes: [Recipe!]! @requireLogin
+    recipe(id: ID!): Recipe @requireLogin
+    myRecipes: [Recipe!] @requireLogin
+    userRecipes(id: ID!): [Recipe!] @requireLogin
   }
 
   extend type Mutation {
@@ -35,25 +35,25 @@ const types = gql`
       name: String!
       description: String!
       ingredients: [ShallowRecipeIngredient!]
-    ): Recipe!
+    ): Recipe! @requireLogin
     removeRecipe(
       id: ID!
-    ): Recipe
+    ): Recipe @requireLogin
 
     addRecipeIngredient(
       recipeId: ID!
-    ): RecipeIngredient
+    ): RecipeIngredient @requireLogin
     updateRecipeIngredient(
       id: ID!
       recipeId: ID!
       ingredientId: ID
       unitId: ID
       amount: Float
-    ): RecipeIngredient
+    ): RecipeIngredient @requireLogin
     removeRecipeIngredient(
       recipeId: ID!
       id: ID!
-    ): ID
+    ): ID @requireLogin
   }
 `
 

@@ -5,7 +5,6 @@ import { IUser } from '../models/User'
 import ingredientService from './ingredientService'
 import unitService from './unitService'
 import { ShallowRecipeIngredient } from '../generated/graphql'
-import { withAuthAsync as withAuth } from './authService'
 
 const count = async (): Promise<number> => {
   return await Recipe.collection.countDocuments()
@@ -100,12 +99,13 @@ const removeIngredient = async (recipeId: string, id: string): Promise<string | 
 }
 
 export default {
-  count: withAuth(count),
-  getAll: withAuth(getAll),
-  find: withAuth(find),
-  findAllByUser: withAuth(findAllByUser),
-  add: withAuth(add),
-  addIngredient: withAuth(addIngredient),
-  remove: withAuth(remove),
-  removeIngredient: withAuth(removeIngredient),
+  add,
+  remove,
+  find,
+  count,
+  getAll,
+
+  findAllByUser,
+  addIngredient,
+  removeIngredient,
 }

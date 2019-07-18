@@ -25,6 +25,11 @@ import {
 } from './resolvers/ingredient'
 
 import { Resolvers } from '../generated/graphql'
+import authDirectives from './directives/auth.classes'
+
+const schemaDirectives = {
+  ...authDirectives,
+}
 
 const resolvers: Resolvers = {
   Query: {
@@ -44,7 +49,8 @@ const resolvers: Resolvers = {
 const schema = makeExecutableSchema({
   allowUndefinedInResolve: true,
   typeDefs: typeDefs,
-  resolvers: resolvers as IResolvers
+  resolvers: resolvers as IResolvers,
+  schemaDirectives: schemaDirectives
 }) as GraphQLSchema
 
 export default schema

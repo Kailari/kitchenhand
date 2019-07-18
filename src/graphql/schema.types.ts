@@ -9,6 +9,8 @@ import unitTypes from './types/unit'
 import ingredientTypes from './types/ingredient'
 import recipeTypes from './types/recipe'
 
+import authDirectives from './directives/auth'
+
 const typeDefsInternal = gql`
   type Query {
     _empty: String
@@ -21,6 +23,7 @@ const typeDefsInternal = gql`
 
 export const typeDefs = [
   DIRECTIVES,
+  authDirectives,
   typeDefsInternal,
   authTypes,
   unitTypes,
@@ -30,5 +33,5 @@ export const typeDefs = [
 
 export default makeExecutableSchema({
   allowUndefinedInResolve: true,
-  typeDefs: typeDefs
+  typeDefs: typeDefs,
 }) as GraphQLSchema
