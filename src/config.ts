@@ -24,7 +24,7 @@ const JWT_SECRET = jwtSecret
 const PORT = port
 const STATIC_FILE_PATH = '../static/'
 
-export {
+export default {
   MONGODB_URI,
   JWT_SECRET,
   PORT,

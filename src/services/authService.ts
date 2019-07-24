@@ -3,10 +3,8 @@ import jwt from 'jsonwebtoken'
 import { UserInputError, AuthenticationError } from 'apollo-server'
 import mongoose from 'mongoose'
 
-import { Context } from '../server'
-import * as config from '../config'
+import config from '../config'
 import User, { IUser } from '../models/User'
-import { UserPermissions } from '../generated/graphql';
 
 interface TokenData {
   loginname: string,

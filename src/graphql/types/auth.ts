@@ -27,7 +27,7 @@ const types = gql`
     userCount: Int! @requirePermissions(permissions: [PRIVATE_QUERIES])
     allUsers: [User!]! @requirePermissions(permissions: [PRIVATE_QUERIES])
     findUser(id: ID!): User @requireLogin
-    me: User @requireLogin
+    me: User
   }
 
   extend type Mutation {

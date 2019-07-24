@@ -3,7 +3,6 @@ import { UserInputError, ApolloError } from 'apollo-server'
 import recipeService from '../../services/recipeService'
 import { QueryResolvers, MutationResolvers } from '../../generated/graphql'
 import { IRecipe, IRecipeIngredient } from '../../models/Recipe'
-import { IUser } from '../../models/User'
 
 export const queries: QueryResolvers = {
   recipeCount: async (): Promise<number> => recipeService.count(),
@@ -13,18 +12,18 @@ export const queries: QueryResolvers = {
       throw new UserInputError('`id` is required', { invalidArgs: 'id' })
     }
 
-    return await recipeService.find(args.id)
+    return await recipeService.get(args.id)
   },
   userRecipes: async (root, args): Promise<IRecipe[] | null> => {
     if (!args.id) {
       throw new UserInputError('`id` is required', { invalidArgs: 'id' })
     }
 
-    return await recipeService.findAllByUser(args.id)
+    return await recipeService.getAllByUser(args.id)
   },
   myRecipes: async (root, args, context): Promise<IRecipe[] | null> => {
     return context.currentUser
-      ? await recipeService.findAllByUser(context.currentUser._id)
+      ? await recipeService.getAllByUser(context.currentUser._id)
       : null
   }
 }
@@ -35,11 +34,20 @@ export const mutations: MutationResolvers = {
 
     let newRecipe = null
     try {
-      newRecipe = await recipeService.add(args.name, args.description, ingredients, context.currentUser as IUser)
+      const fields = {
+        name: args.name,
+        description: args.description,
+        ingredients,
+      }
+      newRecipe = await recipeService.create(fields, context.currentUser)
     } catch (error) {
       throw new UserInputError(error.message, {
         invalidArgs: Object.keys(error.errors)
       })
+    }
+
+    if (!newRecipe) {
+      throw new ApolloError('Unknown error while creating recipe', 'CREATE_FAILED')
     }
 
     return newRecipe
@@ -56,7 +64,7 @@ export const mutations: MutationResolvers = {
 
     return recipe
   },
-  addRecipeIngredient: async (root, args, context): Promise<IRecipeIngredient | null> => {
+  addRecipeIngredient: async (root, args): Promise<IRecipeIngredient | null> => {
     if (!args.recipeId) {
       throw new UserInputError('`recipeId` is required', { invalidArgs: 'recipeId' })
     }
@@ -69,7 +77,7 @@ export const mutations: MutationResolvers = {
 
     return newIngredient
   },
-  removeRecipeIngredient: async (root, args, context): Promise<string | null> => {
+  removeRecipeIngredient: async (root, args): Promise<string | null> => {
     if (!args.id) {
       throw new UserInputError('`id` is required', { invalidArgs: 'id' })
     }

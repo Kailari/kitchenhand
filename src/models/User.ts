@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import uniqueValidator from 'mongoose-unique-validator'
-import { UserDbObject } from '../generated/graphql'
+import { UserDbObject, UserPermissions } from '../generated/graphql'
 import { DdObjectDocument } from '../util/codegen'
 
 const schema = new mongoose.Schema({
@@ -37,6 +37,8 @@ schema.set('toJSON', {
   }
 })
 
-export interface IUser extends DdObjectDocument, UserDbObject { }
+export interface IUser extends DdObjectDocument, UserDbObject {
+  permissions: UserPermissions[],
+}
 
 export default mongoose.model<IUser>('User', schema)

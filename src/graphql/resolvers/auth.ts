@@ -5,16 +5,16 @@ import { QueryResolvers, MutationResolvers } from '../../generated/graphql'
 import { IUser } from '../../models/User'
 
 export const queries: QueryResolvers = {
-  userCount: async (root, args, context): Promise<number> => authService.userCount(context),
-  allUsers: async (root, args, context): Promise<IUser[]> => authService.getAll(context),
-  findUser: async (root, args, context): Promise<IUser | null> => {
+  userCount: async (): Promise<number> => await authService.userCount(),
+  allUsers: async (): Promise<IUser[]> => await authService.getAll(),
+  findUser: async (root, args): Promise<IUser | null> => {
     if (!args.id) {
       throw new UserInputError('`id` is required', { invalidArgs: 'id' })
     }
 
-    return await authService.find(context, args.id)
+    return await authService.find(args.id)
   },
-  me: (root, args, context): IUser | null => context.currentUser
+  me: (root, args, context): IUser | null => context.currentUser || null
 }
 
 export const mutations: MutationResolvers = {

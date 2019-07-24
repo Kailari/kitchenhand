@@ -1,12 +1,11 @@
 import mongoose from 'mongoose'
-import { AuthenticationError, UserInputError } from 'apollo-server'
+import { UserInputError } from 'apollo-server'
 import jwt from 'jsonwebtoken'
 
-import * as config from '../config'
+import config from '../config'
 import { connectMongoose, resetDatabase, disconnectMongoose } from '../test/mongooseHelper'
 import { allUsers, createUser } from '../test/createRows'
 import { IUser } from '../models/User'
-import { Context } from '../server'
 
 import authService from './authService'
 

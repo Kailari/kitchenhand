@@ -1,4 +1,4 @@
-import * as config from './config'
+import config from './config'
 import { ApolloServer } from 'apollo-server-express'
 import express from 'express'
 import mongoose from 'mongoose'
@@ -10,17 +10,19 @@ import authService from './services/authService'
 import schema from './graphql/schema'
 
 export interface Context {
-  currentUser: IUser | null,
+  currentUser?: IUser,
 }
 
-console.log('connecting to', config.MONGODB_URI)
-mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true })
-  .then((): void => {
-    console.log('Connected to MongoDB')
-  })
-  .catch((error): void => {
-    console.error('Error connecting: ', error.message)
-  })
+export const connectMongo = (): void => {
+  console.log('connecting to', config.MONGODB_URI)
+  mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true })
+    .then((): void => {
+      console.log('Connected to MongoDB')
+    })
+    .catch((error): void => {
+      console.error('Error connecting: ', error.message)
+    })
+}
 
 const app: express.Application = express()
 app.use(sslRedirect(['production']))
@@ -34,12 +36,12 @@ const server = new ApolloServer({
     if (auth && auth.toLowerCase().startsWith('bearer ')) {
       const tokenString = auth.substring(7)
       const currentUser = await authService.getUserFromToken(tokenString)
-      return { currentUser }
+      if (currentUser) {
+        return { currentUser }
+      }
     }
 
-    return {
-      currentUser: null
-    }
+    return {}
   }
 })
 server.applyMiddleware({ app })

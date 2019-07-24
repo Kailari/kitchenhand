@@ -5,6 +5,7 @@ import { IUser } from '../models/User'
 import ingredientService from './ingredientService'
 import unitService from './unitService'
 import { ShallowRecipeIngredient } from '../generated/graphql'
+import ResourceManager, { MongoCRUDService } from '../resources'
 
 const count = async (): Promise<number> => {
   return await Recipe.collection.countDocuments()
@@ -14,38 +15,47 @@ const getAll = async (): Promise<IRecipe[]> => {
   return await Recipe.find({}).populate('owner')
 }
 
-const find = async (id: mongoose.Types.ObjectId | string): Promise<IRecipe | null> => {
-  return await Recipe.findById(id)
+const get = async (id: string): Promise<IRecipe | null> => {
+  return await Recipe.findById(id).populate('owner')
 }
 
-const findAllByUser = async (ownerId: mongoose.Types.ObjectId | string): Promise<IRecipe[] | null> => {
+const getAllByUser = async (userId: string): Promise<IRecipe[] | null> => {
   return await Recipe.find({
     owner: {
-      _id: ownerId
+      _id: userId
     }
   }).populate('owner')
 }
 
-const add = async (name: string, description: string, ingredients: ShallowRecipeIngredient[], user: IUser): Promise<IRecipe> => {
+
+const create = async (fields: { name: string, description: string, ingredients: ShallowRecipeIngredient[] }, owner?: IUser): Promise<IRecipe> => {
+  if (!owner) {
+    throw new Error('Error creating recipe: Owner not specified!')
+  }
+
   const recipe = new Recipe({
-    name: name,
-    description: description,
-    owner: user.id,
-    ingredients: ingredients
+    name: fields.name,
+    description: fields.description,
+    owner: owner.id,
+    ingredients: fields.ingredients
   })
 
   const addedRecipe = await recipe.save() as IRecipe
-  user.recipes.push(addedRecipe.id)
-  await user.save()
+  owner.recipes.push(addedRecipe.id)
+  await owner.save()
 
-  addedRecipe.owner = user
+  addedRecipe.owner = owner
   return addedRecipe
 }
 
-const remove = async (id: mongoose.Types.ObjectId | string): Promise<IRecipe | null> => {
+const remove = async (id: string): Promise<IRecipe | null> => {
   const recipe = await Recipe.findByIdAndDelete(id).populate('owner')
   if (recipe === null) {
     return null
+  }
+
+  if (!recipe.owner) {
+    throw new Error('Error removing recipe from owner: owner is undefined!')
   }
 
   const owner = recipe.owner
@@ -98,14 +108,68 @@ const removeIngredient = async (recipeId: string, id: string): Promise<string | 
   return null
 }
 
-export default {
-  add,
-  remove,
-  find,
-  count,
-  getAll,
+interface RecipeFields {
+  name: string,
+  description: string,
+  ingredients: ShallowRecipeIngredient[],
+}
 
-  findAllByUser,
+interface RecipeService extends MongoCRUDService<IRecipe, RecipeFields> {
+  getAll: () => Promise<IRecipe[]>,
+  count: () => Promise<number>,
+
+  getAllByUser: (userId: string) => Promise<IRecipe[] | null>,
+  addIngredient: (recipeId: string) => Promise<IRecipeIngredient | null>,
+  removeIngredient: (recipeId: string, id: string) => Promise<string | null>,
+}
+
+export const simpleRecipeService = ResourceManager.asSimpleMongoCRUDService<RecipeService, IRecipe, RecipeFields>({
+  name: 'recipe',
+  model: Recipe,
+  hasOwner: true,
+  onCreate: async (created: IRecipe, fields: RecipeFields, maybeOwner?: IUser): Promise<IRecipe> => {
+    const owner = maybeOwner as IUser
+    owner.recipes.push(created.id)
+    await owner.save()
+
+    created.owner = owner
+    return created
+  },
+  onRemove: async (removed: IRecipe): Promise<IRecipe> => {
+    if (!removed.owner) {
+      throw new Error('Error removing recipe from owner: owner is undefined!')
+    }
+
+    const owner = removed.owner as IUser
+    const remainingRecipes = owner.recipes.filter((recipeId): boolean => recipeId !== removed._id)
+    owner.recipes = remainingRecipes
+    await owner.save()
+    return removed
+  },
+  populateQuery: (query) => query.populate('owner'),
+
+  getAll,
+  count,
+
+  getAllByUser,
   addIngredient,
   removeIngredient,
-}
+})
+
+export default ResourceManager.asService<RecipeService, IRecipe>({
+  name: 'recipe',
+  hasOwner: true,
+  model: Recipe,
+
+  create,
+  get,
+  update: (() => Promise.reject()),
+  remove,
+
+  getAll,
+  count,
+
+  getAllByUser,
+  addIngredient,
+  removeIngredient,
+})
