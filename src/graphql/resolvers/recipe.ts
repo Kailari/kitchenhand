@@ -12,6 +12,10 @@ export const queries: QueryResolvers = {
       throw new UserInputError('`id` is required', { invalidArgs: 'id' })
     }
 
+    if (!args.id.match(/^[0-9a-fA-F]{24}$/)) {
+      throw new UserInputError('malformed `id`', { invalidArgs: 'id' })
+    }
+
     return await recipeService.get(args.id)
   },
   userRecipes: async (root, args): Promise<IRecipe[] | null> => {
