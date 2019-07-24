@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import { allUsers, resetCounters } from './createRows'
+import { allUsers, resetCounters, allRecipes } from './createRows'
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -39,5 +39,6 @@ export const resetDatabase = async (): Promise<void> => {
   }
   await mongoose.connection.db.dropDatabase()
   allUsers.length = 0
+  allRecipes.length = 0
   resetCounters()
 }
