@@ -61,6 +61,10 @@ export const mutations: MutationResolvers = {
       throw new UserInputError('`id` is required', { invalidArgs: 'id' })
     }
 
+    if (!args.id.match(/^[0-9a-fA-F]{24}$/)) {
+      throw new UserInputError('malformed `id`', { invalidArgs: 'id' })
+    }
+
     const recipe = await recipeService.remove(args.id)
     if (!recipe) {
       throw new ApolloError('unknown `id`', 'BAD_ID')

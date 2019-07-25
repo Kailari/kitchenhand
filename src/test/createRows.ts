@@ -18,19 +18,23 @@ const allUsers: TestUser[] = []
 const allRecipes: IRecipe[] = []
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const createUser = async (...overrides: any[]): Promise<IUser> => {
+const createUser = async (overrides: { password?: string, [key: string]: any } = {}): Promise<TestUser> => {
   const n = (counters.user += 1)
+  const password: string = overrides.password || `some_secret_${n}`
+  delete overrides.password
   const iuser = new User({
     name: `Normal user #${n}`,
     loginname: `normie_${n}`,
-    password: await hash(`some_secret_${n}`, config.SALT_ROUNDS),
+    password: await hash(password, config.SALT_ROUNDS),
     ...overrides
   })
 
   const user = iuser as TestUser
-  user.plaintextPassword = `some_secret_${n}`
+  user.plaintextPassword = password
 
-  const savedUser = await user.save()
+  const savedIUser = await user.save()
+  const savedUser = savedIUser as TestUser
+  savedUser.plaintextPassword = password
   allUsers.push(savedUser)
   return savedUser
 }
