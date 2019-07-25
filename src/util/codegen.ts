@@ -1,11 +1,11 @@
 import mongoose from 'mongoose'
-import { IMongoResource } from '../resources'
+import { MongoResource } from '../resources'
 
 // Helpers for avoiding having to explicitely add id:string to every document inteface
-export interface DdObjectDocument extends mongoose.Document, IMongoResource {
+export interface DdObjectDocument extends mongoose.Document, MongoResource {
   id: string,
 }
 
-export interface DdObjectSubDocument extends mongoose.Document, IMongoResource {
+export interface DdObjectSubDocument extends mongoose.Document, MongoResource {
   id: string,
 }

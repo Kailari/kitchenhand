@@ -1,8 +1,6 @@
 import mongoose from 'mongoose'
 import { RecipeDbObject, RecipeIngredientDbObject } from '../generated/graphql'
 import { DdObjectDocument, DdObjectSubDocument } from '../util/codegen'
-import { IResource } from '../resources'
-import { IUser } from './User';
 
 const recipeIngredientSchema = new mongoose.Schema({
   ingredient: {

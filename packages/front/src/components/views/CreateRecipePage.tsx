@@ -6,7 +6,7 @@ import uuidv1 from 'uuid/v1'
 import { PageWithHeadingAndBreadcrumb, PageWithBreadcrumbsProps } from './PageBase'
 import { MY_RECIPES, NEW_RECIPES } from '../recipes/RecipesQuery'
 import { RouteComponentProps, withRouter } from 'react-router'
-import { Recipe, RecipeIngredient } from '../MainApp'
+import { Recipe } from '../MainApp'
 import EditRecipeForm from '../recipes/EditRecipeForm'
 import { Segment, Button } from 'semantic-ui-react'
 

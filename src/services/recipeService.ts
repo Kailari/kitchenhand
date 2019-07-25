@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
-
 import Recipe, { IRecipe, RecipeIngredient, IRecipeIngredient } from '../models/Recipe'
 import { IUser } from '../models/User'
 import ingredientService from './ingredientService'
@@ -146,7 +145,7 @@ export const simpleRecipeService = ResourceManager.asSimpleMongoCRUDService<Reci
     await owner.save()
     return removed
   },
-  populateQuery: (query) => query.populate('owner'),
+  populateQuery: (query): mongoose.DocumentQuery<IRecipe | null, IRecipe> => query.populate('owner'),
 
   getAll,
   count,
@@ -163,7 +162,7 @@ export default ResourceManager.asService<RecipeService, IRecipe>({
 
   create,
   get,
-  update: (() => Promise.reject()),
+  update: (async (): Promise<null> => null),
   remove,
 
   getAll,

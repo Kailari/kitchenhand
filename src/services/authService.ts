@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { UserInputError, AuthenticationError } from 'apollo-server'
+import { UserInputError } from 'apollo-server'
 import mongoose from 'mongoose'
 
 import config from '../config'

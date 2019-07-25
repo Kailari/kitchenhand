@@ -1,36 +1,38 @@
-import { IUser } from "./models/User"
+import { IUser } from './models/User'
 import mongoose from 'mongoose'
 
-type FieldsDefaultType = { [key: string]: any }
+interface FieldsDefaultType {
+  [key: string]: any,
+}
 
-export interface IResource {
+export interface Resource {
   id: any,
   owner: IUser | any | undefined,
 }
 
-export interface IMongoResource extends IResource, mongoose.Document {
-  id: any
+export interface MongoResource extends Resource, mongoose.Document {
+  id: any,
 }
 
-interface ResourceService<TResource extends IResource> {
+interface ResourceService<TResource extends Resource> {
   name: string,
   hasOwner: boolean,
   get: (id: any) => Promise<TResource | null>,
 }
 
-export interface ServiceWithCreate<TResource extends IResource, TFields = FieldsDefaultType> extends ResourceService<TResource> {
+export interface ServiceWithCreate<TResource extends Resource, TFields = FieldsDefaultType> extends ResourceService<TResource> {
   create: (fields: TFields, owner?: IUser) => Promise<TResource | null>,
 }
 
-export interface ServiceWithUpdate<TResource extends IResource> extends ResourceService<TResource> {
+export interface ServiceWithUpdate<TResource extends Resource> extends ResourceService<TResource> {
   update: (id: any, updatedFields: { [key: string]: any }) => Promise<TResource | null>,
 }
 
-export interface ServiceWithRemove<TResource extends IResource> extends ResourceService<TResource> {
+export interface ServiceWithRemove<TResource extends Resource> extends ResourceService<TResource> {
   remove: (id: any) => Promise<TResource | null>,
 }
 
-export interface MongoCRUDService<TResource extends IMongoResource, TFields = FieldsDefaultType> extends
+export interface MongoCRUDService<TResource extends MongoResource, TFields = FieldsDefaultType> extends
   ResourceService<TResource>,
   ServiceWithCreate<TResource, TFields>,
   ServiceWithUpdate<TResource>,
@@ -40,13 +42,13 @@ export interface MongoCRUDService<TResource extends IMongoResource, TFields = Fi
 
 let resourceServices = new Map<string, ResourceService<any>>()
 
-const getServiceByName = <TResource extends IResource>(name: string): ResourceService<TResource> | null => {
+const getServiceByName = <TResource extends Resource>(name: string): ResourceService<TResource> | null => {
   return resourceServices.get(name) || null
 }
 
 const asService = <
   TService extends ResourceService<TResource>,
-  TResource extends IResource
+  TResource extends Resource
 >(
   service: TService
 ): TService => {
@@ -55,7 +57,7 @@ const asService = <
   return service
 }
 
-interface SimpleMongoCrudServiceArgs<TResource extends IMongoResource, TFields = FieldsDefaultType> {
+interface SimpleMongoCrudServiceArgs<TResource extends MongoResource, TFields = FieldsDefaultType> {
   name: string,
   model: mongoose.Model<TResource>,
   hasOwner?: boolean,
@@ -69,7 +71,7 @@ interface SimpleMongoCrudServiceArgs<TResource extends IMongoResource, TFields =
 
 const asSimpleMongoCRUDService = <
   TService extends MongoCRUDService<TResource, TFields>,
-  TResource extends IMongoResource,
+  TResource extends MongoResource,
   TFields = FieldsDefaultType
 >(
   args: SimpleMongoCrudServiceArgs<TResource, TFields>
@@ -118,14 +120,15 @@ const asSimpleMongoCRUDService = <
     return resource && args.onRemove ? await args.onRemove(resource) : resource
   }
 
-  return asService<TService, TResource>({
+  const service = {
     ...args,
     hasOwner: args.hasOwner || false,
     create,
     get,
     update,
     remove,
-  } as TService)
+  } as unknown
+  return asService<TService, TResource>(service as TService)
 }
 
 export default {

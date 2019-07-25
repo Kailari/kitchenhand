@@ -55,7 +55,8 @@ module.exports = {
         'maxBOF': 0
       }
     ],
-    "indent": "off",
+    '@typescript-eslint/no-explicit-any': 0,
+    'indent': 'off',
     '@typescript-eslint/indent': ['error', 2],
     'no-console': 0,
     'linebreak-style': [
