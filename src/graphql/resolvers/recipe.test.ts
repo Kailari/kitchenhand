@@ -377,5 +377,11 @@ describe(`With a test database with ${NUM_USERS} users with ${NUM_RECIPES} recip
       const result = await query(allRecipesQuery(), { authorization: token })
       expect(result.allRecipes.length).toBe(NUM_USERS * NUM_RECIPES)
     })
+
+    test('mutating with removeRecipe on non-owned recipe succeeds', async () => {
+      const recipe = await Recipe.findOne({}) as IRecipe
+      await expect(query(removeRecipeMutation(recipe.id), { authorization: token })).toResolve()
+      await expect(Recipe.countDocuments({})).resolves.toBe(NUM_USERS * NUM_RECIPES - 1)
+    })
   })
 })
