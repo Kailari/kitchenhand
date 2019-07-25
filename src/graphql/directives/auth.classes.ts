@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { SchemaDirectiveVisitor, AuthenticationError, ApolloError } from 'apollo-server'
+import { SchemaDirectiveVisitor, AuthenticationError, ApolloError, UserInputError } from 'apollo-server'
 import { defaultFieldResolver, GraphQLField } from 'graphql'
 
 import ResourceManager from '../../resources'
@@ -55,7 +54,7 @@ class OwnerOnlyDirective extends SchemaDirectiveVisitor {
   public visitFieldDefinition(field: GraphQLField<any, Context>) {
     const { resolve = defaultFieldResolver } = field
     const resourceTypeName: string = this.args.resourceType
-    const idArgName: string = this.args.idArgName
+    const idArgName: string = this.args.idArg
     const allowSuperUser: boolean = this.args.canSuperUserAccess
 
     const resourceType = ResourceManager.getServiceByName(resourceTypeName)
@@ -73,6 +72,10 @@ class OwnerOnlyDirective extends SchemaDirectiveVisitor {
       }
 
       const { [idArgName]: id } = args
+      if (!args.id.match(/^[0-9a-fA-F]{24}$/)) {
+        throw new UserInputError('malformed `id`', { invalidArgs: 'id' })
+      }
+
       const resource = await resourceType.get(id)
       if (!resource) {
         throw new ApolloError(`Invalid resourece ID "${id}" for resource of type "${resourceTypeName}"`, 'BAD_ID')

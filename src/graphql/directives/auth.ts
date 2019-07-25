@@ -10,7 +10,7 @@ export default gql`
 
   directive @ownerOnly(
     resourceType: String!
-    idField: String! = "resourceId"
+    idArg: String! = "resourceId"
     canSuperUserAccess: Boolean! = true
   ) on FIELD_DEFINITION
 `

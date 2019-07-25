@@ -327,13 +327,12 @@ describe(`With a test database with ${NUM_USERS} users with ${NUM_RECIPES} recip
             })
         })
 
-        // FIXME: Uncomment when onlyOwner is properly implemented
-        //test('rejects with if user does not own the recipe', async () => {
-        //  const recipe = await Recipe.findOne({ owner: allUsers[3].id }) as IRecipe
-        //  await expect(query(removeRecipeMutation(recipe.id), { authorization: token }))
-        //    .rejects
-        //    .toContainApolloError('UNAUTHENTICATED', expect.stringContaining('Only owner'))
-        //})
+        test('rejects with if user does not own the recipe', async () => {
+          const recipe = await Recipe.findOne({ owner: allUsers[3].id }) as IRecipe
+          await expect(query(removeRecipeMutation(recipe.id), { authorization: token }))
+            .rejects
+            .toContainApolloError('UNAUTHENTICATED', expect.stringContaining('Only owner'))
+        })
 
         test('removes the removed recipe from owner\'s recipes', async () => {
           const recipe = await Recipe.findOne({ owner: loggedInUser.id }) as IRecipe

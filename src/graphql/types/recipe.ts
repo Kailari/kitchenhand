@@ -38,7 +38,7 @@ const types = gql`
     ): Recipe! @requireLogin
     removeRecipe(
       id: ID!
-    ): Recipe @requireLogin
+    ): Recipe @requireLogin @ownerOnly(resourceType: "recipe", idArg: "id")
 
     addRecipeIngredient(
       recipeId: ID!
