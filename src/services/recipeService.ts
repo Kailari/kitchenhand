@@ -14,56 +14,12 @@ const getAll = async (): Promise<IRecipe[]> => {
   return await Recipe.find({}).populate('owner')
 }
 
-const get = async (id: string): Promise<IRecipe | null> => {
-  return await Recipe.findById(id).populate('owner')
-}
-
 const getAllByUser = async (userId: string): Promise<IRecipe[] | null> => {
   return await Recipe.find({
     owner: {
       _id: userId
     }
   }).populate('owner')
-}
-
-
-const create = async (fields: { name: string, description: string, ingredients: ShallowRecipeIngredient[] }, owner?: IUser): Promise<IRecipe> => {
-  if (!owner) {
-    throw new Error('Error creating recipe: Owner not specified!')
-  }
-
-  const recipe = new Recipe({
-    name: fields.name,
-    description: fields.description,
-    owner: owner.id,
-    ingredients: fields.ingredients
-  })
-
-  const addedRecipe = await recipe.save() as IRecipe
-  owner.recipes.push(addedRecipe.id)
-  await owner.save()
-
-  addedRecipe.owner = owner
-  return addedRecipe
-}
-
-const remove = async (id: string): Promise<IRecipe | null> => {
-  const recipe = await Recipe.findByIdAndDelete(id).populate('owner')
-  if (recipe === null) {
-    return null
-  }
-
-  if (!recipe.owner) {
-    throw new Error('Error removing recipe from owner: owner is undefined!')
-  }
-
-  const owner = recipe.owner
-  const remainingRecipes = owner.recipes.filter((r: IRecipe): boolean => r._id !== recipe._id)
-  owner.recipes = remainingRecipes
-  await owner.save()
-
-  //await RecipeIngredient.deleteMany({ _id: { $in: recipe.ingredients.map((ingredient): string => ingredient._id) } })
-  return recipe
 }
 
 const addIngredient = async (recipeId: string): Promise<IRecipeIngredient | null> => {
@@ -122,7 +78,7 @@ interface RecipeService extends MongoCRUDService<IRecipe, RecipeFields> {
   removeIngredient: (recipeId: string, id: string) => Promise<string | null>,
 }
 
-export const simpleRecipeService = ResourceManager.asSimpleMongoCRUDService<RecipeService, IRecipe, RecipeFields>({
+export default ResourceManager.asSimpleMongoCRUDService<RecipeService, IRecipe, RecipeFields>({
   name: 'recipe',
   model: Recipe,
   hasOwner: true,
@@ -146,24 +102,6 @@ export const simpleRecipeService = ResourceManager.asSimpleMongoCRUDService<Reci
     return removed
   },
   populateQuery: (query): mongoose.DocumentQuery<IRecipe | null, IRecipe> => query.populate('owner'),
-
-  getAll,
-  count,
-
-  getAllByUser,
-  addIngredient,
-  removeIngredient,
-})
-
-export default ResourceManager.asService<RecipeService, IRecipe>({
-  name: 'recipe',
-  hasOwner: true,
-  model: Recipe,
-
-  create,
-  get,
-  update: (async (): Promise<null> => null),
-  remove,
 
   getAll,
   count,
