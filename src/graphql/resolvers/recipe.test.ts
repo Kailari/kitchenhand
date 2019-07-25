@@ -1,52 +1,11 @@
-import supertest from 'supertest'
-
-import app from '../../server'
 import { resetDatabase, disconnectMongoose, connectMongoose } from '../../test/mongooseHelper'
+import { TestQueryFunction, startQueryTestServer } from '../../test/apolloHelper'
+
 import User, { IUser } from '../../models/User'
 import { createUser, createRecipe, allUsers, TestUser, allRecipes } from '../../test/createRows'
 import authService from '../../services/authService'
 import Recipe, { IRecipe } from '../../models/Recipe'
 import { UserPermissions } from '../../generated/graphql'
-
-// TODO: Move elsewhere, generalize and clean up
-
-type TestQueryFunction = <TData = any>(query: string, headers?: { [key: string]: string }, expectedHttpResponse?: number) => Promise<TData>
-
-const createQuery = (server: supertest.SuperTest<supertest.Test>): TestQueryFunction => {
-  return async <TData = any>(
-    query: string,
-    headers?: { [key: string]: string },
-    expectedHttpResponse?: number
-  ): Promise<TData> => {
-    const request = server.post('/graphql')
-
-    if (headers) {
-      for (const key in headers) {
-        request.set(key, headers[key])
-      }
-    }
-
-    request
-      .send({ query: query || '' })
-      .expect(!!expectedHttpResponse || 200)
-
-    try {
-      const result = await request
-      if (result.body.errors) {
-        return Promise.reject(result.body.errors)
-      }
-
-      return result.body.data
-    } catch (error) {
-      throw new Error(`Error creating query: ${error}`)
-    }
-  }
-}
-
-const startQueryTestServer = (): TestQueryFunction => {
-  const server = supertest(app)
-  return createQuery(server)
-}
 
 beforeAll(connectMongoose)
 
