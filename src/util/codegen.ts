@@ -3,9 +3,9 @@ import { MongoResource } from '../resources'
 
 // Helpers for avoiding having to explicitely add id:string to every document inteface
 export interface DdObjectDocument extends mongoose.Document, MongoResource {
-  id: string,
+  id: ID,
 }
 
 export interface DdObjectSubDocument extends mongoose.Document, MongoResource {
-  id: string,
+  id: ID,
 }

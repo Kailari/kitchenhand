@@ -42,18 +42,18 @@ const types = gql`
 
     addRecipeIngredient(
       recipeId: ID!
-    ): RecipeIngredient @requireLogin
+    ): RecipeIngredient @requireLogin @ownerOnly(resourceType: "recipe", idArg: "recipeId")
     updateRecipeIngredient(
       id: ID!
       recipeId: ID!
       ingredientId: ID
       unitId: ID
       amount: Float
-    ): RecipeIngredient @requireLogin
+    ): RecipeIngredient @requireLogin @ownerOnly(resourceType: "recipe", idArg: "recipeId")
     removeRecipeIngredient(
       recipeId: ID!
       id: ID!
-    ): ID @requireLogin
+    ): ID @requireLogin @ownerOnly(resourceType: "recipe", idArg: "recipeId")
   }
 `
 

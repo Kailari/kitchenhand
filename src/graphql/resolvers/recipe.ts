@@ -77,8 +77,7 @@ export const mutations: MutationResolvers = {
       throw new UserInputError('`recipeId` is required', { invalidArgs: 'recipeId' })
     }
 
-    let newIngredient = null
-    newIngredient = await recipeService.addIngredient(args.recipeId)
+    const newIngredient = await recipeService.addIngredient(args.recipeId)
     if (!newIngredient) {
       throw new ApolloError('unknown `recipeId`', 'BAD_ID')
     }
@@ -94,13 +93,27 @@ export const mutations: MutationResolvers = {
       throw new UserInputError('`recipeId` is required', { invalidArgs: 'recipeId' })
     }
 
-    let removed = null
-    removed = await recipeService.removeIngredient(args.recipeId, args.id)
+    const removed = await recipeService.removeIngredient(args.recipeId, args.id)
     if (!removed) {
       throw new ApolloError('unknown `id` or `recipeId`', 'BAD_ID')
     }
 
-    console.log('removed: ', removed)
     return removed
+  },
+  updateRecipeIngredient: async (root, args): Promise<IRecipeIngredient | null> => {
+    if (!args.id) {
+      throw new UserInputError('`id` is required', { invalidArgs: 'id' })
+    }
+
+    if (!args.recipeId) {
+      throw new UserInputError('`recipeId` is required', { invalidArgs: 'recipeId' })
+    }
+
+    const updated = await recipeService.updateIngredient(args.id, args.recipeId, args.amount || undefined, args.ingredientId || undefined, args.unitId || undefined)
+    if (!updated) {
+      throw new ApolloError('unknown `id` or `recipeId`', 'BAD_ID')
+    }
+
+    return updated
   }
 }

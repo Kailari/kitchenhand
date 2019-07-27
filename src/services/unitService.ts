@@ -1,18 +1,15 @@
 import Unit, { IUnit } from '../models/Unit'
+import ResourceManager, { MongoCRUDService } from '../resources'
 
-var DEFAULT: IUnit | null = null
-
-const getDefault = async (): Promise<IUnit> => {
-  if (!DEFAULT) {
-    const defaultFromDb = await Unit.findOne({ name: 'default' })
-    DEFAULT = defaultFromDb === null
-      ? await new Unit({ name: 'default', abbreviation: 'units' }).save()
-      : defaultFromDb
-  }
-
-  return DEFAULT as IUnit
+interface UnitFields {
+  name: string,
+  abbreviation: string,
 }
 
-export default {
-  getDefault,
-}
+type UnitService = MongoCRUDService<IUnit, UnitFields>
+
+export default ResourceManager.asSimpleMongoCRUDService<UnitService, IUnit, UnitFields>({
+  name: 'unit',
+  model: Unit,
+  hasOwner: false,
+})

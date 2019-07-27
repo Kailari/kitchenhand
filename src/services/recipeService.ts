@@ -5,6 +5,8 @@ import ingredientService from './ingredientService'
 import unitService from './unitService'
 import { ShallowRecipeIngredient } from '../generated/graphql'
 import ResourceManager, { MongoCRUDService } from '../resources'
+import Ingredient from '../models/Ingredient';
+import Unit from '../models/Unit';
 
 const count = async (): Promise<number> => {
   return await Recipe.collection.countDocuments()
@@ -22,34 +24,45 @@ const getAllByUser = async (userId: string): Promise<IRecipe[] | null> => {
   }).populate('owner')
 }
 
-const addIngredient = async (recipeId: string): Promise<IRecipeIngredient | null> => {
+const addIngredient = async (recipeId: string, amount: number, ingredientId: ID, unitId?: ID): Promise<IRecipeIngredient | null> => {
   const recipe = await Recipe.findById(recipeId)
-  if (recipe === null) {
+  if (!recipe) {
     return null
   }
 
-  const defaultIngredient = await ingredientService.getDefault()
-  const defaultUnit = await unitService.getDefault()
+  const ingredient = await ingredientService.get(ingredientId)
+  if (!ingredient) {
+    return null
+  }
+
+  const unit = unitId
+    ? await unitService.get(unitId)
+    : await unitService.get(ingredient.defaultUnit)
+  if (!unit) {
+    return null
+  }
+
   const newIngredient = new RecipeIngredient({
-    amount: 1.0,
-    ingredient: defaultIngredient,
-    unit: defaultUnit
+    amount: amount,
+    ingredient: ingredient.id,
+    unit: unit.id,
   })
   recipe.ingredients.push(newIngredient)
   await recipe.save()
 
+  newIngredient.ingredient = ingredient
+  newIngredient.unit = unit
   return newIngredient
 }
 
-const removeIngredient = async (recipeId: string, id: string): Promise<string | null> => {
+const removeIngredient = async (recipeId: ID, id: ID): Promise<string | null> => {
   const parent = await Recipe.findById(recipeId)
   if (!parent) {
     return null
   }
 
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const ingredient = (parent.ingredients as any).id(id)
+    const ingredient: IRecipeIngredient | null = (parent.ingredients as any).id(id)
     if (!ingredient) {
       return null
     }
@@ -63,6 +76,48 @@ const removeIngredient = async (recipeId: string, id: string): Promise<string | 
   return null
 }
 
+const updateIngredient = async (id: ID, recipeId: ID, amount?: number, ingredientId?: ID, unitId?: ID): Promise<IRecipeIngredient | null> => {
+  const recipe = await Recipe.findById(recipeId)
+    .populate({
+      path: 'ingredients',
+      populate: [
+        {
+          path: 'ingredient'
+        },
+        {
+          path: 'unit'
+        }
+      ]
+    })
+
+  console.log('recipe:', recipe)
+  if (!recipe) {
+    return null
+  }
+
+  const recipeIngredient: IRecipeIngredient | null = (recipe.ingredients as any).id()
+  if (recipeIngredient === null) {
+    return null
+  }
+
+  if (amount) recipeIngredient.amount = amount
+  let ingredient = recipeIngredient.ingredient
+  if (ingredientId) {
+    ingredient = await Ingredient.findById(ingredientId)
+    if (ingredient) recipeIngredient.ingredient = ingredientId
+  }
+  let unit = recipeIngredient.unit
+  if (unitId) {
+    unit = await Unit.findById(unitId)
+    if (unit) recipeIngredient.unit = unitId
+  }
+  await recipeIngredient.save()
+
+  recipeIngredient.ingredient = unit
+  recipeIngredient.unit = unit
+  return recipeIngredient
+}
+
 interface RecipeFields {
   name: string,
   description: string,
@@ -73,9 +128,10 @@ interface RecipeService extends MongoCRUDService<IRecipe, RecipeFields> {
   getAll: () => Promise<IRecipe[]>,
   count: () => Promise<number>,
 
-  getAllByUser: (userId: string) => Promise<IRecipe[] | null>,
-  addIngredient: (recipeId: string) => Promise<IRecipeIngredient | null>,
-  removeIngredient: (recipeId: string, id: string) => Promise<string | null>,
+  getAllByUser: (userId: ID) => Promise<IRecipe[] | null>,
+  addIngredient: (recipeId: ID) => Promise<IRecipeIngredient | null>,
+  removeIngredient: (recipeId: ID, id: ID) => Promise<string | null>,
+  updateIngredient: (id: ID, recipeId: ID, amount?: number, ingredientId?: ID, unitId?: ID) => Promise<IRecipeIngredient | null>,
 }
 
 export default ResourceManager.asSimpleMongoCRUDService<RecipeService, IRecipe, RecipeFields>({
@@ -103,10 +159,11 @@ export default ResourceManager.asSimpleMongoCRUDService<RecipeService, IRecipe, 
   },
   populateQuery: (query): mongoose.DocumentQuery<IRecipe | null, IRecipe> => query.populate('owner'),
 
-  getAll,
   count,
+  getAll,
 
   getAllByUser,
   addIngredient,
   removeIngredient,
+  updateIngredient,
 })

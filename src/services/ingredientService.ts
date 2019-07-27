@@ -1,20 +1,16 @@
 import Ingredient, { IIngredient } from '../models/Ingredient'
 import unitService from './unitService'
+import ResourceManager, { MongoCRUDService } from '../resources'
 
-var DEFAULT: IIngredient | null
-
-const getDefault = async (): Promise<IIngredient> => {
-  if (!DEFAULT) {
-    const defaultFromDb = await Ingredient.findOne({ name: 'default' })
-    const defaultUnit = await unitService.getDefault()
-    DEFAULT = defaultFromDb === null
-      ? await new Ingredient({ id: 'DEFAULT_DUMMY', name: 'default', defaultUnit: defaultUnit }).save()
-      : defaultFromDb
-  }
-
-  return DEFAULT as IIngredient
+interface IngredientFields {
+  name: string,
+  defaultUnit: ID,
 }
 
-export default {
-  getDefault,
-}
+type IngredientService = MongoCRUDService<IIngredient, IngredientFields>
+
+export default ResourceManager.asSimpleMongoCRUDService<IngredientService, IIngredient, IngredientFields>({
+  name: 'ingredient',
+  model: Ingredient,
+  hasOwner: false,
+})
