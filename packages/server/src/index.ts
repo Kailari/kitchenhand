@@ -1,7 +1,7 @@
-import config from './src/config'
+import config from './config'
 import http from 'http'
 
-import app, { connectMongo } from './src/server'
+import app, { connectMongo } from './server'
 
 connectMongo()
 const httpServer: http.Server = http.createServer(app)

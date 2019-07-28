@@ -1,7 +1,6 @@
-import { ValidatorFunc } from '../types'
-import { createParameterizedValidator } from '../util'
+import { ValidatorFunc, createParameterizedValidator } from '../validator'
 
-interface StringValidationParameters {
+export interface StringValidationParameters {
   /** Minimum allowed length of the string. Defaults to no limit. */
   minLength?: number,
   /** Maximum allowed length of the string. Defaults to no limit. */

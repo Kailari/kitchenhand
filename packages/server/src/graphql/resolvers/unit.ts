@@ -2,7 +2,7 @@ import { QueryResolvers, MutationResolvers } from '../../generated/graphql'
 
 import unitService from '../../services/unitService'
 import { IUnit } from '../../models/Unit'
-import { doValidation, validator } from '../../util/validation/validation'
+import { doValidation, validator } from 'validators'
 
 export const queries: QueryResolvers = {
   getUnit: async (root, args): Promise<IUnit | null> => {

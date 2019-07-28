@@ -1,0 +1,14 @@
+{
+  "name": "validators",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Validator utility library for streamlining implementing GraphQL resolvers",
+  "main": "build/index.js",
+  "types": "build/index.d.js",
+  "author": "Ilari Tommiska",
+  "license": "ISC",
+
+  "dependencies": {
+    "apollo-server": "^2.5.0"
+  }
+}

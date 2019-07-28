@@ -1,5 +1,5 @@
 import { ValidationError, ValidationErrorEntry } from './error'
-import { ValidatorFunc } from './types'
+import { ValidatorFunc } from './validator'
 
 import isValidId from './validators/id'
 import string from './validators/string'

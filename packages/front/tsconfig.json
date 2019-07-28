@@ -14,11 +14,16 @@
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true
+    "noEmit": true,
+    "rootDir": "src",
+    "outDir": "build",
+    "isolatedModules": true
   },
   "include": [
-    "./src/"
+    "./src/**/*"
   ],
-  "exclude": []
+  "exclude": [
+    "**/build/**/*",
+    "**/node_modules/**/*"
+  ]
 }
