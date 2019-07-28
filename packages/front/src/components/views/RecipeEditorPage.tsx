@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from 'react'
-import { gql } from 'apollo-boost'
+import gql from 'graphql-tag'
 import { useMutation, useQuery } from 'react-apollo-hooks'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { Loader } from 'semantic-ui-react'
@@ -69,8 +69,8 @@ interface RecipeEditorProps extends PageWithBreadcrumbsProps, RouteComponentProp
 const RecipeEditorPage: FunctionComponent<RecipeEditorProps> = ({ history, breadcrumbs, recipeId }) => {
   const [recipe, setRecipe] = useState<Recipe | null>(null)
 
-  const addIngredientMutation = useMutation<AddIngredientResult>(ADD_INGREDIENT)
-  const removeIngredientMutation = useMutation<RemoveIngredientResult>(REMOVE_INGREDIENT)
+  const [addIngredientMutation] = useMutation<AddIngredientResult>(ADD_INGREDIENT)
+  const [removeIngredientMutation] = useMutation<RemoveIngredientResult>(REMOVE_INGREDIENT)
 
   const recipeQuery = useQuery<FindRecipeResult>(FIND_RECIPE, {
     variables: {

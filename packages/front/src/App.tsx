@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { gql } from 'apollo-boost'
+import gql from 'graphql-tag'
 import { useMutation, useApolloClient } from 'react-apollo-hooks'
 
 import { Redirect, Route, Switch, BrowserRouter as Router } from 'react-router-dom'
@@ -25,6 +25,11 @@ interface LoginResult {
   },
 }
 
+interface LoginVariables {
+  loginname: string,
+  password: string,
+}
+
 const REGISTER = gql`
 mutation register($loginname: String!, $name: String!, $password: String!) {
   registerUser(
@@ -42,16 +47,21 @@ interface RegisterResult {
   name: string,
 }
 
+interface RegisterVariables {
+  loginname: string,
+  name: string,
+  password: string,
+}
 
 const App = () => {
   const client = useApolloClient()
 
-  const loginMutation = useMutation<LoginResult>(LOGIN, {
+  const [loginMutation] = useMutation<LoginResult, LoginVariables>(LOGIN, {
     update: (/*proxy, mutationResult*/) => {
       client.resetStore()
     }
   })
-  const registerMutation = useMutation<RegisterResult>(REGISTER)
+  const [registerMutation] = useMutation<RegisterResult, RegisterVariables>(REGISTER)
 
   const [token, setToken] = useState(localStorage.getItem('menu-app-user-token'))
 

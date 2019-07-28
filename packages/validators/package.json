@@ -7,8 +7,7 @@
   "types": "build/index.d.js",
   "author": "Ilari Tommiska",
   "license": "ISC",
-
   "dependencies": {
-    "apollo-server": "^2.5.0"
+    "apollo-server": "^2.7.2"
   }
 }

@@ -63,6 +63,7 @@
   "exclude": [
     "./packages/front/**/*",
     "./scripts/**/*",
+    "**/*.test.ts",
     "**/build/**/*",
     "**/node_modules/**/*"
   ]

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { gql } from 'apollo-boost'
+import gql from 'graphql-tag'
 import { useQuery, useApolloClient } from 'react-apollo-hooks'
 import { Switch, Route } from 'react-router-dom'
 
@@ -68,7 +68,7 @@ const MainApp = ({ token, onLogout }: MainAppProps) => {
     if (!me.loading && me.data.me !== null) {
       setCurrentUser(me.data.me)
     }
-  }, [me.loading, me.data.me])
+  }, [me.loading, me.data])
 
   const logout = () => {
     console.log('logging out')

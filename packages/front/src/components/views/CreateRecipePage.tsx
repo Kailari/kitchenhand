@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from 'react'
-import { gql } from 'apollo-boost'
+import gql from 'graphql-tag'
 import { useMutation } from 'react-apollo-hooks'
 import uuidv1 from 'uuid/v1'
 
@@ -32,6 +32,16 @@ interface CreateRecipeResult {
   },
 }
 
+interface CraeteRecipeVariables {
+  name: string,
+  description?: string,
+  ingredients: {
+    amount: number,
+    unit: string,
+    ingredient: string,
+  }[],
+}
+
 interface CreateRecipeProps extends PageWithBreadcrumbsProps, RouteComponentProps { }
 
 const CreateRecipePage: FunctionComponent<CreateRecipeProps> = ({ history, breadcrumbs }) => {
@@ -43,7 +53,7 @@ const CreateRecipePage: FunctionComponent<CreateRecipeProps> = ({ history, bread
     ingredients: [],
   })
 
-  const createMutation = useMutation<CreateRecipeResult>(CREATE_RECIPE, {
+  const [createMutation] = useMutation<CreateRecipeResult, CraeteRecipeVariables>(CREATE_RECIPE, {
     refetchQueries: [
       { query: NEW_RECIPES },
       { query: MY_RECIPES },

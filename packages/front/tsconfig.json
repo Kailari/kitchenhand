@@ -1,12 +1,14 @@
 {
-  "extends": "./../../tsconfig.json",
   "compilerOptions": {
+    "target": "es6",
     "jsx": "preserve",
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
     ],
+    "strict": true,
+    "esModuleInterop": true,
     "allowJs": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,

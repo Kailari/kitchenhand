@@ -4,19 +4,37 @@
   "private": true,
   "proxy": "http://localhost:4000",
   "dependencies": {
-    "apollo-boost": "^0.4.0",
-    "apollo-link": "^1.2.11",
-    "apollo-link-context": "^1.0.17",
-    "graphql": "^14.3.1",
+    "apollo-cache-inmemory": "^1.6.2",
+    "apollo-client": "^2.6.3",
+    "apollo-link-context": "^1.0.18",
+    "apollo-link-http": "^1.5.15",
+    "graphql": "^14.4.2",
+    "graphql-tag": "^2.10.1",
     "react": "^16.8.6",
-    "react-apollo": "^2.5.6",
-    "react-apollo-hooks": "^0.4.5",
+    "react-apollo": "^2.5.8",
+    "react-apollo-hooks": "^0.5.0",
     "react-dom": "^16.8.6",
-    "react-router-dom": "^5.0.0",
+    "react-router": "^5.0.1",
+    "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
-    "semantic-ui-react": "^0.87.1",
-    "typescript": "^3.5.2",
+    "semantic-ui-react": "^0.87.3",
     "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "@craco/craco": "^5.2.4",
+    "@testing-library/jest-dom": "^4.0.0",
+    "@testing-library/react": "^8.0.7",
+    "@types/jest": "24.0.15",
+    "@types/node": "12.6.8",
+    "@types/react": "16.8.23",
+    "@types/react-dom": "16.8.5",
+    "@types/react-router": "^5.0.3",
+    "@types/react-router-dom": "^4.3.4",
+    "@types/uuid": "^3.4.5",
+    "craco-less": "^1.9.0",
+    "jest": "24.7.1",
+    "jest-extended": "^0.11.2",
+    "typescript": "3.5.3"
   },
   "scripts": {
     "start": "craco start",
@@ -35,17 +53,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@craco/craco": "^5.2.1",
-    "@testing-library/react": "^8.0.2",
-    "@types/jest": "^24.0.15",
-    "@types/node": "^12.0.10",
-    "@types/react": "^16.8.22",
-    "@types/react-dom": "^16.8.4",
-    "@types/react-router-dom": "^4.3.4",
-    "@types/uuid": "^3.4.5",
-    "craco-less": "^1.9.0",
-    "jest-dom": "^3.5.0"
   }
 }

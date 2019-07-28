@@ -1,7 +1,6 @@
 import { ApolloError } from 'apollo-server'
 
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-
 const matchers: jest.ExpectExtendMap = {
   toContainApolloError(received, code: string, message?: string) {
     const errors = received as ApolloError[]

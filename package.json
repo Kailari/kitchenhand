@@ -17,12 +17,26 @@
   },
   "scripts": {
     "clean": "rm -Rf ./build ./packages/**/build ./packages/**/tsconfig.tsbuildinfo",
-    "test": "yarn workspace server test && yarn workspace front test",
-    "prestart": "yarn workspace server generate",
+    "purge": "yarn run clean && rm -Rf ./node_modules ./packages/**/node_modules",
+    "build:tsdef": "yarn workspace server generate && node scripts/buildTs.js",
+    "pretest": "yarn build:tsdef",
+    "test": "yarn test:server && yarn test:front",
+    "test:server": "yarn workspace server test",
+    "test:front": "yarn workspace front test --ci=true",
     "start": "cross-env NODE_ENV=production yarn tsc && yarn workspace server start",
     "watch": "yarn workspace server watch",
-    "pretsc": "yarn workspace server generate && node scripts/buildTs.js",
+    "pretsc": "yarn build:tsdef",
     "tsc": "tsc",
     "lint": "eslint . --ext ts,tsx"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
+    "chalk": "^2.4.2",
+    "cross-env": "^5.2.0",
+    "eslint": "^5.0.0",
+    "execa": "^2.0.3",
+    "string-length": "^3.1.0",
+    "typescript": "^3.5.3"
   }
 }
