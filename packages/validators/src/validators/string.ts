@@ -25,14 +25,18 @@ export interface StringValidationParameters {
  * Validates that a string meets criteria specified in input StringValidationParameters
  */
 export default createParameterizedValidator<StringValidationParameters>(
-  (field, params): ValidatorFunc =>
-    (args, error): void => {
-      if (params.minLength !== undefined && params.maxLength !== undefined && params.minLength > params.maxLength) {
-        throw new Error('Invalid validation parameters: maxLength cannot be smaller than minLength!')
-      }
+  (field, params): ValidatorFunc => {
+    if (params.minLength !== undefined && params.maxLength !== undefined && params.minLength > params.maxLength) {
+      throw new Error('Invalid validation parameters: maxLength cannot be smaller than minLength!')
+    }
 
+    if (params.minLength !== undefined && params.allowEmpty !== undefined) {
+      throw new Error('Invalid validation parameters: allowEmpty should not be defined if minLength is configured!')
+    }
+
+    return (args, error): void => {
       const str = args[field]
-      if (!str) {
+      if (str === undefined || str === null) {
         return
       }
 
@@ -54,4 +58,5 @@ export default createParameterizedValidator<StringValidationParameters>(
       if (params.regex !== undefined && !target.match(params.regex)) {
         error(field, `error.validation.${field}.no_match:${params.regex}`)
       }
-    })
+    }
+  })

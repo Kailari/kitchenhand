@@ -10,7 +10,9 @@ export default createValidator((field): ValidatorFunc =>
       return
     }
 
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+    if (id.trim().length === 0) {
+      error(field, `error.validation.${field}.cannot_be_empty`)
+    } else if (!id.match(/^[0-9a-fA-F]{24}$/)) {
       error(field, `error.validation.${field}.malformed_id`)
     }
   })

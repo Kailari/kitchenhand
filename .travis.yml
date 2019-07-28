@@ -12,9 +12,11 @@ jobs:
   include:
     - stage: "Tests"
       name: "Test (Backend, Unit/Integration)"
-      script: yarn workspace server test
-    - script: yarn workspace front test
+      script: yarn test:server
+    - script: yarn test:front
       name: "Test (Frontend, Unit/Integration)"
+    - script: yarn test:validators
+      name: "Test (Validators, Unit/Integration)"
     - stage: build
       name: "Build & E2E Tests => Deploy"
       script: 
