@@ -16,9 +16,10 @@
     ]
   },
   "scripts": {
-    "test": "yarn workspace server",
+    "clean": "rm -Rf ./build ./packages/**/build ./packages/**/tsconfig.tsbuildinfo",
+    "test": "yarn workspace server test && yarn workspace front test",
     "prestart": "yarn workspace server generate",
-    "start": "cross-env NODE_ENV=production tsc && yarn workspace server start",
+    "start": "cross-env NODE_ENV=production yarn tsc && yarn workspace server start",
     "watch": "yarn workspace server watch",
     "pretsc": "yarn workspace server generate && node scripts/buildTs.js",
     "tsc": "tsc",

@@ -10,8 +10,6 @@ const IGNORED = [
   'front'
 ]
 
-console.log('wd: ', __dirname)
-
 const packages = getPackages()
 const packagesWithTs = packages
   .filter(p => !IGNORED.includes(path.basename(p)))
