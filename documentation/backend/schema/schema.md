@@ -1,0 +1,1 @@
+TODO: Write some points about how schema is structured, about naming conventions, etc.
