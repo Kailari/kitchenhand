@@ -5,8 +5,8 @@ import ingredientService from './ingredientService'
 import unitService from './unitService'
 import { ShallowRecipeIngredient } from '../generated/graphql'
 import ResourceManager, { MongoCRUDService } from '../resources'
-import Ingredient from '../models/Ingredient';
-import Unit from '../models/Unit';
+import Ingredient from '../models/Ingredient'
+import Unit from '../models/Unit'
 
 const count = async (): Promise<number> => {
   return await Recipe.collection.countDocuments()

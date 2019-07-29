@@ -1,5 +1,4 @@
 import Ingredient, { IIngredient } from '../models/Ingredient'
-import unitService from './unitService'
 import ResourceManager, { MongoCRUDService } from '../resources'
 
 interface IngredientFields {

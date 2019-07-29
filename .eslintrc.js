@@ -7,7 +7,6 @@ module.exports = {
   },
   'extends': [
     'eslint:recommended',
-    //'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
   ],
   'globals': {
@@ -16,13 +15,10 @@ module.exports = {
   },
   'parser': '@typescript-eslint/parser',
   'plugins': [
-    '@typescript-eslint',
-    'react-hooks'
+    '@typescript-eslint'
   ],
   'parserOptions': {
-    'ecmaVersion': 2018,
-    'jsx': true,
-    'useJSXTextNode': true
+    'ecmaVersion': 2018
   },
   'rules': {
     '@typescript-eslint/no-unused-vars': [
@@ -70,26 +66,15 @@ module.exports = {
     'semi': [
       'error',
       'never'
-    ],
-    "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn"
+    ]
   },
   'overrides': [
     {
       'files': [
-        '*.test.ts',
-        '*.tsx'
+        '*.test.ts'
       ],
       'rules': {
         '@typescript-eslint/explicit-function-return-type': 0,
-      }
-    },
-    {
-      'files': [
-        'src/models/*.ts'
-      ],
-      'rules': {
-        '@typescript-eslint/interface-name-prefix': 0,
       }
     }
   ]

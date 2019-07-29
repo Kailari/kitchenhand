@@ -40,7 +40,7 @@ export interface MongoCRUDService<TResource extends MongoResource, TFields = Fie
   model: mongoose.Model<TResource>,
 }
 
-let resourceServices = new Map<string, ResourceService<any>>()
+const resourceServices = new Map<string, ResourceService<any>>()
 
 const getServiceByName = <TResource extends Resource>(name: string): ResourceService<TResource> | null => {
   return resourceServices.get(name) || null

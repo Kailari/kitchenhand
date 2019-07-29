@@ -1,5 +1,5 @@
 build/
-src/generated/
+packages/**/src/generated/**/*
 packages/**/node_modules
 packages/**/build
 scripts/**/*
