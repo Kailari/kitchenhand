@@ -20,3 +20,15 @@ The backend currently provides the following services.
 | [`recipeService`](./recipe.md)            | Manage recipes                |
 | [`unitService`](./unit.md)                | Manage measurement units      |
 | [`ingredientService`](./ingredient.md)    | Manage available ingredients  |
+
+Conventions
+-----------
+### Naming services
+ - All services should be defined in `server/src/services/`, in a file named `<resource-name>Service.ts`
+ - For example, service handling `recipe`-resources is defined in `recipeService.ts`
+ - Even though services are exported as defaults, it should be preferred importing them with their assigned names. *E.g. importing `import recipeService from 'services/recipeService'` is OK, while `import recipe from 'services/recipeService'` is not*.
+
+### Service functions
+ - Exposed service functions should be verbs, describing what the function does. *E.g. if the function fetches a resource from database, it may be named `get`*.
+ - Do not postfix the function names with the resource name in question. If properly imported, service name already implies the type of the resource, thus making appending the resource name needless repetition. *E.g. `recipeService.get` is a OK name, while `recipeService.getRecipe` is not*.
+ - If targeted resource has sub-resources, it is appropriate to expose a few helper functions for handling those. *However, if there starts to be many helper-methods, consider creating another service and possibly exposing it as a member of the parent-resource's service.*
