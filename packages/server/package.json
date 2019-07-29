@@ -41,7 +41,7 @@
     "@types/mongoose": "^5.5.11",
     "@types/mongoose-unique-validator": "^1.0.2",
     "@types/supertest": "^2.0.8",
-    "jest": "^24.8.0",
+    "jest": "24.7.1",
     "jest-extended": "^0.11.2",
     "mongodb-memory-server": "^5.1.9",
     "supertest": "^4.0.2",
