@@ -66,7 +66,7 @@ interface RecipeEditorProps extends PageWithBreadcrumbsProps, RouteComponentProp
   recipeId: string,
 }
 
-const RecipeEditorPage: FunctionComponent<RecipeEditorProps> = ({ _history, breadcrumbs, recipeId }) => {
+const RecipeEditorPage: FunctionComponent<RecipeEditorProps> = ({ breadcrumbs, recipeId }) => {
   const [recipe, setRecipe] = useState<Recipe | null>(null)
 
   const [addIngredientMutation] = useMutation<AddIngredientResult>(ADD_INGREDIENT)
