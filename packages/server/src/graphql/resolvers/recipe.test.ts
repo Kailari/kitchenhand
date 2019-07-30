@@ -7,6 +7,8 @@ import authService from '../../services/authService'
 import Recipe, { IRecipe } from '../../models/Recipe'
 import { UserPermissions } from '../../generated/graphql'
 
+import '../../test/matchers'
+
 beforeAll(connectMongoose)
 
 let query: TestQueryFunction
@@ -292,10 +294,10 @@ describe(`With a test database with ${NUM_USERS} users with ${NUM_RECIPES} recip
 
     describe('mutating with removeRecipe', () => {
       describe('with invalid arguments', () => {
-        test('rejects with code BAD_USER_INPUT', async () => {
+        test('rejects with code ARGUMENT_VALIDATION_FAILED', async () => {
           await expect(query(removeRecipeMutation('invalid ID'), { authorization: token }))
             .rejects
-            .toContainApolloError('BAD_USER_INPUT')
+            .toContainApolloError('ARGUMENT_VALIDATION_FAILED')
         })
 
         test('does not remove any recipes', async () => {

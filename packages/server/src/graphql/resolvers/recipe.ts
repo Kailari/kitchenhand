@@ -3,6 +3,7 @@ import { UserInputError, ApolloError } from 'apollo-server'
 import recipeService from '../../services/recipeService'
 import { QueryResolvers, MutationResolvers } from '../../generated/graphql'
 import { IRecipe, IRecipeIngredient } from '../../models/Recipe'
+import { IUser } from '../../models/User'
 
 export const queries: QueryResolvers = {
   recipeCount: async (): Promise<number> => recipeService.count(),
@@ -42,8 +43,9 @@ export const mutations: MutationResolvers = {
         name: args.name,
         description: args.description,
         ingredients,
+        owner: context.currentUser as IUser
       }
-      newRecipe = await recipeService.create(fields, context.currentUser)
+      newRecipe = await recipeService.create(fields)
     } catch (error) {
       throw new UserInputError(error.message, {
         invalidArgs: Object.keys(error.errors)
@@ -77,7 +79,8 @@ export const mutations: MutationResolvers = {
       throw new UserInputError('`recipeId` is required', { invalidArgs: 'recipeId' })
     }
 
-    const newIngredient = await recipeService.addIngredient(args.recipeId)
+    // TODO: Fix these to use the new format where client needs to select ingredients BEFORE creating the ingredient
+    const newIngredient = await recipeService.addIngredient(args.recipeId, 1.0, 'invalid')
     if (!newIngredient) {
       throw new ApolloError('unknown `recipeId`', 'BAD_ID')
     }

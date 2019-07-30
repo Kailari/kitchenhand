@@ -1,15 +1,12 @@
 import Ingredient, { IIngredient } from '../models/Ingredient'
-import ResourceManager, { MongoCRUDService } from '../resources'
+import { MongoCRUDService } from '../resources/mongoResource'
 
-interface IngredientFields {
+export interface IngredientFields {
   name: string,
   defaultUnit: ID,
 }
 
-type IngredientService = MongoCRUDService<IIngredient, IngredientFields>
+export class IngredientService extends MongoCRUDService<IIngredient, IngredientFields> {
+}
 
-export default ResourceManager.asSimpleMongoCRUDService<IngredientService, IIngredient, IngredientFields>({
-  name: 'ingredient',
-  model: Ingredient,
-  hasOwner: false,
-})
+export default new IngredientService('ingredient', Ingredient)

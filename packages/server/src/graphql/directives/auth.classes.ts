@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { SchemaDirectiveVisitor, AuthenticationError, ApolloError, UserInputError } from 'apollo-server'
+import { SchemaDirectiveVisitor, AuthenticationError, ApolloError } from 'apollo-server'
 import { defaultFieldResolver, GraphQLField } from 'graphql'
 
-import ResourceManager from '../../resources'
+import ResourceManager from '../../resources/resourceManager'
 import { Context } from '../../server'
 import { UserPermissions } from '../../generated/graphql'
 import { IUser } from '../../models/User'
+import { ServiceWithGetOwner, ServiceWithGetOwnerId } from '../../resources/resource'
+import { doValidation, validator } from 'validators'
 
 class RequirePermissionsDirective extends SchemaDirectiveVisitor {
   public visitFieldDefinition(field: GraphQLField<any, Context>) {
@@ -62,8 +64,12 @@ class OwnerOnlyDirective extends SchemaDirectiveVisitor {
       throw new Error(`Error in schema, invalid resource type "${resourceTypeName}"`)
     }
 
-    if (!resourceType.hasOwner) {
-      throw new Error(`Error in schema, @onlyOwner on resource of type "${resourceTypeName}", but the resource type does not have owner`)
+    const hasGetOwner = (resourceType as ServiceWithGetOwner).getOwner !== undefined
+    const hasGetOwnerId = (resourceType as ServiceWithGetOwnerId).getOwnerId !== undefined
+    const hasOwnerAccessor = hasGetOwner || hasGetOwnerId
+
+    if (!hasOwnerAccessor) {
+      throw new Error(`Error in schema, @onlyOwner on resource of type "${resourceTypeName}", but the resource type does not have accessor for owner!`)
     }
 
     field.resolve = async (source, args, context, info) => {
@@ -71,17 +77,23 @@ class OwnerOnlyDirective extends SchemaDirectiveVisitor {
         throw new AuthenticationError('Not authenticated')
       }
 
-      const { [idArgName]: id } = args
-      if (!args.id.match(/^[0-9a-fA-F]{24}$/)) {
-        throw new UserInputError('malformed `id`', { invalidArgs: 'id' })
+      doValidation(args, [
+        validator.isValidId(idArgName)
+      ])
+
+      const id = args[idArgName]
+      const ownerId = hasGetOwnerId
+        ? await (resourceType as ServiceWithGetOwnerId).getOwnerId(id)
+        : await (async () => {
+          const owner = await (resourceType as ServiceWithGetOwner).getOwner(id)
+          return owner ? owner.id : null
+        })()
+
+      if (!ownerId) {
+        throw new ApolloError(`Invalid resource ID "${id}" for resource of type "${resourceTypeName}"`, 'BAD_ID')
       }
 
-      const resource = await resourceType.get(id)
-      if (!resource) {
-        throw new ApolloError(`Invalid resourece ID "${id}" for resource of type "${resourceTypeName}"`, 'BAD_ID')
-      }
-
-      const isOwner = resource.owner && resource.owner.id === context.currentUser.id
+      const isOwner = ownerId == context.currentUser.id
       const canAccessAsSuperUser = allowSuperUser && this.isCurrentUserSuper(context)
 
       if (!isOwner && !canAccessAsSuperUser) {
