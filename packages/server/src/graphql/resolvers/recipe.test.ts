@@ -186,10 +186,10 @@ describe(`With a test database with ${NUM_USERS} users with ${NUM_RECIPES} recip
     //})
 
     describe('querying recipe', () => {
-      test('rejects with error code BAD_USER_INPUT, with message containing `id` when id is invalid', async () => {
+      test('rejects with error code ARGUMENT_VALIDATION_FAILED, with message containing `id` when id is invalid', async () => {
         await expect(query(recipeQuery('an invalid ID'), { authorization: token }))
           .rejects
-          .toContainApolloError('BAD_USER_INPUT', expect.stringContaining('id'))
+          .toContainApolloError('ARGUMENT_VALIDATION_FAILED', expect.stringContaining('id'))
       })
 
       test('returns the correct recipe when ID is valid', async () => {

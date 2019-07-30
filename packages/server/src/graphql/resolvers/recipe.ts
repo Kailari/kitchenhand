@@ -4,31 +4,28 @@ import recipeService from '../../services/recipeService'
 import { QueryResolvers, MutationResolvers } from '../../generated/graphql'
 import { IRecipe, IRecipeIngredient } from '../../models/Recipe'
 import { IUser } from '../../models/User'
+import { doValidation, validator } from 'validators'
 
 export const queries: QueryResolvers = {
   recipeCount: async (): Promise<number> => recipeService.count(),
   allRecipes: async (): Promise<IRecipe[]> => recipeService.getAll(),
   recipe: async (root, args): Promise<IRecipe | null> => {
-    if (!args.id) {
-      throw new UserInputError('`id` is required', { invalidArgs: 'id' })
-    }
-
-    if (!args.id.match(/^[0-9a-fA-F]{24}$/)) {
-      throw new UserInputError('malformed `id`', { invalidArgs: 'id' })
-    }
+    doValidation(args, [
+      validator.isValidId('id')
+    ])
 
     return await recipeService.get(args.id)
   },
   userRecipes: async (root, args): Promise<IRecipe[] | null> => {
-    if (!args.id) {
-      throw new UserInputError('`id` is required', { invalidArgs: 'id' })
-    }
+    doValidation(args, [
+      validator.isValidId('id')
+    ])
 
     return await recipeService.getAllByUser(args.id)
   },
   myRecipes: async (root, args, context): Promise<IRecipe[] | null> => {
     return context.currentUser
-      ? await recipeService.getAllByUser(context.currentUser._id)
+      ? await recipeService.getAllByUser(context.currentUser.id)
       : null
   }
 }
@@ -59,13 +56,9 @@ export const mutations: MutationResolvers = {
     return newRecipe
   },
   removeRecipe: async (root, args): Promise<IRecipe> => {
-    if (!args.id) {
-      throw new UserInputError('`id` is required', { invalidArgs: 'id' })
-    }
-
-    if (!args.id.match(/^[0-9a-fA-F]{24}$/)) {
-      throw new UserInputError('malformed `id`', { invalidArgs: 'id' })
-    }
+    doValidation(args, [
+      validator.isValidId('id')
+    ])
 
     const recipe = await recipeService.remove(args.id)
     if (!recipe) {
@@ -75,9 +68,9 @@ export const mutations: MutationResolvers = {
     return recipe
   },
   addRecipeIngredient: async (root, args): Promise<IRecipeIngredient | null> => {
-    if (!args.recipeId) {
-      throw new UserInputError('`recipeId` is required', { invalidArgs: 'recipeId' })
-    }
+    doValidation(args, [
+      validator.isValidId('recipeId')
+    ])
 
     // TODO: Fix these to use the new format where client needs to select ingredients BEFORE creating the ingredient
     const newIngredient = await recipeService.addIngredient(args.recipeId, 1.0, 'invalid')
@@ -88,13 +81,9 @@ export const mutations: MutationResolvers = {
     return newIngredient
   },
   removeRecipeIngredient: async (root, args): Promise<string | null> => {
-    if (!args.id) {
-      throw new UserInputError('`id` is required', { invalidArgs: 'id' })
-    }
-
-    if (!args.recipeId) {
-      throw new UserInputError('`recipeId` is required', { invalidArgs: 'recipeId' })
-    }
+    doValidation(args, [
+      validator.isValidId(['id', 'recipeId'])
+    ])
 
     const removed = await recipeService.removeIngredient(args.recipeId, args.id)
     if (!removed) {
@@ -104,13 +93,9 @@ export const mutations: MutationResolvers = {
     return removed
   },
   updateRecipeIngredient: async (root, args): Promise<IRecipeIngredient | null> => {
-    if (!args.id) {
-      throw new UserInputError('`id` is required', { invalidArgs: 'id' })
-    }
-
-    if (!args.recipeId) {
-      throw new UserInputError('`recipeId` is required', { invalidArgs: 'recipeId' })
-    }
+    doValidation(args, [
+      validator.isValidId(['id', 'recipeId'])
+    ])
 
     const updated = await recipeService.updateIngredient(args.id, args.recipeId, args.amount || undefined, args.ingredientId || undefined, args.unitId || undefined)
     if (!updated) {
