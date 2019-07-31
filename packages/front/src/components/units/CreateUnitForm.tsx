@@ -6,7 +6,7 @@ import { useField } from '../../hooks/form'
 import FieldWithError from '../form/FieldWithError'
 
 interface CreateUnitFormProps {
-  onCreate: (name: string, abbreviation: string) => void,
+  onCreate: (name: string, abbreviation?: string) => void,
 }
 
 const CreateUnitForm: FunctionComponent<CreateUnitFormProps> = ({ onCreate }) => {
@@ -16,7 +16,7 @@ const CreateUnitForm: FunctionComponent<CreateUnitFormProps> = ({ onCreate }) =>
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     try {
-      await onCreate(nameField.value, abbreviationField.value)
+      await onCreate(nameField.value, abbreviationField.value.length > 0 ? abbreviationField.value : undefined)
       nameField.reset()
       abbreviationField.reset()
     } catch (err) {

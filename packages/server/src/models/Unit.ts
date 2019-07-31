@@ -13,7 +13,6 @@ const schema = new mongoose.Schema({
   },
   abbreviation: {
     type: String,
-    required: true,
     unique: true,
     minlength: 1,
     maxlength: 16

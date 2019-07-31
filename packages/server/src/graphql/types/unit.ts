@@ -4,7 +4,7 @@ const types = gql`
   type Unit @entity {
     id: ID! @id
     name: String! @column
-    abbreviation: String! @column
+    abbreviation: String @column
   }
 
   extend type Query {
@@ -14,7 +14,7 @@ const types = gql`
   }
 
   extend type Mutation {
-    addUnit(name: String!, abbreviation: String!): Unit
+    addUnit(name: String!, abbreviation: String): Unit
     removeUnit(id: ID!): Unit
   }
 `

@@ -10,7 +10,7 @@ import UnitsQuery, { ALL_UNITS, UnitQueryData } from '../../units/UnitsQuery'
 import { Unit } from '../../MainApp'
 
 const CREATE_UNIT = gql`
-mutation create($name: String!, $abbreviation: String!) {
+mutation create($name: String!, $abbreviation: String) {
   added: addUnit(
     name: $name,
     abbreviation: $abbreviation,
@@ -23,7 +23,7 @@ mutation create($name: String!, $abbreviation: String!) {
 
 interface CreateUnitVariables {
   name: string,
-  abbreviation: string,
+  abbreviation?: string,
 }
 
 interface CreateUnitResult {
@@ -49,7 +49,7 @@ const UnitsPage: FunctionComponent<UnitsPageProps> = ({ breadcrumbs }) => {
     }
   )
 
-  const createUnit = async (name: string, abbreviation: string) => {
+  const createUnit = async (name: string, abbreviation?: string) => {
     await createUnitMutation({ variables: { name, abbreviation } })
   }
 

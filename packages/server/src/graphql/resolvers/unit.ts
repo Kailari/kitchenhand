@@ -24,7 +24,7 @@ export const mutations: MutationResolvers = {
 
     return await unitService.create({
       name: args.name,
-      abbreviation: args.abbreviation,
+      abbreviation: args.abbreviation || undefined,
     })
   }
 }

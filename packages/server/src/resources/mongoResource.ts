@@ -1,6 +1,7 @@
 import mongoose, { DocumentQuery } from 'mongoose'
 
 import { Resource, ServiceWithGet, ServiceWithCreate, ServiceWithUpdate, ServiceWithRemove, ResourceService } from './resource'
+import { ValidationError } from 'validators'
 
 
 export interface MongoResource extends Resource, mongoose.Document {
@@ -46,7 +47,30 @@ export class MongoCRUDService<TResource extends MongoResource, TFields = { [key:
   MongoServiceWithRemove<TResource> {
 
   public async create(fields: TFields): Promise<TResource | null> {
-    return await new this.model(fields).save()
+    try {
+      return await new this.model(fields).save()
+    } catch (err) {
+      // HACK: as validating uniqueness of document fields cannot be done without
+      //       a roundtrip to the DB, catch DB validation error concerning non-unique
+      //       paths and convert them to validator errors. This way, frontend sees
+      //       the non-unique error as just another validator error.
+      if (err.errors !== undefined) {
+        const parentError = err as mongoose.Error.ValidationError
+        const errors = []
+        for (const path in parentError.errors) {
+          const error = parentError.errors[path]
+          if (error.name === 'ValidatorError' && error.kind === 'unique') {
+            errors.push({
+              path: path,
+              error: `error.validation.${path}.must_be_unique`,
+            })
+          }
+        }
+        throw new ValidationError(errors)
+      }
+    }
+
+    return null
   }
 
   public async get(id: ID): Promise<TResource | null> {

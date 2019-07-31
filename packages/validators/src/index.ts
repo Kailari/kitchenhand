@@ -9,6 +9,8 @@ export const validator = {
   string,
 }
 
+export { ValidationError } from './error'
+
 /**
  * Performs validation on given args-object
  *
