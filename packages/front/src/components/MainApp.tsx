@@ -10,6 +10,7 @@ import ResponsiveContainer from './ResponsiveContainer'
 import RecipeList from './recipes/RecipeList'
 import Discover from './views/DiscoverPage'
 import { MY_RECIPES, RecipeQueryData } from './recipes/RecipesQuery'
+import UnitsPage from './views/admin/UnitsPage'
 
 const ME = gql`
 {
@@ -38,11 +39,7 @@ export interface RecipeIngredient {
     id: string,
     name: string,
   },
-  unit: {
-    id: string,
-    name: string,
-    abbreviation: string,
-  },
+  unit: Unit,
 }
 
 export interface Recipe {
@@ -54,6 +51,12 @@ export interface Recipe {
   description?: string,
   owner?: User,
   ingredients: RecipeIngredient[],
+}
+
+export interface Unit {
+  id: string,
+  name: string,
+  abbreviation: string,
 }
 
 const MainApp = ({ token, onLogout }: MainAppProps) => {
@@ -125,6 +128,14 @@ const MainApp = ({ token, onLogout }: MainAppProps) => {
           !myRecipes.loading && myRecipes.data
             ? <RecipeList recipes={myRecipes.data.recipes} />
             : <div>Loading...</div>
+        } />
+
+        <Route exact path='/admin/units' render={() =>
+          <UnitsPage breadcrumbs={[
+            { name: 'Kitchenhand', path: '' },
+            { name: 'Admin', path: 'admin' },
+            { name: 'Units', path: 'units' },
+          ]} />
         } />
       </Switch>
     </ResponsiveContainer>

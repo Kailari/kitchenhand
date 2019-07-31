@@ -7,6 +7,9 @@ interface UnitFields {
 }
 
 export class UnitService extends MongoCRUDService<IUnit, UnitFields> {
+  public async getAll(): Promise<IUnit[]> {
+    return await Unit.find({})
+  }
 }
 
 export default new UnitService('unit', Unit)

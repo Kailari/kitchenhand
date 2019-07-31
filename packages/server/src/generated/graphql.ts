@@ -27,8 +27,8 @@ export type Mutation = {
   _empty?: Maybe<Scalars["String"]>;
   registerUser?: Maybe<User>;
   login?: Maybe<Token>;
-  addUnit?: Maybe<Ingredient>;
-  removeUnit?: Maybe<Ingredient>;
+  addUnit?: Maybe<Unit>;
+  removeUnit?: Maybe<Unit>;
   addIngredient?: Maybe<Ingredient>;
   removeIngredient?: Maybe<Ingredient>;
   addRecipe: Recipe;
@@ -101,8 +101,9 @@ export type Query = {
   allUsers: Array<User>;
   findUser?: Maybe<User>;
   me?: Maybe<User>;
-  getUnit?: Maybe<Ingredient>;
-  findUnit: Array<Ingredient>;
+  allUnits: Array<Unit>;
+  unit?: Maybe<Unit>;
+  findUnit: Array<Unit>;
   getIngredient?: Maybe<Ingredient>;
   findIngredient: Array<Ingredient>;
   recipeCount: Scalars["Int"];
@@ -116,7 +117,7 @@ export type QueryFindUserArgs = {
   id: Scalars["ID"];
 };
 
-export type QueryGetUnitArgs = {
+export type QueryUnitArgs = {
   id: Scalars["ID"];
 };
 
@@ -422,13 +423,13 @@ export type MutationResolvers<
     MutationLoginArgs
   >;
   addUnit?: Resolver<
-    Maybe<ResolversTypes["Ingredient"]>,
+    Maybe<ResolversTypes["Unit"]>,
     ParentType,
     ContextType,
     MutationAddUnitArgs
   >;
   removeUnit?: Resolver<
-    Maybe<ResolversTypes["Ingredient"]>,
+    Maybe<ResolversTypes["Unit"]>,
     ParentType,
     ContextType,
     MutationRemoveUnitArgs
@@ -491,14 +492,15 @@ export type QueryResolvers<
     QueryFindUserArgs
   >;
   me?: Resolver<Maybe<ResolversTypes["User"]>, ParentType, ContextType>;
-  getUnit?: Resolver<
-    Maybe<ResolversTypes["Ingredient"]>,
+  allUnits?: Resolver<Array<ResolversTypes["Unit"]>, ParentType, ContextType>;
+  unit?: Resolver<
+    Maybe<ResolversTypes["Unit"]>,
     ParentType,
     ContextType,
-    QueryGetUnitArgs
+    QueryUnitArgs
   >;
   findUnit?: Resolver<
-    Array<ResolversTypes["Ingredient"]>,
+    Array<ResolversTypes["Unit"]>,
     ParentType,
     ContextType,
     QueryFindUnitArgs

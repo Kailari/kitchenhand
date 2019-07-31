@@ -5,7 +5,8 @@ import { IUnit } from '../../models/Unit'
 import { doValidation, validator } from 'validators'
 
 export const queries: QueryResolvers = {
-  getUnit: async (root, args): Promise<IUnit | null> => {
+  allUnits: async (): Promise<IUnit[]> => await unitService.getAll(),
+  unit: async (root, args): Promise<IUnit | null> => {
     doValidation(args, [
       validator.isValidId('id'),
     ])

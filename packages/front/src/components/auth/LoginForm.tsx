@@ -5,7 +5,7 @@ import { useField } from '../../hooks/form'
 import handleError from '../../util/error/authFormErrorHandler'
 
 import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
-import FieldWithError from './FieldWithError'
+import FieldWithError from '../form/FieldWithError'
 
 interface LoginFormProps extends RouteComponentProps {
   onLogin: (loginname: string, password: string) => void,

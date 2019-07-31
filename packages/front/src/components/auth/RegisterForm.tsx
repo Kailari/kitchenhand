@@ -4,7 +4,7 @@ import { Link, withRouter, RouteComponentProps } from 'react-router-dom'
 import { useField } from '../../hooks/form'
 import handleError from '../../util/error/authFormErrorHandler'
 
-import FieldWithError from './FieldWithError'
+import FieldWithError from '../form/FieldWithError'
 import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
 
 interface RegisterFormProps extends RouteComponentProps {
