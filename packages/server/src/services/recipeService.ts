@@ -7,7 +7,7 @@ import { ShallowRecipeIngredient } from '../generated/graphql'
 import { MongoCRUDService } from '../resources/mongoResource'
 import Ingredient from '../models/Ingredient'
 import Unit from '../models/Unit'
-import { ServiceWithGetOwnerId } from '../resources/resource';
+import { ServiceWithGetOwnerId } from '../resources/resource'
 
 export interface RecipeFields {
   name: string,

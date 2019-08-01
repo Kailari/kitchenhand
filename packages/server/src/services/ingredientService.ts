@@ -1,7 +1,7 @@
 import Ingredient, { IIngredient } from '../models/Ingredient'
 import { MongoCRUDService } from '../resources/mongoResource'
-import Recipe from '../models/Recipe';
-import { DocumentQuery } from 'mongoose';
+import Recipe from '../models/Recipe'
+import { DocumentQuery } from 'mongoose'
 
 export interface IngredientFields {
   name: string,
