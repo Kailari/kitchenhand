@@ -12,6 +12,7 @@ import Discover from './views/DiscoverPage'
 import { MY_RECIPES, RecipeQueryData } from './recipes/RecipesQuery'
 import UnitsPage from './views/admin/UnitsPage'
 import { User } from '../types'
+import IngredientsPage from './views/admin/IngredientsPage'
 
 const ME = gql`
 {
@@ -103,6 +104,14 @@ const MainApp = ({ token, onLogout }: MainAppProps) => {
             { name: 'Kitchenhand', path: '' },
             { name: 'Admin', path: 'admin' },
             { name: 'Units', path: 'units' },
+          ]} />
+        } />
+
+        <Route exact path='/admin/ingredients' render={() =>
+          <IngredientsPage breadcrumbs={[
+            { name: 'Kitchenhand', path: '' },
+            { name: 'Admin', path: 'admin' },
+            { name: 'Ingredients', path: 'ingredients' },
           ]} />
         } />
       </Switch>

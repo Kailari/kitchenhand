@@ -8,12 +8,14 @@ const types = gql`
   }
 
   extend type Query {
+    allIngredients: [Ingredient!]!
     getIngredient(id: ID!): Ingredient
     findIngredient(filter: String!): [Ingredient!]!
   }
 
   extend type Mutation {
-    addIngredient(name: String!, defaultUnitId: ID!): Ingredient
+    addIngredient(name: String!, defaultUnitId: ID): Ingredient
+    updateIngredient(id: ID!, name: String, defaultUnitId: ID): Ingredient
     removeIngredient(id: ID!): Ingredient
   }
 `

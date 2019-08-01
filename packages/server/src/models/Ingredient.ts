@@ -14,7 +14,6 @@ const schema = new mongoose.Schema({
   defaultUnit: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Unit',
-    required: true,
   }
 })
 schema.plugin(uniqueValidator)

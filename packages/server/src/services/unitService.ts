@@ -32,6 +32,11 @@ export class UnitService extends MongoCRUDService<IUnit, UnitFields> {
   }
 
   public async remove(id: ID): Promise<IUnit | null> {
+    const nullId = await getNullID()
+    if (id === nullId) {
+      return null
+    }
+
     const removed = await super.remove(id)
     if (!removed) {
       return null

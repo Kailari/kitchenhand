@@ -31,11 +31,17 @@ export interface Unit {
   abbreviation?: string,
 }
 
+export interface Ingredient {
+  id: string,
+  name: string,
+  defaultUnit?: Unit,
+}
+
 type WithoutKey<T, Excluded = 'id'> = Pick<T, {
   [Key in keyof T]: Key extends Excluded ? never : Key
 }[keyof T]>
 
-export type DirtyFlags<T, Excluded='id'> = {
+export type DirtyFlags<T, Excluded = 'id'> = {
   // Exclude any keys matching Excluded, convert remaining to booleans and remove optional modifiers
   [Key in keyof WithoutKey<T, Excluded>]-?: boolean
 }

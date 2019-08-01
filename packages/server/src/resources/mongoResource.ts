@@ -82,7 +82,7 @@ export class MongoCRUDService<TResource extends MongoResource, TFields = { [key:
   }
 
   public async update(id: ID, updatedFields: { [key: string]: any }): Promise<TResource | null> {
-    const resource = await this.updateQuery(id)
+    const resource = await this.updateQuery(id, updatedFields)
     if (!resource) {
       return null
     }
@@ -98,7 +98,7 @@ export class MongoCRUDService<TResource extends MongoResource, TFields = { [key:
     return await resource.save()
   }
 
-  public updateQuery(id: ID): DocumentQuery<TResource | null, TResource> {
+  public updateQuery(id: ID, _updatedFields: { [key: string]: any }): DocumentQuery<TResource | null, TResource> {
     return this.model.findById(id)
   }
 
