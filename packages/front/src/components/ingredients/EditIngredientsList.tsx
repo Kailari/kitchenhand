@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from 'react'
-import { Segment, Button, Form, Loader } from 'semantic-ui-react'
+import { Segment, Button, Form } from 'semantic-ui-react'
 
 import { useFieldWithDirty } from '../../hooks/form'
 import FieldWithError from '../form/FieldWithError'
@@ -47,7 +47,7 @@ const EditIngredientEntry: FunctionComponent<EditIngredientEntryProps> = ({ ingr
     <Segment>
       <Form
         key={ingredient.id}
-        className='ingredient-entry'
+        className='edit-ingredient-entry'
         onSubmit={update}
       >
         <div className='controls'>
