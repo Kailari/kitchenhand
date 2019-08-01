@@ -56,6 +56,14 @@ class IngredientList extends React.Component<IngredientListProps, IngredientList
                   : { ...i, amount: amount})
               this.props.setIngredients(newIngredients)
             }}
+            unit={ingredient.unit}
+            setUnit={(unit) => {
+              const newIngredients = this.props.ingredients.concat()
+                .map((i) => i.id !== ingredient.id
+                  ? i
+                  : { ...i, unit: unit})
+              this.props.setIngredients(newIngredients)
+            }}
             onDragOver={() => this.onDragOver(index)}
           />
         )}

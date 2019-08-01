@@ -2,6 +2,8 @@ import React, { FunctionComponent } from 'react'
 import { Segment, Input, Icon, Label, Button, Responsive } from 'semantic-ui-react'
 
 import './IngredientEntry.less'
+import SelectUnitDropdown from '../ingredients/SelectUnitDropdown'
+import { Unit } from '../../types'
 
 interface IngredientEntryProps {
   showDelete: boolean,
@@ -10,9 +12,11 @@ interface IngredientEntryProps {
   onDragOver: (index: number) => void,
   amount: number,
   setAmount: (amount: number) => void,
+  unit: Unit,
+  setUnit: (unit: Unit) => void,
 }
 
-const IngredientEntry: FunctionComponent<IngredientEntryProps> = ({ showDelete, onRemove, setDraggedElement, onDragOver, amount, setAmount }) => {
+const IngredientEntry: FunctionComponent<IngredientEntryProps> = ({ showDelete, onRemove, setDraggedElement, onDragOver, amount, setAmount, unit, setUnit }) => {
   const onDragStart = (e: React.DragEvent) => {
     setDraggedElement()
     e.dataTransfer.setData('text/html', (e.currentTarget.parentElement as Element).innerHTML)
@@ -59,15 +63,13 @@ const IngredientEntry: FunctionComponent<IngredientEntryProps> = ({ showDelete, 
         }}>
           <input />
         </Input>
-        <Input list='units' placeholder='grams' labelPosition='right' className='unit'>
-          <input />
-        </Input>
-        <datalist id='units'>
-          <option value='grams' />
-          <option value='liters' />
-          <option value='desiliters' />
-          <option value='milliliters' />
-        </datalist>
+        <SelectUnitDropdown
+          className='unit'
+          select={(u) => u ? setUnit(u) : () => { }}
+          selected={unit}
+          selection
+          compact
+        />
         <Input list='ingredients' placeholder='ingredient' labelPosition='right' className='ingredient'>
           <Label>of</Label>
           <input />
