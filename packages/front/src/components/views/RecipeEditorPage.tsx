@@ -5,7 +5,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { Loader } from 'semantic-ui-react'
 
 import { PageWithBreadcrumbsProps, PageWithHeadingAndBreadcrumb } from './PageBase'
-import { Recipe, RecipeIngredient } from '../MainApp'
+import { Recipe, RecipeIngredient } from '../../types'
 import EditRecipeForm from '../recipes/EditRecipeForm'
 
 const FIND_RECIPE = gql`

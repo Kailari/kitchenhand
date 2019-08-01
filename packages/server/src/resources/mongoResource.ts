@@ -68,9 +68,9 @@ export class MongoCRUDService<TResource extends MongoResource, TFields = { [key:
         }
         throw new ValidationError(errors)
       }
-    }
 
-    return null
+      throw err
+    }
   }
 
   public async get(id: ID): Promise<TResource | null> {
@@ -88,8 +88,10 @@ export class MongoCRUDService<TResource extends MongoResource, TFields = { [key:
     }
 
     for (const property in updatedFields) {
-      if (resource.hasOwnProperty(property)) {
-        (resource as any)[property] = updatedFields[property]
+      // HACK: Convert null values to undefined in order to remove fields from documents
+      const value = updatedFields[property] || undefined
+      if (property in resource) {
+        resource.set(property, value)
       }
     }
 

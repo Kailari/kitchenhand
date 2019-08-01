@@ -7,7 +7,7 @@ import { PageWithHeadingAndBreadcrumb, PageWithBreadcrumbsProps } from '../PageB
 import EditUnitsList from '../../units/EditUnitsList'
 import CreateUnitForm from '../../units/CreateUnitForm'
 import UnitsQuery, { ALL_UNITS, UnitQueryData } from '../../units/UnitsQuery'
-import { Unit } from '../../MainApp'
+import { Unit, DirtyFlags } from '../../../types'
 
 const CREATE_UNIT = gql`
 mutation create($name: String!, $abbreviation: String) {
@@ -30,6 +30,48 @@ interface CreateUnitResult {
   added: Unit,
 }
 
+const UPDATE_UNIT = gql`
+mutation update($id: ID!, $name: String, $abbreviation: String) {
+  updated: updateUnit(
+    id: $id,
+    name: $name,
+    abbreviation: $abbreviation,
+  ) {
+    id
+    name
+    abbreviation
+  }
+}`
+
+interface UpdateUnitVariables {
+  id: string,
+  name?: string,
+  abbreviation?: string | null,
+}
+
+interface UpdateUnitResult {
+  updated: Unit,
+}
+
+const REMOVE_UNIT = gql`
+mutation remove($id: ID!) {
+  removed: removeUnit(
+    id: $id
+  ) {
+    id
+    name
+    abbreviation
+  }
+}`
+
+interface RemoveUnitVariables {
+  id: string,
+}
+
+interface RemoveUnitResult {
+  removed: Unit,
+}
+
 type UnitsPageProps = PageWithBreadcrumbsProps
 
 const UnitsPage: FunctionComponent<UnitsPageProps> = ({ breadcrumbs }) => {
@@ -38,8 +80,42 @@ const UnitsPage: FunctionComponent<UnitsPageProps> = ({ breadcrumbs }) => {
     {
       update: (store, response) => {
         const dataInStore = store.readQuery<UnitQueryData>({ query: ALL_UNITS })
-        if (dataInStore && response.data) {
+        if (dataInStore && response.data && response.data.added) {
           dataInStore.units.push(response.data.added)
+          store.writeQuery<UnitQueryData>({
+            query: ALL_UNITS,
+            data: dataInStore,
+          })
+        }
+      }
+    }
+  )
+
+  const [updateUnitMutation] = useMutation<UpdateUnitResult, UpdateUnitVariables>(
+    UPDATE_UNIT,
+    {
+      update: (store, response) => {
+        const dataInStore = store.readQuery<UnitQueryData>({ query: ALL_UNITS })
+        if (dataInStore && response.data && response.data.updated) {
+          const updated = response.data.updated
+          dataInStore.units.map((unit) => unit.id !== updated.id ? unit : updated)
+          store.writeQuery<UnitQueryData>({
+            query: ALL_UNITS,
+            data: dataInStore,
+          })
+        }
+      }
+    }
+  )
+
+  const [removeUnitMutation] = useMutation<RemoveUnitResult, RemoveUnitVariables>(
+    REMOVE_UNIT,
+    {
+      update: (store, response) => {
+        const dataInStore = store.readQuery<UnitQueryData>({ query: ALL_UNITS })
+        if (dataInStore && response.data && response.data.removed) {
+          const removed = response.data.removed
+          dataInStore.units = dataInStore.units.concat().filter((unit) => unit.id !== removed.id)
           store.writeQuery<UnitQueryData>({
             query: ALL_UNITS,
             data: dataInStore,
@@ -53,6 +129,24 @@ const UnitsPage: FunctionComponent<UnitsPageProps> = ({ breadcrumbs }) => {
     await createUnitMutation({ variables: { name, abbreviation } })
   }
 
+  const updateUnit = async (unit: Unit, dirty: DirtyFlags<Unit>) => {
+    const abbreviation = (dirty.abbreviation && unit.abbreviation && unit.abbreviation.length > 0)
+      ? unit.abbreviation
+      : null
+
+    await updateUnitMutation({
+      variables: {
+        id: unit.id,
+        name: dirty.name ? unit.name : undefined,
+        abbreviation: abbreviation,
+      }
+    })
+  }
+
+  const removeUnit = async (unit: Unit) => {
+    await removeUnitMutation({ variables: { id: unit.id } })
+  }
+
   return (
     <PageWithHeadingAndBreadcrumb
       title='Manage units'
@@ -63,7 +157,7 @@ const UnitsPage: FunctionComponent<UnitsPageProps> = ({ breadcrumbs }) => {
       <Header as='h3'>Units</Header>
       <UnitsQuery query={ALL_UNITS} render={(result) =>
         !result.loading && result.data
-          ? <EditUnitsList units={result.data.units} />
+          ? <EditUnitsList units={result.data.units} onUpdate={updateUnit} onRemove={removeUnit} />
           : <Loader active inline>Loading...</Loader>
       } />
     </PageWithHeadingAndBreadcrumb>

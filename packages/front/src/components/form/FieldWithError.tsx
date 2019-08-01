@@ -1,17 +1,23 @@
-import React from 'react'
-import { Form, Message } from 'semantic-ui-react'
+import React, { FunctionComponent } from 'react'
+import { Form, Message, FormInputProps } from 'semantic-ui-react'
+
 import { Field } from '../../hooks/form'
 
 import './FieldWithError.less'
 
-const FieldWithError = ({ field }: { field: Field }) => {
+interface FieldWithErrorProps extends FormInputProps {
+  field: Field,
+}
+
+const FieldWithError: FunctionComponent<FieldWithErrorProps> = ({ field, ...args }) => {
   return (
-    <>
+    <div className='field'>
       <Form.Input
         className={`field-input${field.error ? ' with-error' : ''}`}
         fluid
         iconPosition='left'
         error={!!field.error}
+        {...args}
         {...field.elementArgs}
       />
       {field.error && (
@@ -19,7 +25,7 @@ const FieldWithError = ({ field }: { field: Field }) => {
           {field.error}
         </Message>
       )}
-    </>
+    </div>
   )
 }
 

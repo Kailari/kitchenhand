@@ -1,7 +1,7 @@
 import React from 'react'
 import { Item } from 'semantic-ui-react'
 import RecipeCard from './RecipeCard'
-import { Recipe } from '../MainApp'
+import { Recipe } from '../../types'
 
 interface RecipeListProps {
   recipes: Recipe[],

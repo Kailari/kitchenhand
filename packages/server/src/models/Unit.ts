@@ -13,7 +13,9 @@ const schema = new mongoose.Schema({
   },
   abbreviation: {
     type: String,
+    trim: true,
     unique: true,
+    sparse: true,
     minlength: 1,
     maxlength: 16
   },

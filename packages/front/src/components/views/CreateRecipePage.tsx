@@ -1,14 +1,14 @@
 import React, { FunctionComponent, useState } from 'react'
 import gql from 'graphql-tag'
 import { useMutation } from 'react-apollo-hooks'
+import { Segment, Button } from 'semantic-ui-react'
 import uuidv1 from 'uuid/v1'
 
 import { PageWithHeadingAndBreadcrumb, PageWithBreadcrumbsProps } from './PageBase'
 import { MY_RECIPES, NEW_RECIPES } from '../recipes/RecipesQuery'
 import { RouteComponentProps, withRouter } from 'react-router'
-import { Recipe } from '../MainApp'
 import EditRecipeForm from '../recipes/EditRecipeForm'
-import { Segment, Button } from 'semantic-ui-react'
+import { Recipe } from '../../types'
 
 
 const CREATE_RECIPE = gql`

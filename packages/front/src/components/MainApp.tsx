@@ -11,6 +11,7 @@ import RecipeList from './recipes/RecipeList'
 import Discover from './views/DiscoverPage'
 import { MY_RECIPES, RecipeQueryData } from './recipes/RecipesQuery'
 import UnitsPage from './views/admin/UnitsPage'
+import { User } from '../types'
 
 const ME = gql`
 {
@@ -24,39 +25,6 @@ const ME = gql`
 interface MainAppProps {
   token: string,
   onLogout: () => void,
-}
-
-export interface User {
-  id: string,
-  name: string,
-}
-
-
-export interface RecipeIngredient {
-  id: string,
-  amount: number,
-  ingredient: {
-    id: string,
-    name: string,
-  },
-  unit: Unit,
-}
-
-export interface Recipe {
-  id: string,
-  name: string,
-  views: number,
-  category?: string,
-  date?: Date,
-  description?: string,
-  owner?: User,
-  ingredients: RecipeIngredient[],
-}
-
-export interface Unit {
-  id: string,
-  name: string,
-  abbreviation: string,
 }
 
 const MainApp = ({ token, onLogout }: MainAppProps) => {

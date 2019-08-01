@@ -1,0 +1,41 @@
+export interface User {
+  id: string,
+  name: string,
+}
+
+
+export interface RecipeIngredient {
+  id: string,
+  amount: number,
+  ingredient: {
+    id: string,
+    name: string,
+  },
+  unit: Unit,
+}
+
+export interface Recipe {
+  id: string,
+  name: string,
+  views: number,
+  category?: string,
+  date?: Date,
+  description?: string,
+  owner?: User,
+  ingredients: RecipeIngredient[],
+}
+
+export interface Unit {
+  id: string,
+  name: string,
+  abbreviation?: string,
+}
+
+type WithoutKey<T, Excluded = 'id'> = Pick<T, {
+  [Key in keyof T]: Key extends Excluded ? never : Key
+}[keyof T]>
+
+export type DirtyFlags<T, Excluded='id'> = {
+  // Exclude any keys matching Excluded, convert remaining to booleans and remove optional modifiers
+  [Key in keyof WithoutKey<T, Excluded>]-?: boolean
+}

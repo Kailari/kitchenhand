@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react'
 import { Menu, Container, Image, Icon, Dropdown, Button, Sidebar, Segment } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
-import { User } from './MainApp'
+import { User } from '../types'
 
 interface NavbarProps {
   logout: () => void,

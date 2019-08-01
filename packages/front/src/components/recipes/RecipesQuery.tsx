@@ -1,9 +1,9 @@
 import React, { FunctionComponent } from 'react'
 import { useQuery, QueryHookResult } from 'react-apollo-hooks'
 import gql from 'graphql-tag'
-import { Recipe } from '../MainApp'
 import { DocumentNode } from 'graphql'
 import { OperationVariables } from 'apollo-client'
+import { Recipe } from '../../types'
 
 export const TRENDING_RECIPES: DocumentNode = gql`
 {

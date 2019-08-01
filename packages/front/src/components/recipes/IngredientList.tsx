@@ -1,6 +1,6 @@
 import React from 'react'
 import IngredientEntry from './IngredientEntry'
-import { RecipeIngredient } from '../MainApp'
+import { RecipeIngredient } from '../../types'
 
 interface IngredientListProps {
   showDelete: boolean,

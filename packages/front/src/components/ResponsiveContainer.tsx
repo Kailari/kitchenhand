@@ -2,7 +2,7 @@ import React, { useState, FunctionComponent } from 'react'
 import { Responsive, Sidebar } from 'semantic-ui-react'
 
 import { DesktopNavbar, MobileNavbar } from './Navbar'
-import { User } from './MainApp'
+import { User } from '../types'
 
 interface ResponsiveContainerProps {
   logout: () => void,

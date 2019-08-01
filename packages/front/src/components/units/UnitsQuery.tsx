@@ -4,7 +4,7 @@ import gql from 'graphql-tag'
 import { OperationVariables } from 'apollo-client'
 import { QueryHookResult, useQuery } from 'react-apollo-hooks'
 
-import { Unit } from '../MainApp'
+import { Unit } from '../../types'
 
 export const ALL_UNITS = gql`
 {

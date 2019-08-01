@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useState } from 'react'
 import { CheckboxProps, Header, Segment, Checkbox, Button } from 'semantic-ui-react'
 
-import { Recipe, RecipeIngredient } from '../MainApp'
+import { Recipe, RecipeIngredient } from '../../types'
 import IngredientList from './IngredientList'
 
 import './EditRecipeForm.less'

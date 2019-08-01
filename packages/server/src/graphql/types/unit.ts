@@ -15,6 +15,7 @@ const types = gql`
 
   extend type Mutation {
     addUnit(name: String!, abbreviation: String): Unit
+    updateUnit(id: ID!, name: String, abbreviation: String): Unit
     removeUnit(id: ID!): Unit
   }
 `
