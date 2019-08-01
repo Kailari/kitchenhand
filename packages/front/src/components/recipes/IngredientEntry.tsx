@@ -3,7 +3,8 @@ import { Segment, Input, Icon, Label, Button, Responsive } from 'semantic-ui-rea
 
 import './IngredientEntry.less'
 import SelectUnitDropdown from '../units/SelectUnitDropdown'
-import { Unit } from '../../types'
+import { Unit, Ingredient } from '../../types'
+import SelectIngredientDropdown from '../ingredients/SelectIngredientDropdown'
 
 interface IngredientEntryProps {
   showDelete: boolean,
@@ -14,9 +15,11 @@ interface IngredientEntryProps {
   setAmount: (amount: number) => void,
   unit: Unit,
   setUnit: (unit: Unit) => void,
+  ingredient: Ingredient,
+  setIngredient: (ingredient: Ingredient) => void,
 }
 
-const IngredientEntry: FunctionComponent<IngredientEntryProps> = ({ showDelete, onRemove, setDraggedElement, onDragOver, amount, setAmount, unit, setUnit }) => {
+const IngredientEntry: FunctionComponent<IngredientEntryProps> = ({ showDelete, onRemove, setDraggedElement, onDragOver, amount, setAmount, unit, setUnit, ingredient, setIngredient }) => {
   const onDragStart = (e: React.DragEvent) => {
     setDraggedElement()
     e.dataTransfer.setData('text/html', (e.currentTarget.parentElement as Element).innerHTML)
@@ -70,16 +73,15 @@ const IngredientEntry: FunctionComponent<IngredientEntryProps> = ({ showDelete, 
           selection
           compact
         />
-        <Input list='ingredients' placeholder='ingredient' labelPosition='right' className='ingredient'>
-          <Label>of</Label>
-          <input />
-          <Button icon='plus' size='mini' />
-        </Input>
-        <datalist id='ingredients'>
-          <option value='Cheese' />
-          <option value='Butter' />
-          <option value='Pasta' />
-        </datalist>
+        <Label>of</Label>
+        <SelectIngredientDropdown
+          className='ingredient'
+          select={(i) => i ? setIngredient(i) : () => { }}
+          selected={ingredient}
+          selection
+          compact
+        />
+        <Button icon='plus' size='mini' />
       </div>
       {showDelete && (
         <Button negative onClick={onRemove}>Remove</Button>

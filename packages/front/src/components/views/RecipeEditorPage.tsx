@@ -17,6 +17,15 @@ query find($id: ID!) {
     ingredients {
       id
       amount
+      unit {
+        id
+        name
+        abbreviation
+      }
+      ingredient {
+        id
+        name
+      }
     }
   }
 }`

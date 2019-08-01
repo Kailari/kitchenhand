@@ -43,7 +43,7 @@ export class RecipeService extends MongoCRUDService<IRecipe, RecipeFields> imple
   }
 
   public getQuery(id: ID): DocumentQuery<IRecipe | null, IRecipe> {
-    return super.getQuery(id).populate('owner')
+    return super.getQuery(id).populate('owner').populate('ingredients.unit').populate('ingredients.ingredient')
   }
 
   public removeQuery(id: ID): DocumentQuery<IRecipe | null, IRecipe> {

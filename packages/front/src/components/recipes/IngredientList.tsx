@@ -42,26 +42,34 @@ class IngredientList extends React.Component<IngredientListProps, IngredientList
   public render() {
     return (
       <div>
-        {this.props.ingredients.map((ingredient, index) =>
+        {this.props.ingredients.map((recipeIngredient, index) =>
           <IngredientEntry
             showDelete={this.props.showDelete}
-            onRemove={() => this.props.onRemove(ingredient.id)}
-            key={ingredient.id}
+            onRemove={() => this.props.onRemove(recipeIngredient.id)}
+            key={recipeIngredient.id}
             setDraggedElement={() => this.setDraggedElement(index)}
-            amount={ingredient.amount}
+            amount={recipeIngredient.amount}
             setAmount={(amount) => {
               const newIngredients = this.props.ingredients.concat()
-                .map((i) => i.id !== ingredient.id
+                .map((i) => i.id !== recipeIngredient.id
                   ? i
                   : { ...i, amount: amount})
               this.props.setIngredients(newIngredients)
             }}
-            unit={ingredient.unit}
+            unit={recipeIngredient.unit}
             setUnit={(unit) => {
               const newIngredients = this.props.ingredients.concat()
-                .map((i) => i.id !== ingredient.id
+                .map((i) => i.id !== recipeIngredient.id
                   ? i
                   : { ...i, unit: unit})
+              this.props.setIngredients(newIngredients)
+            }}
+            ingredient={recipeIngredient.ingredient}
+            setIngredient={(ingredient) => {
+              const newIngredients = this.props.ingredients.concat()
+                .map((i) => i.id !== recipeIngredient.id
+                  ? i
+                  : { ...i, ingredient: ingredient})
               this.props.setIngredients(newIngredients)
             }}
             onDragOver={() => this.onDragOver(index)}
