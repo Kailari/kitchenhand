@@ -235,10 +235,10 @@ describe(`With a test database with ${NUM_USERS} users with ${NUM_RECIPES} recip
 
     describe('mutating with addRecipe', () => {
       describe('with invalid arguments', () => {
-        test('rejects with code BAD_USER_INPUT', async () => {
+        test('rejects with code ARGUMENT_VALIDATION_FAILED', async () => {
           await expect(query(addRecipeMutation('a', 'b'), { authorization: token }))
             .rejects
-            .toContainApolloError('BAD_USER_INPUT')
+            .toContainApolloError('ARGUMENT_VALIDATION_FAILED')
         })
 
         test('does not add new recipe', async () => {

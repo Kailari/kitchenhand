@@ -32,6 +32,10 @@ export const queries: QueryResolvers = {
 
 export const mutations: MutationResolvers = {
   addRecipe: async (root, args, context): Promise<IRecipe> => {
+    doValidation(args, [
+      validator.string('name', { minLength: 3, maxLength: 64 }),
+      validator.string('description', { allowEmpty: true, maxLength: 2048 })
+    ])
     const ingredients = args.ingredients || []
 
     let newRecipe = null
