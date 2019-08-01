@@ -6,7 +6,7 @@ import { Unit, DirtyFlags } from '../../types'
 import './EditUnitsList.less'
 import { useFieldWithDirty } from '../../hooks/form'
 import FieldWithError from '../form/FieldWithError'
-import { handleValidated } from '../../util/error/validator';
+import { handleValidated } from '../../util/error/validator'
 
 interface EditUnitEntryProps {
   unit: Unit,
