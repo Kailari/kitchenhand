@@ -20,6 +20,7 @@ mutation create($name: String!, $defaultUnitId: ID) {
     defaultUnit {
       id
       name
+      abbreviation
     }
   }
 }`
@@ -45,6 +46,7 @@ mutation update($id: ID!, $name: String, $defaultUnitId: ID) {
     defaultUnit {
       id
       name
+      abbreviation
     }
   }
 }`

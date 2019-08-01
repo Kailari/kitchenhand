@@ -37,7 +37,7 @@ export class IngredientService extends MongoCRUDService<IIngredient, IngredientF
       return null
     }
 
-    return await created.populate('defaultUnit')
+    return await created.populate('defaultUnit').execPopulate()
   }
 
   public async remove(id: ID): Promise<IIngredient | null> {

@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from 'react'
-import { Segment, Button, Form, Dropdown } from 'semantic-ui-react'
+import { Segment, Button, Form, Loader } from 'semantic-ui-react'
 
 import { useFieldWithDirty } from '../../hooks/form'
 import FieldWithError from '../form/FieldWithError'
@@ -7,6 +7,7 @@ import { handleValidated } from '../../util/error/validator'
 import { Unit, DirtyFlags, Ingredient } from '../../types'
 
 import './EditIngredientList.less'
+import SelectUnitDropdown from './SelectUnitDropdown'
 
 interface EditIngredientEntryProps {
   ingredient: Ingredient,
@@ -16,7 +17,7 @@ interface EditIngredientEntryProps {
 
 const EditIngredientEntry: FunctionComponent<EditIngredientEntryProps> = ({ ingredient, onUpdate, onRemove }) => {
   const nameField = useFieldWithDirty({ placeholder: 'name' }, ingredient.name)
-  const [defaultUnit, setDefaultUnit] = useState<Unit | null>(null)
+  const [defaultUnit, setDefaultUnit] = useState<Unit | null>(ingredient.defaultUnit || null)
 
   const update = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -51,7 +52,11 @@ const EditIngredientEntry: FunctionComponent<EditIngredientEntryProps> = ({ ingr
       >
         <div className='controls'>
           <FieldWithError field={nameField} />
-          <Dropdown />
+          <SelectUnitDropdown
+            select={setDefaultUnit}
+            selected={defaultUnit}
+            selection
+          />
         </div>
         <Button type='submit' positive size='mini' className='save'>
           Save
@@ -71,7 +76,13 @@ interface EditIngredientListProps {
 const EditIngredientsList: FunctionComponent<EditIngredientListProps> = ({ ingredients, onUpdate, onRemove }) => {
   return (
     <Segment>
-      {ingredients.map((ingredient) => <EditIngredientEntry key={ingredient.id} ingredient={ingredient} onUpdate={onUpdate} onRemove={onRemove} />)}
+      {ingredients.map((ingredient) =>
+        <EditIngredientEntry
+          key={ingredient.id}
+          ingredient={ingredient}
+          onUpdate={onUpdate}
+          onRemove={onRemove} />)
+      }
     </Segment>
   )
 }

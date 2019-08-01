@@ -1,10 +1,12 @@
 import React, { FunctionComponent, useState } from 'react'
-import { Form, Button, Dropdown } from 'semantic-ui-react'
+import { Form, Button, Loader } from 'semantic-ui-react'
 
 import { useField } from '../../hooks/form'
 import FieldWithError from '../form/FieldWithError'
 import { handleValidated } from '../../util/error/validator'
 import { Unit } from '../../types'
+import SelectUnitDropdown from './SelectUnitDropdown'
+import UnitsQuery, { ALL_UNITS } from '../units/UnitsQuery'
 
 interface CreateIngredientFormProps {
   onCreate: (name: string, defaultUnit?: Unit) => void,
@@ -30,13 +32,26 @@ const CreateIngredientForm: FunctionComponent<CreateIngredientFormProps> = ({ on
   }
 
   return (
-    <Form onSubmit={submit}>
-      <FieldWithError field={nameField} />
-      <Dropdown />
-      <Button positive>
-        Create
-      </Button>
-    </Form>
+    <UnitsQuery query={ALL_UNITS} render={(result) =>
+      (result.loading || !result.data)
+        ? <Loader active inline>Loading...</Loader>
+        : <>
+          <Form onSubmit={submit}>
+            <FieldWithError field={nameField} />
+            <SelectUnitDropdown
+              units={result.data.units}
+              select={setDefaultUnit}
+              selected={defaultUnit}
+              fluid
+              selection
+              style={{ marginBottom: '14px' }}
+            />
+            <Button positive>
+              Create
+            </Button>
+          </Form>
+        </>
+    } />
   )
 }
 
