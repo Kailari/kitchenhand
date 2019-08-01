@@ -27,4 +27,8 @@
 | 26.07.2019 |      2 | Apu"kirjasto" GraphQL-resolverien parametrien validointia varten. |
 | 27.07.2019 |      3 | Apukirjaston toteuttaminen jatkuu. Backendin palveluiden työstöä. |
 | 28.07.2019 |      4 | Projektin refaktorointia/siistimistä. Validointikirjaston testit. |
-|   yhteensä |     65 |                                                                   |
+| 29.07.2019 |      2 | Dokumentointia.                                                   |
+| 30.07.2019 |      2 | Backendin resurssijärjestelmä kuntoon ja käyttämään apukirjastoa. |
+| 31.07.2019 |      3 | Mittayksiköiden hallinnointi.                                     |
+| 01.07.2019 |      5 | Ainesosien hallinnointi, reseptieditorin jatkaminen.              |
+|   yhteensä |     91 |                                                                   |
