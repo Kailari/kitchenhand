@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react'
 import { DropdownProps, Dropdown } from 'semantic-ui-react'
 
 import { Unit } from '../../types'
-import UnitsQuery, { ALL_UNITS } from '../units/UnitsQuery'
+import UnitsQuery, { ALL_UNITS } from './UnitsQuery'
 
 
 export interface SelectUnitDropdownProps extends DropdownProps {

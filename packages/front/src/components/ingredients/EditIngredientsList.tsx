@@ -7,7 +7,7 @@ import { handleValidated } from '../../util/error/validator'
 import { Unit, DirtyFlags, Ingredient } from '../../types'
 
 import './EditIngredientList.less'
-import SelectUnitDropdown from './SelectUnitDropdown'
+import SelectUnitDropdown from '../units/SelectUnitDropdown'
 
 interface EditIngredientEntryProps {
   ingredient: Ingredient,

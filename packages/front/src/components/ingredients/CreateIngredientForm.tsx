@@ -5,7 +5,7 @@ import { useField } from '../../hooks/form'
 import FieldWithError from '../form/FieldWithError'
 import { handleValidated } from '../../util/error/validator'
 import { Unit } from '../../types'
-import SelectUnitDropdown from './SelectUnitDropdown'
+import SelectUnitDropdown from '../units/SelectUnitDropdown'
 import UnitsQuery, { ALL_UNITS } from '../units/UnitsQuery'
 
 interface CreateIngredientFormProps {

@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react'
 import { Segment, Input, Icon, Label, Button, Responsive } from 'semantic-ui-react'
 
 import './IngredientEntry.less'
-import SelectUnitDropdown from '../ingredients/SelectUnitDropdown'
+import SelectUnitDropdown from '../units/SelectUnitDropdown'
 import { Unit } from '../../types'
 
 interface IngredientEntryProps {
