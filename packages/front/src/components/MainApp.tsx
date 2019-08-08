@@ -7,12 +7,11 @@ import Dashboard from './views/Dashboard'
 import RecipeEditorPage from './views/RecipeEditorPage'
 import CreateRecipePage from './views/CreateRecipePage'
 import ResponsiveContainer from './ResponsiveContainer'
-import RecipeList from './recipes/RecipeList'
 import Discover from './views/DiscoverPage'
-import { MY_RECIPES, RecipeQueryData } from './recipes/RecipesQuery'
 import UnitsPage from './views/admin/UnitsPage'
 import { User } from '../types'
 import IngredientsPage from './views/admin/IngredientsPage'
+import CookbookPage from './views/CookbookPage'
 
 const ME = gql`
 {
@@ -30,8 +29,6 @@ interface MainAppProps {
 
 const MainApp = ({ token, onLogout }: MainAppProps) => {
   const client = useApolloClient()
-
-  const myRecipes = useQuery<RecipeQueryData>(MY_RECIPES)
   const me = useQuery(ME)
 
   const [currentUser, setCurrentUser] = useState<User | null>(null)
@@ -94,9 +91,11 @@ const MainApp = ({ token, onLogout }: MainAppProps) => {
         } />
 
         <Route exact path='/recipes/my' render={() =>
-          !myRecipes.loading && myRecipes.data
-            ? <RecipeList recipes={myRecipes.data.recipes} />
-            : <div>Loading...</div>
+          <CookbookPage breadcrumbs={[
+            { name: 'Kitchenhand', path: '' },
+            { name: 'Recipes', path: 'recipes' },
+            { name: 'Cookbook', path: 'cookbook' },
+          ]} />
         } />
 
         <Route exact path='/admin/units' render={() =>
