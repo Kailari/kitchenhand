@@ -2,7 +2,8 @@ import React, { FunctionComponent } from 'react'
 import { DocumentNode } from 'graphql'
 import gql from 'graphql-tag'
 import { OperationVariables } from 'apollo-client'
-import { QueryHookResult, useQuery } from 'react-apollo-hooks'
+import { useQuery } from '@apollo/react-hooks'
+import { QueryResult } from '@apollo/react-common'
 
 import { Unit } from '../../types'
 
@@ -22,7 +23,7 @@ export interface UnitQueryData {
 
 interface RecipesQueryProps {
   query: DocumentNode,
-  render: (units: QueryHookResult<UnitQueryData, OperationVariables>) => JSX.Element,
+  render: (units: QueryResult<UnitQueryData, OperationVariables>) => JSX.Element,
 }
 
 const UnitsQuery: FunctionComponent<RecipesQueryProps> = ({ query, render }) => {

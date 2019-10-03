@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
+import { ExecutionResult } from 'graphql'
 import gql from 'graphql-tag'
-import { useMutation, useApolloClient } from 'react-apollo-hooks'
+import { useMutation, useApolloClient } from '@apollo/react-hooks'
 
 import { Redirect, Route, Switch, BrowserRouter as Router } from 'react-router-dom'
 
@@ -73,7 +74,7 @@ const App = () => {
   const login = async (loginname: string, password: string) => {
     const result = await loginMutation({
       variables: { loginname, password }
-    })
+    }) as ExecutionResult<LoginResult>
 
     if (!result.data) {
       // TODO: Redirect to 'oops'-page
@@ -93,7 +94,7 @@ const App = () => {
         name,
         password
       }
-    })
+    }) as ExecutionResult<RegisterResult>
 
     if (!result.data) {
       // TODO: Redirect to 'oops'-page

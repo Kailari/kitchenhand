@@ -89,10 +89,14 @@ export class RecipeService extends MongoCRUDService<IRecipe, RecipeFields> imple
       return null
     }
 
+    const index = recipe.ingredients.length > 0
+      ? recipe.ingredients.sort((a, b): number => b.index - a.index)[0].index + 1
+      : 0
     const newIngredient = new RecipeIngredient({
       amount: amount,
       ingredient: ingredient.id,
       unit: unit.id,
+      index: index,
     })
     recipe.ingredients.push(newIngredient)
     await recipe.save()
@@ -123,31 +127,28 @@ export class RecipeService extends MongoCRUDService<IRecipe, RecipeFields> imple
     return null
   }
 
-  public async updateIngredient(id: ID, recipeId: ID, amount?: number, ingredientId?: ID, unitId?: ID): Promise<IRecipeIngredient | null> {
+  public async updateIngredient(id: ID, recipeId: ID, index?: number, amount?: number, ingredientId?: ID, unitId?: ID): Promise<IRecipeIngredient | null> {
     const recipe = await Recipe.findById(recipeId)
+      .populate('owner')
+      .populate('ingredients.unit')
       .populate({
-        path: 'ingredients',
+        path: 'ingredients.ingredient',
         populate: [
-          {
-            path: 'ingredient'
-          },
-          {
-            path: 'unit'
-          }
+          { path: 'defaultUnit' },
         ]
       })
 
-    console.log('recipe:', recipe)
     if (!recipe) {
       return null
     }
 
-    const recipeIngredient: IRecipeIngredient | null = (recipe.ingredients as any).id()
+    const recipeIngredient: IRecipeIngredient | null = (recipe.ingredients as any).id(id)
     if (recipeIngredient === null) {
       return null
     }
 
-    if (amount) recipeIngredient.amount = amount
+    if (amount !== undefined) recipeIngredient.amount = amount
+    if (index !== undefined) recipeIngredient.index = index
     let ingredient = recipeIngredient.ingredient
     if (ingredientId) {
       ingredient = await Ingredient.findById(ingredientId)
@@ -158,10 +159,11 @@ export class RecipeService extends MongoCRUDService<IRecipe, RecipeFields> imple
       unit = await Unit.findById(unitId)
       if (unit) recipeIngredient.unit = unitId
     }
-    await recipeIngredient.save()
+    await recipe.save()
 
-    recipeIngredient.ingredient = unit
+    recipeIngredient.ingredient = ingredient
     recipeIngredient.unit = unit
+    console.log('result:', recipeIngredient)
     return recipeIngredient
   }
 }

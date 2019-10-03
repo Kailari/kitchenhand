@@ -3,6 +3,7 @@ import { gql } from 'apollo-server'
 const types = gql`
   type RecipeIngredient @entity {
     id: ID! @id
+    index: Int! @column
     amount: Float! @column
     ingredient: Ingredient! @link
     unit: Unit! @link
@@ -36,6 +37,11 @@ const types = gql`
       description: String!
       ingredients: [ShallowRecipeIngredient!]
     ): Recipe! @requireLogin
+    updateRecipe(
+      id: ID!
+      name: String
+      description: String
+    ): Recipe @requireLogin @ownerOnly(resourceType: "recipe", idArg: "id")
     removeRecipe(
       id: ID!
     ): Recipe @requireLogin @ownerOnly(resourceType: "recipe", idArg: "id")
@@ -49,6 +55,7 @@ const types = gql`
       ingredientId: ID
       unitId: ID
       amount: Float
+      index: Int
     ): RecipeIngredient @requireLogin @ownerOnly(resourceType: "recipe", idArg: "recipeId")
     removeRecipeIngredient(
       recipeId: ID!

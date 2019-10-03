@@ -1,8 +1,10 @@
 import React, { FunctionComponent } from 'react'
-import { useQuery, QueryHookResult } from 'react-apollo-hooks'
 import gql from 'graphql-tag'
 import { DocumentNode } from 'graphql'
 import { OperationVariables } from 'apollo-client'
+import { useQuery } from '@apollo/react-hooks'
+import { QueryResult } from '@apollo/react-common'
+
 import { Recipe } from '../../types'
 
 export const TRENDING_RECIPES: DocumentNode = gql`
@@ -51,7 +53,7 @@ export interface RecipeQueryData {
 
 interface RecipesQueryProps {
   query: DocumentNode,
-  render: (recipes: QueryHookResult<RecipeQueryData, OperationVariables>) => JSX.Element,
+  render: (recipes: QueryResult<RecipeQueryData, OperationVariables>) => JSX.Element,
 }
 
 export const RecipesQuery: FunctionComponent<RecipesQueryProps> = ({ query, render }) => {

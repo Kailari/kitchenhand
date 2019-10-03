@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState } from 'react'
 import gql from 'graphql-tag'
-import { useMutation } from 'react-apollo-hooks'
+import { useMutation } from '@apollo/react-hooks'
 import { Segment, Button } from 'semantic-ui-react'
 import uuidv1 from 'uuid/v1'
 
@@ -8,7 +8,8 @@ import { PageWithHeadingAndBreadcrumb, PageWithBreadcrumbsProps } from './PageBa
 import { MY_RECIPES, NEW_RECIPES } from '../recipes/RecipesQuery'
 import { RouteComponentProps, withRouter } from 'react-router'
 import EditRecipeForm from '../recipes/EditRecipeForm'
-import { Recipe } from '../../types'
+import { Recipe, Ingredient, Unit, RecipeIngredient } from '../../types'
+import { ExecutionResult } from 'graphql'
 
 
 const CREATE_RECIPE = gql`
@@ -47,9 +48,9 @@ interface CreateRecipeProps extends PageWithBreadcrumbsProps, RouteComponentProp
 const CreateRecipePage: FunctionComponent<CreateRecipeProps> = ({ history, breadcrumbs }) => {
   const [recipe, setRecipe] = useState<Recipe>({
     id: uuidv1(),
-    name: 'My awesome recipe',
+    name: '',
     views: 0,
-    description: 'A short one-line description of your recipe',
+    description: '',
     ingredients: [],
   })
 
@@ -60,53 +61,53 @@ const CreateRecipePage: FunctionComponent<CreateRecipeProps> = ({ history, bread
     ]
   })
 
-  const createIngredient = () => ({
-    id: uuidv1(),
-    amount: 1,
-    unit: {
-      id: 'DUMMY',
-      name: 'unit',
-      abbreviation: 'unit'
-    },
-    ingredient: {
-      id: 'DUMMY',
-      name: 'ingredient'
-    }
-  })
-
   const createRecipe = async () => {
-    try {
-      const result = await createMutation({
-        variables: {
-          name: recipe.name,
-          description: recipe.description,
-          // Remove temporary IDs from ingredients and reduce fields with object references
-          // to just IDs
-          ingredients: recipe.ingredients
-            // TODO: Instead of filter, validate and fail with error notification
-            .filter((i) => i.unit.id !== 'DUMMY' && i.ingredient.id !== 'DUMMY')
-            .map((i) => ({
-              amount: i.amount,
-              unit: i.unit.id,
-              ingredient: i.ingredient.id,
-            }))
-        }
-      })
-
-      if (!result.data) {
-        // TODO: Error
-        console.log('adding recipe failed')
-        return
+    const result = await createMutation({
+      variables: {
+        name: recipe.name,
+        description: recipe.description,
+        // Remove temporary IDs from ingredients and reduce fields with object references
+        // to just IDs
+        ingredients: recipe.ingredients
+          // TODO: Instead of filter, validate and fail with error notification
+          .filter((i) => i.unit.id !== 'DUMMY' && i.ingredient.id !== 'DUMMY')
+          .map((i) => ({
+            amount: i.amount,
+            unit: i.unit.id,
+            ingredient: i.ingredient.id,
+          }))
       }
+    }) as ExecutionResult<CreateRecipeResult>
 
-      const newRecipe = result.data.addRecipe
-      console.log('recipe: ', newRecipe)
-      history.replace(`/recipes/${newRecipe.id}`)
-    } catch (error) {
-      console.log('error creating recipe: ', error)
+    if (!result.data) {
+      // TODO: Error
+      console.log('adding recipe failed')
+      return
     }
+
+    const newRecipe = result.data.addRecipe
+    console.log('recipe: ', newRecipe)
+    history.replace(`/recipes/${newRecipe.id}`)
   }
 
+  const handleCreateIngredient = (index: number, amount: number, ingredient: Ingredient, unit: Unit): RecipeIngredient => {
+    const newRecipeIngredients = recipe.ingredients.concat()
+    const newIngredient = {
+      amount,
+      id: uuidv1(),
+      index,
+      ingredient,
+      unit
+    }
+    newRecipeIngredients.push(newIngredient)
+
+    const newRecipe = {...recipe, ingredients: newRecipeIngredients}
+    setRecipe(newRecipe)
+
+    return newIngredient
+  }
+
+  console.log('rerender @CreateRecipePage')
   return (
     <PageWithHeadingAndBreadcrumb
       title='Create new recipe'
@@ -114,8 +115,7 @@ const CreateRecipePage: FunctionComponent<CreateRecipeProps> = ({ history, bread
     >
       <EditRecipeForm
         recipe={recipe}
-        setRecipe={setRecipe}
-        ingredientFactory={createIngredient}
+        onCreateIngredient={handleCreateIngredient}
       />
       <Segment className='clearfix'>
         <Button

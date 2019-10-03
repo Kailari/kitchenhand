@@ -1,3 +1,5 @@
+export type ID = string
+
 export interface User {
   id: string,
   name: string,
@@ -6,6 +8,7 @@ export interface User {
 
 export interface RecipeIngredient {
   id: string,
+  index: number,
   amount: number,
   ingredient: {
     id: string,
@@ -37,11 +40,10 @@ export interface Ingredient {
   defaultUnit?: Unit,
 }
 
-type WithoutKey<T, Excluded = 'id'> = Pick<T, {
+export type WithoutKey<T, Excluded = 'id'> = Pick<T, {
   [Key in keyof T]: Key extends Excluded ? never : Key
 }[keyof T]>
 
-export type DirtyFlags<T, Excluded = 'id'> = {
-  // Exclude any keys matching Excluded, convert remaining to booleans and remove optional modifiers
-  [Key in keyof WithoutKey<T, Excluded>]-?: boolean
+export type Dirty<T, Excluded = 'id'> = {
+  [Key in keyof WithoutKey<T, Excluded>]?: WithoutKey<T, Excluded>[Key]
 }

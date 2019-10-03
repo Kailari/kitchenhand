@@ -3,10 +3,14 @@ import { ValidatorFunc } from './validator'
 
 import isValidId from './validators/id'
 import string from './validators/string'
+import number from './validators/number'
+import requireOneOf from './validators/requireOneOf'
 
 export const validator = {
   isValidId,
   string,
+  number,
+  requireOneOf,
 }
 
 export { ValidationError } from './error'

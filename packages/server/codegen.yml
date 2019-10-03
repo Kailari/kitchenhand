@@ -1,6 +1,6 @@
-schema: ./src/graphql/schema.types.ts
 require:
   - ts-node/register
+schema: ./src/graphql/newschema.ts
 generates:
   src/generated/graphql.ts:
     plugins:

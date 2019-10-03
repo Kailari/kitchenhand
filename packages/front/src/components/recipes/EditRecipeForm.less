@@ -1,17 +1,39 @@
-.clearfix::after {
-  content: '';
-  clear: both;
-  display: table;
-}
+@basic-info-label-width: 90px;
 
-.ingredient-controls * {
-  padding: 8px;
+.ingredients .segment.placeholder {
+  min-height: 10rem;
 }
 
 .ingredient-controls {
   margin-top: 14px !important;
+  padding: 4px 14px !important;
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
   align-items: baseline;
+}
+
+.ingredient-controls *:not(:last-child) {
+  margin-right: 14px;
+}
+
+.basic-info-controls .input .label {
+  min-width: @basic-info-label-width;
+}
+
+.basic-info-controls .input:not(:first-of-type) {
+  margin-top: 8px
+}
+
+.basic-info-controls .input-description {
+  color: #888888;
+  margin-left: @basic-info-label-width + 8px;
+}
+
+.basic-info-controls .input-description.input-error {
+  color: #ff2222;
+}
+
+.segment.footnote {
+  padding: 7px 14px !important;
 }

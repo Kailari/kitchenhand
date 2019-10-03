@@ -1,12 +1,12 @@
 import React, { FunctionComponent } from 'react'
-import { useMutation } from 'react-apollo-hooks'
+import { useMutation } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { Loader, Header } from 'semantic-ui-react'
 
 import { PageWithHeadingAndBreadcrumb, PageWithBreadcrumbsProps } from '../PageBase'
 import CreateIngredientForm from '../../ingredients/CreateIngredientForm'
 import EditIngredientsList from '../../ingredients/EditIngredientsList'
-import { Unit, DirtyFlags, Ingredient } from '../../../types'
+import { Unit, Dirty, Ingredient, ID } from '../../../types'
 import IngredientsQuery, { ALL_INGREDIENTS, IngredientQueryData } from '../../ingredients/IngredientsQuery'
 
 const CREATE_INGREDIENT = gql`
@@ -142,20 +142,18 @@ const IngredientsPage: FunctionComponent<UnitsPageProps> = ({ breadcrumbs }) => 
     })
   }
 
-  const updateIngredient = async (ingredient: Ingredient, dirty: DirtyFlags<Ingredient>) => {
+  const updateIngredient = async (id: ID, updated: Dirty<Ingredient>) => {
     await updateIngredientMutation({
       variables: {
-        id: ingredient.id,
-        name: dirty.name ? ingredient.name : undefined,
-        defaultUnitId: (dirty.defaultUnit && ingredient.defaultUnit)
-          ? ingredient.defaultUnit.id
-          : undefined,
+        id: id,
+        name: updated.name || undefined,
+        defaultUnitId: updated.defaultUnit ? updated.defaultUnit.id : undefined,
       }
     })
   }
 
-  const removeIngredient = async (ingredient: Ingredient) => {
-    await removeIngredientMutation({ variables: { id: ingredient.id } })
+  const removeIngredient = async (id: ID) => {
+    await removeIngredientMutation({ variables: { id: id } })
   }
 
   return (
@@ -168,7 +166,10 @@ const IngredientsPage: FunctionComponent<UnitsPageProps> = ({ breadcrumbs }) => 
       <Header as='h3'>Ingredients</Header>
       <IngredientsQuery query={ALL_INGREDIENTS} render={(result) =>
         !result.loading && result.data
-          ? <EditIngredientsList ingredients={result.data.ingredients} onUpdate={updateIngredient} onRemove={removeIngredient} />
+          ? <EditIngredientsList
+            ingredients={result.data.ingredients}
+            onUpdate={updateIngredient}
+            onRemove={removeIngredient} />
           : <Loader active inline>Loading...</Loader>
       } />
     </PageWithHeadingAndBreadcrumb>

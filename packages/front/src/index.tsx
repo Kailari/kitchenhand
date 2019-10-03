@@ -5,8 +5,7 @@ import ApolloClient from 'apollo-client'
 import { createHttpLink } from 'apollo-link-http'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { setContext } from 'apollo-link-context'
-import { ApolloProvider } from 'react-apollo'
-import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks'
+import { ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks'
 
 import App from './App'
 
@@ -15,7 +14,7 @@ const httpLink = createHttpLink({
   credentials: 'same-origin'
 })
 
-const authLink = setContext((_, {headers}) => {
+const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('menu-app-user-token')
   return {
     headers: {
@@ -33,10 +32,8 @@ const client = new ApolloClient({
 // TODO: If connection fails, render "service temporarily unavailable" splash
 
 ReactDOM.render(
-  <ApolloProvider client={client}>
-    <ApolloHooksProvider client={client}>
-      <App />
-    </ApolloHooksProvider>
-  </ApolloProvider>,
+  <ApolloHooksProvider client={client}>
+    <App />
+  </ApolloHooksProvider>,
   document.getElementById('root')
 )

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import gql from 'graphql-tag'
-import { useQuery, useApolloClient } from 'react-apollo-hooks'
 import { Switch, Route } from 'react-router-dom'
+import { useQuery, useApolloClient } from '@apollo/react-hooks'
 
 import Dashboard from './views/Dashboard'
 import RecipeEditorPage from './views/RecipeEditorPage'

@@ -30,13 +30,12 @@
     "validators": "1.0.0"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "^1.4.0",
-    "@graphql-codegen/introspection": "^1.4.0",
-    "@graphql-codegen/typescript": "^1.4.0",
-    "@graphql-codegen/typescript-mongodb": "^1.4.0",
-    "@graphql-codegen/typescript-resolvers": "^1.4.0",
+    "@graphql-codegen/cli": "^1.8.0",
+    "@graphql-codegen/introspection": "^1.8.0",
+    "@graphql-codegen/typescript": "^1.8.0",
+    "@graphql-codegen/typescript-mongodb": "^1.8.0",
+    "@graphql-codegen/typescript-resolvers": "^1.8.0",
     "@types/bcrypt": "^3.0.0",
-    "@types/graphql": "^14.2.3",
     "@types/jsonwebtoken": "^8.3.2",
     "@types/mongoose": "^5.5.11",
     "@types/mongoose-unique-validator": "^1.0.2",

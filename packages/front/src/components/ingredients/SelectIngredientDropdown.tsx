@@ -3,7 +3,7 @@ import { DropdownProps, Dropdown } from 'semantic-ui-react'
 
 import { Ingredient } from '../../types'
 import IngredientsQuery, { ALL_INGREDIENTS, IngredientQueryData } from './IngredientsQuery'
-import { QueryHookResult } from 'react-apollo-hooks'
+import { QueryResult } from '@apollo/react-common'
 import { OperationVariables } from 'apollo-client'
 
 
@@ -13,7 +13,7 @@ export interface SelectIngredientsDropdownProps extends DropdownProps {
 }
 
 const SelectIngredientDropdown: FunctionComponent<SelectIngredientsDropdownProps> = ({ selected, select, ...props }) => {
-  const findSelected = (result: QueryHookResult<IngredientQueryData, OperationVariables>): number => {
+  const findSelected = (result: QueryResult<IngredientQueryData, OperationVariables>): number => {
     if (result.loading || !result.data || !selected) {
       return -1
     }

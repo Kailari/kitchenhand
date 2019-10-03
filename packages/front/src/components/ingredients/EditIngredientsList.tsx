@@ -4,15 +4,15 @@ import { Segment, Button, Form } from 'semantic-ui-react'
 import { useFieldWithDirty } from '../../hooks/form'
 import FieldWithError from '../form/FieldWithError'
 import { handleValidated } from '../../util/error/validator'
-import { Unit, DirtyFlags, Ingredient } from '../../types'
+import { Unit, Dirty, Ingredient, ID } from '../../types'
 
 import './EditIngredientList.less'
 import SelectUnitDropdown from '../units/SelectUnitDropdown'
 
 interface EditIngredientEntryProps {
   ingredient: Ingredient,
-  onUpdate: (ingredient: Ingredient, dirty: DirtyFlags<Ingredient>) => void,
-  onRemove: (ingredient: Ingredient) => void,
+  onUpdate: (id: ID, updated: Dirty<Ingredient>) => void,
+  onRemove: (id: ID) => void,
 }
 
 const EditIngredientEntry: FunctionComponent<EditIngredientEntryProps> = ({ ingredient, onUpdate, onRemove }) => {
@@ -25,12 +25,9 @@ const EditIngredientEntry: FunctionComponent<EditIngredientEntryProps> = ({ ingr
     nameField.setError(null)
     handleValidated(
       async () => {
-        const defaultUnitDirty = ingredient.defaultUnit !== defaultUnit
-        ingredient.name = nameField.value
-        ingredient.defaultUnit = defaultUnit || undefined
-        await onUpdate(ingredient, {
-          name: nameField.dirty,
-          defaultUnit: defaultUnitDirty,
+        await onUpdate(ingredient.id, {
+          name: nameField.dirty ? nameField.value : undefined,
+          defaultUnit: ingredient.defaultUnit !== defaultUnit ? (defaultUnit || undefined) : undefined,
         })
         nameField.clearDirty()
       },
@@ -40,7 +37,7 @@ const EditIngredientEntry: FunctionComponent<EditIngredientEntryProps> = ({ ingr
   }
 
   const remove = async () => {
-    await onRemove(ingredient)
+    await onRemove(ingredient.id)
   }
 
   return (
@@ -69,8 +66,8 @@ const EditIngredientEntry: FunctionComponent<EditIngredientEntryProps> = ({ ingr
 
 interface EditIngredientListProps {
   ingredients: Ingredient[],
-  onUpdate: (ingredient: Ingredient, dirty: DirtyFlags<Ingredient>) => void,
-  onRemove: (ingredient: Ingredient) => void,
+  onUpdate: (id: ID, updated: Dirty<Ingredient>) => void,
+  onRemove: (id: ID) => void,
 }
 
 const EditIngredientsList: FunctionComponent<EditIngredientListProps> = ({ ingredients, onUpdate, onRemove }) => {

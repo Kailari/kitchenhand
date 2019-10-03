@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react'
 import { Segment, Button, Form } from 'semantic-ui-react'
 
-import { Unit, DirtyFlags } from '../../types'
+import { Unit, Dirty, ID } from '../../types'
 
 import './EditUnitsList.less'
 import { useFieldWithDirty } from '../../hooks/form'
@@ -10,8 +10,8 @@ import { handleValidated } from '../../util/error/validator'
 
 interface EditUnitEntryProps {
   unit: Unit,
-  onUpdate: (unit: Unit, dirty: DirtyFlags<Unit>) => void,
-  onRemove: (unit: Unit) => void,
+  onUpdate: (id: ID, updated: Dirty<Unit>) => void,
+  onRemove: (id: ID) => void,
 }
 
 const EditUnitEntry: FunctionComponent<EditUnitEntryProps> = ({ unit, onUpdate, onRemove }) => {
@@ -25,11 +25,9 @@ const EditUnitEntry: FunctionComponent<EditUnitEntryProps> = ({ unit, onUpdate, 
     abbreviationField.setError(null)
     handleValidated(
       async () => {
-        unit.name = nameField.value
-        unit.abbreviation = abbreviationField.value
-        await onUpdate(unit, {
-          name: nameField.dirty,
-          abbreviation: abbreviationField.dirty
+        await onUpdate(unit.id, {
+          name: nameField.dirty ? nameField.value : undefined,
+          abbreviation: abbreviationField.dirty ? abbreviationField.value : undefined
         })
         nameField.clearDirty()
         abbreviationField.clearDirty()
@@ -41,7 +39,7 @@ const EditUnitEntry: FunctionComponent<EditUnitEntryProps> = ({ unit, onUpdate, 
   }
 
   const remove = async () => {
-    await onRemove(unit)
+    await onRemove(unit.id)
   }
 
   return (
@@ -66,8 +64,8 @@ const EditUnitEntry: FunctionComponent<EditUnitEntryProps> = ({ unit, onUpdate, 
 
 interface EditUnitsListProps {
   units: Unit[],
-  onUpdate: (unit: Unit, dirty: DirtyFlags<Unit>) => void,
-  onRemove: (unit: Unit) => void,
+  onUpdate: (id: ID, updated: Dirty<Unit>) => void,
+  onRemove: (id: ID) => void,
 }
 
 const EditUnitsList: FunctionComponent<EditUnitsListProps> = ({ units, onUpdate, onRemove }) => {

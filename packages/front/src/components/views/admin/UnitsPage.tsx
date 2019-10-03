@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react'
-import { useMutation } from 'react-apollo-hooks'
+import { useMutation } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { Loader, Header } from 'semantic-ui-react'
 
@@ -7,7 +7,7 @@ import { PageWithHeadingAndBreadcrumb, PageWithBreadcrumbsProps } from '../PageB
 import EditUnitsList from '../../units/EditUnitsList'
 import CreateUnitForm from '../../units/CreateUnitForm'
 import UnitsQuery, { ALL_UNITS, UnitQueryData } from '../../units/UnitsQuery'
-import { Unit, DirtyFlags } from '../../../types'
+import { Unit, Dirty, ID } from '../../../types'
 
 const CREATE_UNIT = gql`
 mutation create($name: String!, $abbreviation: String) {
@@ -129,22 +129,18 @@ const UnitsPage: FunctionComponent<UnitsPageProps> = ({ breadcrumbs }) => {
     await createUnitMutation({ variables: { name, abbreviation } })
   }
 
-  const updateUnit = async (unit: Unit, dirty: DirtyFlags<Unit>) => {
-    const abbreviation = (dirty.abbreviation && unit.abbreviation && unit.abbreviation.length > 0)
-      ? unit.abbreviation
-      : null
-
+  const updateUnit = async (id: ID, updated: Dirty<Unit>) => {
     await updateUnitMutation({
       variables: {
-        id: unit.id,
-        name: dirty.name ? unit.name : undefined,
-        abbreviation: abbreviation,
+        id: id,
+        name: updated.name || undefined,
+        abbreviation: (updated.abbreviation && updated.abbreviation.length > 0) ? updated.abbreviation : null,
       }
     })
   }
 
-  const removeUnit = async (unit: Unit) => {
-    await removeUnitMutation({ variables: { id: unit.id } })
+  const removeUnit = async (id: ID) => {
+    await removeUnitMutation({ variables: { id: id } })
   }
 
   return (
@@ -157,7 +153,10 @@ const UnitsPage: FunctionComponent<UnitsPageProps> = ({ breadcrumbs }) => {
       <Header as='h3'>Units</Header>
       <UnitsQuery query={ALL_UNITS} render={(result) =>
         !result.loading && result.data
-          ? <EditUnitsList units={result.data.units} onUpdate={updateUnit} onRemove={removeUnit} />
+          ? <EditUnitsList
+            units={result.data.units}
+            onUpdate={updateUnit}
+            onRemove={removeUnit} />
           : <Loader active inline>Loading...</Loader>
       } />
     </PageWithHeadingAndBreadcrumb>
