@@ -9,7 +9,7 @@ echo '\nRemoving existing installation...'
 rm -Rfv ./packages/kitchenhand-server/build/static | indent
 
 echo '\nCopying new files...'
-mkdir -p build
+mkdir -p ./packages/kitchenhand-server/build
 cp -vr ./packages/front/build ./packages/kitchenhand-server/build/static | indent
 
 echo '\n======     Installation finished      ======'
