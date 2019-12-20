@@ -306,7 +306,7 @@ const RecipeEditorPage: FunctionComponent<RecipeEditorProps> = ({ breadcrumbs, r
       return added
     }
 
-    throw new Error("something went wrong")
+    throw new Error('something went wrong')
   }
 
   const handleRemoveIngredient = async (recipeIngredientId: string) => {
