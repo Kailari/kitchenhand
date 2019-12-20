@@ -11,6 +11,8 @@ import EditRecipeForm from '../recipes/EditRecipeForm'
 import { Recipe, Ingredient, Unit, RecipeIngredient } from '../../types'
 import { ExecutionResult } from 'graphql'
 
+// TODO: errors are not propagated to BasicInfo, IngredientControls, etc.
+// TODO: info fields do not seem to be properly updating root-level state (server receives blank info even when fields are filled)
 
 const CREATE_RECIPE = gql`
 mutation create($name: String!, $description: String!, $ingredients: [ShallowRecipeIngredient!]) {
@@ -62,32 +64,38 @@ const CreateRecipePage: FunctionComponent<CreateRecipeProps> = ({ history, bread
   })
 
   const createRecipe = async () => {
-    const result = await createMutation({
-      variables: {
-        name: recipe.name,
-        description: recipe.description,
-        // Remove temporary IDs from ingredients and reduce fields with object references
-        // to just IDs
-        ingredients: recipe.ingredients
-          // TODO: Instead of filter, validate and fail with error notification
-          .filter((i) => i.unit.id !== 'DUMMY' && i.ingredient.id !== 'DUMMY')
-          .map((i) => ({
-            amount: i.amount,
-            unit: i.unit.id,
-            ingredient: i.ingredient.id,
-          }))
+    try {
+      const result = await createMutation({
+        variables: {
+          name: recipe.name,
+          description: recipe.description,
+          // Remove temporary IDs from ingredients and reduce fields with object references
+          // to just IDs. Backend will automagically construct subdocuments for all recipe
+          // ingredients passed here, while retaining backend authority over IDs
+          ingredients: recipe.ingredients
+            // TODO: Instead of filter, validate and fail with error notification
+            .filter((i) => i.unit.id !== 'DUMMY' && i.ingredient.id !== 'DUMMY')
+            .map((i) => ({
+              amount: i.amount,
+              unit: i.unit.id,
+              ingredient: i.ingredient.id,
+            }))
+        }
+      }) as ExecutionResult<CreateRecipeResult>
+
+      if (!result.data) {
+        // TODO: Error
+        console.log('adding recipe failed')
+        return
       }
-    }) as ExecutionResult<CreateRecipeResult>
 
-    if (!result.data) {
-      // TODO: Error
-      console.log('adding recipe failed')
-      return
+
+      const newRecipe = result.data.addRecipe
+      console.log('recipe: ', newRecipe)
+      history.replace(`/recipes/${newRecipe.id}`)
+    } catch (error) {
+      console.log('error adding recipe:', error)
     }
-
-    const newRecipe = result.data.addRecipe
-    console.log('recipe: ', newRecipe)
-    history.replace(`/recipes/${newRecipe.id}`)
   }
 
   const handleCreateIngredient = (index: number, amount: number, ingredient: Ingredient, unit: Unit): RecipeIngredient => {
@@ -101,7 +109,7 @@ const CreateRecipePage: FunctionComponent<CreateRecipeProps> = ({ history, bread
     }
     newRecipeIngredients.push(newIngredient)
 
-    const newRecipe = {...recipe, ingredients: newRecipeIngredients}
+    const newRecipe = { ...recipe, ingredients: newRecipeIngredients }
     setRecipe(newRecipe)
 
     return newIngredient

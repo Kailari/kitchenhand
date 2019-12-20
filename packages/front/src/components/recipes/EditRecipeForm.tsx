@@ -119,7 +119,7 @@ const BasicInfoControls: FunctionComponent<EditRecipeBasicInfoProps> = ({
 
 
 interface AddIngredientModalProps {
-  onAddIngredient: (amount: number, unit: Unit, ingredient: Ingredient) => void | Promise<void>,
+  onAddIngredient: (amount: number, ingredient: Ingredient, unit: Unit) => void | Promise<void>,
 }
 
 const AddIngredientModal: FunctionComponent<AddIngredientModalProps> = ({
@@ -141,7 +141,7 @@ const AddIngredientModal: FunctionComponent<AddIngredientModalProps> = ({
       return
     }
 
-    await onAddIngredient(Number(amountField.value), unit, ingredient)
+    await onAddIngredient(Number(amountField.value), ingredient, unit)
     setOpen(false)
   }
 
@@ -291,7 +291,6 @@ const IngredientControls: FunctionComponent<EditRecipeIngredientProps> = ({
 
   const handleAddIngredient = async (amount: number, ingredient: Ingredient, unit: Unit) => {
     if (onCreateIngredient) {
-      // FIXME: Index is always zero
       const added = await onCreateIngredient(
         ingredients.length > 0
           ? ingredients.sort((a, b) => b.index - a.index)[0].index + 1
@@ -336,7 +335,6 @@ const IngredientControls: FunctionComponent<EditRecipeIngredientProps> = ({
         ))}
     </Segment>)
 
-  console.log('rerender @IngredientControls. Ingredients:', recipeIngredients)
   return (<>
     <Header as='h2'>Ingredients</Header>
     <SegmentGroup className='ingredients'>

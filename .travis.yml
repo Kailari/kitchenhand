@@ -20,6 +20,7 @@ jobs:
     - stage: build
       name: "Build & E2E Tests => Deploy"
       script: 
+        - yarn tsc
         - yarn lint
         - sh ./build_front.sh
         - echo 'TODO E2E tests'
