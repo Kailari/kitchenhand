@@ -6,10 +6,9 @@ echo '\nBuilding...'
 yarn workspace front build | indent
 
 echo '\nRemoving existing installation...'
-rm -Rfv ./packages/kitchenhand-server/build/static | indent
+rm -Rfv ./packages/server/static | indent
 
 echo '\nCopying new files...'
-mkdir -p ./packages/kitchenhand-server/build
-cp -vr ./packages/front/build ./packages/kitchenhand-server/build/static | indent
+cp -vr ./packages/front/build ./packages/server/static | indent
 
 echo '\n======     Installation finished      ======'
